@@ -1,18 +1,22 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CityController;
 use Illuminate\Support\Facades\Route;
 
-//Route::middleware('guest.admin')->group(function (){
-    Route::get('/',[UserController::class, 'login'])->name('login');
-  Route::post('/auth', [UserController::class, 'auth'])->name('auth');
-//});
+Route::middleware('guest.admin')->group(function () {
+    Route::get('/login', [UserController::class, 'login'])->name('login');
 
-Route::middleware('auth.admin')->group(function(){
+    Route::match(['GET', 'POST'], '/auth', [UserController::class, 'auth'])->name('auth');
+});
 
-    Route::get('/index', [UserController::class, 'index'])->name('index');
+Route::middleware('auth.admin')->group(function() {
 
-    Route::get('/logout', [UserController::class, 'login'])->name('logout');
+    Route::get('/', [UserController::class, 'index'])->name('index');
+
+    Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+
+//    ==============================================Users==============================================================
 
     Route::get('/users', [UserController::class, 'users'])->name('users');
 
@@ -25,4 +29,22 @@ Route::middleware('auth.admin')->group(function(){
     Route::post('/users/user/{user}/editSubmit', [UserController::class, 'userEditSubmit'])->name('userEditSubmit');
 
     Route::get('/users/user/{user}/delete', [UserController::class, 'userDelete'])->name('userDelete');
+
+//    ================================================City==============================================================
+
+    Route::get('/libraries', [libraryController::class, 'libraries'])->name('cities');
+
+    Route::get('/libraries/library/create', [libraryController::class, 'libraryCreate'])->name('libraryCreate');
+
+    Route::post('/libraries/library/createSubmit', [libraryController::class, 'libraryCreateSubmit'])->name('libraryCreateSubmit');
+
+    Route::get('/libraries/library/{library}/edit', [libraryController::class, 'libraryEdit'])->name('libraryEdit');
+
+    Route::post('/libraries/library/{library}/editSubmit', [libraryController::class, 'libraryEditSubmit'])->name('libraryEditSubmit');
+
+    Route::get('/libraries/library/{library}/delete', [libraryController::class, 'libraryDelete'])->name('libraryDelete');
+
+//    ================================================libraries=========================================================
+
+
 });

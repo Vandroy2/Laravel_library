@@ -23,10 +23,17 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                return redirect($this->redirectTo());
             }
         }
 
         return $next($request);
+    }
+
+    /**
+     * @return string
+     */
+    protected function redirectTo() {
+        return RouteServiceProvider::HOME;
     }
 }

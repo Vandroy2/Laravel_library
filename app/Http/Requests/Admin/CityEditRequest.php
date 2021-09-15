@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class CityEditRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class CityEditRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required','string','min:3','max:255',],
+        ];
+    }
+    public function messages()
+    {
+
+        return [
+            'name.required' => 'Введите имя',
+            'name.min' => 'Недостаточно символов',
         ];
     }
 }

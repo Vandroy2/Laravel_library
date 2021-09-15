@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/app.css">
-
-    <title>Document</title>
-</head>
+@include('includes.head')
 <body style="background-image: url(https://www.peopleg2.com/wp-content/uploads/2014/02/Depositphotos_18398501_xl-2015-scaled-1-2048x1536.jpg)">
 @include('includes.navbar')
 
@@ -24,6 +14,7 @@
         <th scope="col">email</th>
         <th scope="col">birthday</th>
         <th scope="col">operations</th>
+
 
     </tr>
     </thead>
@@ -42,12 +33,14 @@
 
             </td>
 
+
         </tr>
     @endforeach
 
     </tbody>
-    <a href="{{route('admin.userCreate', $user)}}"><button class="btn btn-success" style="width: 100px">Create</button></a>
+
 </table>
 
 </body>
+{{--<td><a href="{{route('admin.userCreate', $user)}}"><button class="btn btn-success" style="width: 200px; ">Create</button></a></td>--}}
 </html>

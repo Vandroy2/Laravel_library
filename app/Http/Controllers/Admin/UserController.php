@@ -7,8 +7,7 @@ use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserEditRequest;
 use App\Models\User;
-use http\Client\Response;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -21,15 +20,15 @@ class UserController extends Controller
     }
 
 
-    public function  logout()
+    public function  logout(): RedirectResponse
     {
         Auth::logout();
 
-        return redirect()->route('login');
+        return redirect()->route('admin.login');
     }
 
 
-    public function auth(LoginRequest $request)
+    public function auth(LoginRequest $request): RedirectResponse
 
     {
 //        if (Auth::check()){
@@ -75,7 +74,7 @@ class UserController extends Controller
 
         }
 
-        public function  userCreateSubmit(UserCreateRequest $request)
+        public function  userCreateSubmit(UserCreateRequest $request): RedirectResponse
         {
 
             $user = new User();
@@ -95,7 +94,7 @@ class UserController extends Controller
 
         }
 
-    public function userEditSubmit(UserEditRequest $request, User $user)
+    public function userEditSubmit(UserEditRequest $request, User $user): RedirectResponse
     {
         $user->fill($request->all());
         //        if($request->has('password'))
@@ -111,7 +110,7 @@ class UserController extends Controller
         ])->with('success', 'Пользователь был отредактирован');
     }
 
-    public function userDelete(User $user)
+    public function userDelete(User $user): RedirectResponse
     {
         $user->delete();
 

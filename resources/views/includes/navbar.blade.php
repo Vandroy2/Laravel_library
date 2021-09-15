@@ -20,7 +20,8 @@
                     <h6 class="dropdown-header">Select</h6>
 
                    <a class="dropdown-item" href="{{route('admin.users')}}">Users List</a>
-                   <a class="dropdown-item" href="{{route('admin.userCreate')}}">User add</a>
+                   <a class="dropdown-item" href="{{route('admin.userCreate')}}">User create</a>
+
 
 
                 </div>
@@ -46,9 +47,8 @@
 
                     <h6 class="dropdown-header">Select</h6>
 
-                    <a class="dropdown-item" href="/">main page</a>
-                    <a class="dropdown-item" href="{{route('admin.logout')}}">logout</a>
-                 <a class="dropdown-item" href="{{route('admin.users')}}">Add user</a>
+                    <a class="dropdown-item" href="{{route('admin.cities')}}">Cities List</a>
+                    <a class="dropdown-item" href="{{route('admin.cityCreate')}}">City create</a>
 
                 </div>
 

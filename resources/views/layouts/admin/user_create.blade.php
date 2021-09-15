@@ -27,9 +27,7 @@
         <input type="text" name="birthday" value="" placeholder="Введите день рождения" id = "email" class="form-control">
     </div>
 
-
     <button type="submit" class="btn btn-success">Add user</button>
-
 
 </form>
 </body>
