@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -17,6 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property  int $id
  * @property string $type
  * @property string $name
+ * @property string $surname
  * @property string $email
  * @property string $password
  * @property string $remember_token
@@ -61,4 +62,8 @@ class User extends Authenticatable
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+
+
+
 }

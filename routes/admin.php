@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\LibraryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
 use Illuminate\Support\Facades\Route;
@@ -32,19 +35,58 @@ Route::middleware('auth.admin')->group(function() {
 
 //    ================================================City==============================================================
 
-    Route::get('/libraries', [libraryController::class, 'libraries'])->name('cities');
+    Route::get('/cities', [CityController::class, 'cities'])->name('cities');
 
-    Route::get('/libraries/library/create', [libraryController::class, 'libraryCreate'])->name('libraryCreate');
+    Route::get('/cities/city/create', [CityController::class, 'cityCreate'])->name('cityCreate');
 
-    Route::post('/libraries/library/createSubmit', [libraryController::class, 'libraryCreateSubmit'])->name('libraryCreateSubmit');
+    Route::post('/cities/city/createSubmit', [CityController::class, 'cityCreateSubmit'])->name('cityCreateSubmit');
 
-    Route::get('/libraries/library/{library}/edit', [libraryController::class, 'libraryEdit'])->name('libraryEdit');
+    Route::get('/cities/city/{city}/edit', [CityController::class, 'cityEdit'])->name('cityEdit');
 
-    Route::post('/libraries/library/{library}/editSubmit', [libraryController::class, 'libraryEditSubmit'])->name('libraryEditSubmit');
+    Route::post('/cities/city/{city}/editSubmit', [CityController::class, 'cityEditSubmit'])->name('cityEditSubmit');
 
-    Route::get('/libraries/library/{library}/delete', [libraryController::class, 'libraryDelete'])->name('libraryDelete');
+    Route::get('/cities/city/{city}/delete', [CityController::class, 'cityDelete'])->name('cityDelete');
 
 //    ================================================libraries=========================================================
 
+    Route::get('/libraries', [LibraryController::class, 'libraries'])->name('libraries');
+
+    Route::get('/libraries/library/create', [LibraryController::class, 'libraryCreate'])->name('libraryCreate');
+
+    Route::post('/libraries/library/createSubmit', [LibraryController::class, 'libraryCreateSubmit'])->name('libraryCreateSubmit');
+
+    Route::get('/libraries/library/{library}/edit', [LibraryController::class, 'libraryEdit'])->name('libraryEdit');
+
+    Route::post('/libraries/library/{library}/editSubmit', [LibraryController::class, 'libraryEditSubmit'])->name('libraryEditSubmit');
+
+    Route::get('/libraries/library/{library}/delete', [LibraryController::class, 'libraryDelete'])->name('libraryDelete');
+
+//    ======================================================Authors=========================================================
+
+    Route::get('/authors', [AuthorController::class, 'authors'])->name('authors');
+
+    Route::get('/authors/author/create', [AuthorController::class, 'authorCreate'])->name('authorCreate');
+
+    Route::post('/authors/author/authorSubmit', [AuthorController::class, 'authorCreateSubmit'])->name('authorCreateSubmit');
+
+    Route::get('/authors/author/{author}/edit', [AuthorController::class, 'authorEdit'])->name('authorEdit');
+
+    Route::post('/authors/author{author}/editSubmit', [AuthorController::class, 'authorEditSubmit'])->name('authorEditSubmit');
+
+    Route::get('/authors/author/{author}/delete', [AuthorController::class, 'authorDelete'])->name('authorDelete');
+
+//    =======================================================Books==============================================================
+
+    Route::get('/books', [bookController::class, 'books'])->name('books');
+
+    Route::get('/books/book/create', [bookController::class, 'bookCreate'])->name('bookCreate');
+
+    Route::post('/books/book/bookSubmit', [bookController::class, 'bookCreateSubmit'])->name('bookCreateSubmit');
+
+    Route::get('/books/book{book}/edit', [bookController::class, 'bookEdit'])->name('bookEdit');
+
+    Route::post('/books/book{book}/editSubmit', [bookController::class, 'bookEditSubmit'])->name('bookEditSubmit');
+
+    Route::get('/books/book/{book}/delete', [bookController::class, 'bookDelete'])->name('bookDelete');
 
 });

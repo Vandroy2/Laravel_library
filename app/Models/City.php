@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Collection\Collection;
 
 /**
  * class City
@@ -11,7 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Models
  *
  * @property int $id
- * @property string $name
+ * @property string $city_name
+ *
+ * @property library[]| Collection $library
  */
 
 class City extends Model
@@ -23,10 +27,20 @@ class City extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array[]
      */
 
     protected $fillable = [
-        'name',
+        'city_name',
     ];
+
+    /**
+     * @return HasMany
+     */
+
+    public function libraries(): HasMany
+    {
+
+        return $this->hasMany(Library::class, 'city_id', 'id');
+    }
 }

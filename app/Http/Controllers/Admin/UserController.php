@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserEditRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -31,12 +32,6 @@ class UserController extends Controller
     public function auth(LoginRequest $request): RedirectResponse
 
     {
-//        if (Auth::check()){
-//            echo 'Пользователь аунтефицирован';
-//            exit();
-//        }
-//        else echo 'Пройдите антифекацию повторно';
-//        exit();
 
         $auth = Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')]);
 
@@ -56,9 +51,23 @@ class UserController extends Controller
     }
 
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::all();
+        $search_user = $request->input('search_user');
+
+        $users = User::query()
+
+            ->where('type','=','client')
+
+            ->when(!empty($search_user), function ($query) use($search_user){
+                return $query
+                    ->where('id', '=', "$search_user")
+                    ->orwhere('name', 'like', "%$search_user%")
+                    ->orwhere('surname', 'like', "%$search_user%")
+                    ->orwhere('email', 'like', "%$search_user%");
+            })
+
+            ->get();
 
         return view('layouts.admin.users', ['users'=>$users]);
 

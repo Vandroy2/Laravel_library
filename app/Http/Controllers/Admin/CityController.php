@@ -11,9 +11,18 @@ use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
-    public function cities()
+    public function cities(Request $request)
     {
-        $cities = City::all();
+        $reqName = $request->input('search_name');
+
+        $cities = City::query()
+
+            ->with(['libraries'])
+        ->when(!empty($reqName), function ($query) use($reqName){
+         return $query->where('city_name', 'like', "%$reqName%");
+        })
+            ->orderBy('city_name','asc')
+            ->paginate(10);
 
         return view('layouts.admin.cities',['cities'=>$cities]);
     }
@@ -48,10 +57,7 @@ class CityController extends Controller
 
         $city->save();
 
-        $cities = City::all();
-
         return redirect()->route('admin.cities', [
-            'cities'=>$cities,
             'city' =>$city,
         ])->with('success', 'Город был отредактирован');
     }

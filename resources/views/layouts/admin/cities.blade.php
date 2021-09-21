@@ -4,8 +4,8 @@
 
 @include('includes.scripts')
 @include('includes.errors')
-{{--<a href="{{route('admin.cityCreate', $city}}"><button class="btn btn-success" style="width: 300px">Create</button></a>--}}
-<table class="table table-bordered table-dark">
+
+<table class="table table-bordered table-dark" style="width: max-content">
 
     <thead>
     <tr>
@@ -21,10 +21,9 @@
         <tr>
 
             <td>{{$city->id}}</td>
-            <td>{{$city->name}}</td>
-
+            <td>{{$city->city_name}}</td>
             <td>
-              <a href="{{route('admin.cityEdit', $city)}}"><button class="btn btn-primary">Update</button></a>
+              <a href="{{route('admin.cityEdit', $city)}}"><button class="btn btn-primary">Edit</button></a>
               <a href="{{route('admin.cityDelete', $city)}}"><button class="btn btn-danger">Delete</button></a>
 
             </td>
@@ -35,6 +34,13 @@
     </tbody>
 
 </table>
-
+<div style="display: flex; flex-direction: column; width: 25%;">
+    <form action="{{ route('admin.cities') }}" method="get">
+        <label>
+            <input name="search_name" placeholder="Search name" type="search">
+        </label>
+        <button type="submit">Search</button>
+    </form>
+    </div>
 </body>
 </html>

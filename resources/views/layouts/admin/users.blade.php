@@ -4,6 +4,7 @@
 
 @include('includes.scripts')
 @include('includes.errors')
+
 <table class="table table-bordered table-dark">
 
     <thead>
@@ -28,7 +29,7 @@
             <td>{{$user->email}}</td>
             <td>{{$user->birthday}}</td>
             <td>
-              <a href="{{route('admin.userEdit', $user)}}"><button class="btn btn-primary">Update</button></a>
+              <a href="{{route('admin.userEdit', $user)}}"><button class="btn btn-primary">Edit</button></a>
                <a href="{{route('admin.userDelete', $user)}}"><button class="btn btn-danger">Delete</button></a>
 
             </td>
@@ -40,6 +41,23 @@
     </tbody>
 
 </table>
+
+
+    </form>
+
+
+</div>
+
+
+
+<div style="display: flex; flex-direction: column; width: 25%;">
+    <form action="{{ route('admin.users') }}" method="get">
+        <label>
+            <input name="search_user" placeholder="Search " type="search">
+        </label>
+        <button type="submit" style="width: 25%">Search</button>
+    </form>
+</div>
 
 </body>
 {{--<td><a href="{{route('admin.userCreate', $user)}}"><button class="btn btn-success" style="width: 200px; ">Create</button></a></td>--}}
