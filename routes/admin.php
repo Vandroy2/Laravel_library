@@ -2,91 +2,145 @@
 
 use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\LibraryController;
+use App\Http\Controllers\Admin\PersonalCabinetController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest.admin')->group(function () {
+Route::middleware(['guest.admin',])->group(function () {
     Route::get('/login', [UserController::class, 'login'])->name('login');
 
     Route::match(['GET', 'POST'], '/auth', [UserController::class, 'auth'])->name('auth');
 });
 
-Route::middleware('auth.admin')->group(function() {
+Route::middleware([
+    'auth.admin',
+    'can:auth',
+])->group(function() {
 
     Route::get('/', [UserController::class, 'index'])->name('index');
 
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 
-//    ==============================================Users==============================================================
 
-    Route::get('/users', [UserController::class, 'users'])->name('users');
+    //    ==============================================Users==============================================================
 
-    Route::get('/users/user/create', [UserController::class, 'userCreate'])->name('userCreate');
+    Route::prefix('users')->group(function (){
 
-    Route::post('/users/user/createSubmit', [UserController::class, 'userCreateSubmit'])->name('userCreateSubmit');
+        Route::get('/', [UserController::class, 'view'])->name('users');
 
-    Route::get('/users/user/{user}/edit', [UserController::class, 'userEdit'])->name('userEdit');
+        Route::get('/create', [UserController::class, 'create'])->middleware('can:admin.create')->name('userCreate');
 
-    Route::post('/users/user/{user}/editSubmit', [UserController::class, 'userEditSubmit'])->name('userEditSubmit');
+        Route::post('/store', [UserController::class, 'store'])->name('userStore');
 
-    Route::get('/users/user/{user}/delete', [UserController::class, 'userDelete'])->name('userDelete');
+        Route::get('/edit/{user}', [UserController::class, 'edit'])->name('userEdit');
 
+        Route::post('/update/{user}', [UserController::class, 'update'])->name('userUpdate');
+
+        Route::get('/delete/{user}', [UserController::class, 'delete'])->middleware('can:admin.delete')->name('userDelete');
+    });
 //    ================================================City==============================================================
 
-    Route::get('/cities', [CityController::class, 'cities'])->name('cities');
+    Route::prefix('cities')->group(function (){
 
-    Route::get('/cities/city/create', [CityController::class, 'cityCreate'])->name('cityCreate');
+        Route::get('/', [CityController::class, 'view'])->name('cities');
 
-    Route::post('/cities/city/createSubmit', [CityController::class, 'cityCreateSubmit'])->name('cityCreateSubmit');
+        Route::get('/create', [CityController::class, 'create'])->name('cityCreate');
 
-    Route::get('/cities/city/{city}/edit', [CityController::class, 'cityEdit'])->name('cityEdit');
+        Route::post('/store', [CityController::class, 'store'])->name('cityStore');
 
-    Route::post('/cities/city/{city}/editSubmit', [CityController::class, 'cityEditSubmit'])->name('cityEditSubmit');
+        Route::get('/edit/{city}', [CityController::class, 'edit'])->name('cityEdit');
 
-    Route::get('/cities/city/{city}/delete', [CityController::class, 'cityDelete'])->name('cityDelete');
+        Route::post('/update/{city}', [CityController::class, 'update'])->name('cityUpdate');
+
+        Route::get('/delete/{city}', [CityController::class, 'delete'])->name('cityDelete');
+
+    });
 
 //    ================================================libraries=========================================================
 
-    Route::get('/libraries', [LibraryController::class, 'libraries'])->name('libraries');
+    Route::prefix('libraries')->group(function (){
 
-    Route::get('/libraries/library/create', [LibraryController::class, 'libraryCreate'])->name('libraryCreate');
+        Route::get('/', [LibraryController::class, 'view'])->name('libraries');
 
-    Route::post('/libraries/library/createSubmit', [LibraryController::class, 'libraryCreateSubmit'])->name('libraryCreateSubmit');
+        Route::get('/create', [LibraryController::class, 'create'])->name('libraryCreate');
 
-    Route::get('/libraries/library/{library}/edit', [LibraryController::class, 'libraryEdit'])->name('libraryEdit');
+        Route::post('/store', [LibraryController::class, 'store'])->name('libraryStore');
 
-    Route::post('/libraries/library/{library}/editSubmit', [LibraryController::class, 'libraryEditSubmit'])->name('libraryEditSubmit');
+        Route::get('/edit/{library}', [LibraryController::class, 'edit'])->name('libraryEdit');
 
-    Route::get('/libraries/library/{library}/delete', [LibraryController::class, 'libraryDelete'])->name('libraryDelete');
+        Route::post('/update/{library}', [LibraryController::class, 'update'])->name('libraryUpdate');
+
+        Route::get('/delete/{library}', [LibraryController::class, 'delete'])->name('libraryDelete');
+
+    });
 
 //    ======================================================Authors=========================================================
 
-    Route::get('/authors', [AuthorController::class, 'authors'])->name('authors');
+    Route::prefix('authors')->group(function (){
 
-    Route::get('/authors/author/create', [AuthorController::class, 'authorCreate'])->name('authorCreate');
+        Route::get('/', [AuthorController::class, 'view'])->name('authors');
 
-    Route::post('/authors/author/authorSubmit', [AuthorController::class, 'authorCreateSubmit'])->name('authorCreateSubmit');
+        Route::get('/create', [AuthorController::class, 'create'])->name('authorCreate');
 
-    Route::get('/authors/author/{author}/edit', [AuthorController::class, 'authorEdit'])->name('authorEdit');
+        Route::post('/store', [AuthorController::class, 'store'])->name('authorStore');
 
-    Route::post('/authors/author{author}/editSubmit', [AuthorController::class, 'authorEditSubmit'])->name('authorEditSubmit');
+        Route::get('/edit/{author}', [AuthorController::class, 'edit'])->name('authorEdit');
 
-    Route::get('/authors/author/{author}/delete', [AuthorController::class, 'authorDelete'])->name('authorDelete');
+        Route::post('/update/{author}', [AuthorController::class, 'update'])->name('authorUpdate');
+
+        Route::get('/delete/{author}', [AuthorController::class, 'delete'])->name('authorDelete');
+
+    });
 
 //    =======================================================Books==============================================================
 
-    Route::get('/books', [bookController::class, 'books'])->name('books');
+    Route::prefix('books')->group(function (){
 
-    Route::get('/books/book/create', [bookController::class, 'bookCreate'])->name('bookCreate');
+        Route::get('/', [bookController::class, 'view'])->name('books');
 
-    Route::post('/books/book/bookSubmit', [bookController::class, 'bookCreateSubmit'])->name('bookCreateSubmit');
+        Route::get('/create', [bookController::class, 'create'])->name('bookCreate');
 
-    Route::get('/books/book{book}/edit', [bookController::class, 'bookEdit'])->name('bookEdit');
+        Route::post('/store', [bookController::class, 'store'])->name('bookStore');
 
-    Route::post('/books/book{book}/editSubmit', [bookController::class, 'bookEditSubmit'])->name('bookEditSubmit');
+         Route::get('/edit/{book}', [bookController::class, 'edit'])->name('bookEdit');
 
-    Route::get('/books/book/{book}/delete', [bookController::class, 'bookDelete'])->name('bookDelete');
+        Route::post('/update/{book}', [bookController::class, 'update'])->name('bookUpdate');
+
+        Route::get('/delete/{book}', [bookController::class, 'delete'])->name('bookDelete');
+
+    });
+    //===============================================Comments================================================================
+
+    Route::prefix('personalCabinet')->group(function (){
+
+    Route::any('/', [PersonalCabinetController::class, 'view'])->name('personalCabinet');
+
+    Route::get('/allow/{comment}', [PersonalCabinetController::class, 'allow'])->name('personalCabinetAllow');
+
+    Route::get('/edit/{comment}', [PersonalCabinetController::class, 'edit'])->middleware('can:edit,comment')
+        ->name('personalCabinetEdit');
+
+    Route::post('/update/{comment}', [PersonalCabinetController::class, 'update'])->name('personalCabinetUpdate');
+
+    Route::get('/delete/{comment}', [PersonalCabinetController::class, 'delete'])->middleware('can:delete,comment')
+        ->name('personalCabinetDelete');
+    });
+
+    Route::prefix('images')->group(function (){
+
+        Route::get('/delete/{image}', [ImageController::class, 'delete'])->name('imageDelete');
+
+        Route::get('/deleteByUser/{image}', [ImageController::class, 'deleteByUser'])->name('imageDeleteByUser');
+
+    });
+
+
 
 });
+
+
+

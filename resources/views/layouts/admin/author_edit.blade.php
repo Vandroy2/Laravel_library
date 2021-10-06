@@ -1,23 +1,23 @@
-@include('includes.head')
+@include('includes.admin.head')
 
 <body>
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 
 @include('includes.errors')
 
 
-<form action="{{route('admin.authorEditSubmit', $author)}}" method = "Post">
+<form action="{{route('admin.authorUpdate', $author)}}" method = "Post">
 
     @csrf
     <div class="form-group">
         <label for="name"></label>
-        <input type="text" name="name" value="{{$author->name}}" placeholder="Введите имя" id = "name" class="form-control">
+        <input type="text" name="author_name" value="{{$author->author_name}}" placeholder="Введите имя" id = "author_name" class="form-control">
     </div>
     <div class="form-group">
         <label for="name"></label>
-        <input type="text" name="surname" value="{{$author->surname}}" placeholder="Введите имя" id = "ыгкname" class="form-control">
+        <input type="text" name="author_surname" value="{{$author->author_surname}}" placeholder="Введите имя" id = "author_surname" class="form-control">
     </div>
     <div class="form-group">
         <label for="name"></label>

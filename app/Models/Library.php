@@ -52,6 +52,8 @@ class Library extends Model
 
     public function books(): HasMany
     {
-        return $this->hasMany(Book::class, 'library_id', 'id');
+        return $this->hasMany(Book::class,);
     }
+
+
 }

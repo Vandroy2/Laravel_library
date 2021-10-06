@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserEditRequest;
+use App\Models\Image;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -32,15 +35,14 @@ class UserController extends Controller
     public function auth(LoginRequest $request): RedirectResponse
 
     {
-
         $auth = Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')]);
+
 
         if ($auth)
         {
             return redirect()->route('admin.index');
         }
-
-        return redirect()->route('admin.login')->with('error', 'аунтефикация не удалась');
+            else return redirect()->route('admin.login')->with('errors', 'аунтефикация не удалась');
 
     }
 
@@ -51,14 +53,17 @@ class UserController extends Controller
     }
 
 
-    public function users(Request $request)
+    public function view(Request $request)
     {
+
+
+
         $search_user = $request->input('search_user');
 
         $users = User::query()
 
-            ->where('type','=','client')
 
+            ->with('images')
             ->when(!empty($search_user), function ($query) use($search_user){
                 return $query
                     ->where('id', '=', "$search_user")
@@ -69,11 +74,13 @@ class UserController extends Controller
 
             ->get();
 
+
+
         return view('layouts.admin.users', ['users'=>$users]);
 
     }
 
-        public function userCreate()
+        public function create()
         {
 
             $users = User::all();
@@ -83,7 +90,7 @@ class UserController extends Controller
 
         }
 
-        public function  userCreateSubmit(UserCreateRequest $request): RedirectResponse
+        public function  store(UserCreateRequest $request): RedirectResponse
         {
 
             $user = new User();
@@ -92,18 +99,32 @@ class UserController extends Controller
 
             $user->save();
 
+            foreach (Arr::wrap($request->file('images', [])) as $imageFile)
+            {
+
+                $image = new Image();
+
+                $image->images = $imageFile->store('uploads', 'public');
+
+                $user->images()->save($image);
+            }
+
             return redirect()->route('admin.users', $user)->with('success', 'Пользователь был добавлен');
 
         }
 
-        public function userEdit(User $user)
+    /**
+     * @throws AuthorizationException
+     */
+    public function edit(User $user)
         {
 
-            return view('layouts.admin.user_edit', ['user'=>$user]);
+            $images = Image::all();
+            return view('layouts.admin.user_edit', ['user'=>$user, 'images'=>$images]);
 
         }
 
-    public function userEditSubmit(UserEditRequest $request, User $user): RedirectResponse
+    public function update(UserEditRequest $request, User $user, Image $image): RedirectResponse
     {
         $user->fill($request->all());
         //        if($request->has('password'))
@@ -113,13 +134,25 @@ class UserController extends Controller
 
         $users = User::all();
 
+        $image->delete();
+
+        foreach (Arr::wrap($request->file('images', [])) as $imageFile)
+        {
+
+            $image = new Image();
+
+            $image->images = $imageFile->store('uploads', 'public');
+
+            $user->images()->save($image);
+        }
+
         return redirect()->route('admin.users',  [
             'users'=>$users,
             'user'=>$user
         ])->with('success', 'Пользователь был отредактирован');
     }
 
-    public function userDelete(User $user): RedirectResponse
+    public function delete(User $user): RedirectResponse
     {
         $user->delete();
 

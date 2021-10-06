@@ -24,15 +24,15 @@ class CityEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required','string','min:3','max:255',],
+            'city_name' => ['required','string','min:3','max:255',],
         ];
     }
     public function messages()
     {
 
         return [
-            'name.required' => 'Введите имя',
-            'name.min' => 'Недостаточно символов',
+            'city_name.required' => 'Введите имя',
+            'city_name.min' => 'Недостаточно символов',
         ];
     }
 }

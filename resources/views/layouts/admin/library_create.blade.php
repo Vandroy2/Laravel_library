@@ -1,18 +1,18 @@
-@include('includes.head')
+@include('includes.admin.head')
 
 <body>
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 
 @include('includes.errors')
 
-<form action="{{route('admin.libraryCreateSubmit')}}" method = "Post">
+<form action="{{route('admin.libraryStore')}}" method = "Post">
 
     @csrf
     <div class="form-group">
-        <label for="name"></label>
-        <input type="text" name="name" value="" placeholder="Введите название библиотеки" id = "name" class="form-control">
+        <label for="library_name"></label>
+        <input type="text" name="library_name" value="" placeholder="Введите название библиотеки" id = "library_name" class="form-control">
     </div>
     <div class="form-group">
         <label for="name"></label>

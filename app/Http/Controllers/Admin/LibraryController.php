@@ -7,11 +7,12 @@ use App\Http\Requests\Admin\LibraryCreateRequest;
 use App\Models\Library;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class LibraryController extends Controller
 {
-    public function libraries(Request $request){
+    public function view(Request $request){
 
         $search_library = $request->input('search_library');
 
@@ -27,17 +28,19 @@ class LibraryController extends Controller
             ->orderBy('libraries.library_name','desc')
             ->paginate('10');
 
+
+
         return view('layouts.admin.libraries', compact('libraries'));
     }
 
-    public function libraryCreate(){
+    public function create(){
 
         $libraries = Library::all();
 
         return view('layouts.admin.library_create', ['libraries'=>$libraries]);
     }
 
-    public function libraryCreateSubmit(LibraryCreateRequest $request): RedirectResponse
+    public function store(LibraryCreateRequest $request): RedirectResponse
     {
         $library = new Library();
 
@@ -49,7 +52,7 @@ class LibraryController extends Controller
 
     }
 
-    public function libraryEdit(Library $library)
+    public function edit(Library $library)
     {
         $libraries = Library::all();
         return view('layouts.admin.library_edit', [
@@ -59,7 +62,7 @@ class LibraryController extends Controller
 
     }
 
-    public function libraryEditSubmit(LibraryCreateRequest $request, Library $library): RedirectResponse
+    public function update(LibraryCreateRequest $request, Library $library): RedirectResponse
     {
         $libraries = Library::all();
 
@@ -75,7 +78,7 @@ class LibraryController extends Controller
 
     }
 
-    public function libraryDelete(Library $library): RedirectResponse
+    public function delete(Library $library): RedirectResponse
     {
         $library->delete();
 

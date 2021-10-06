@@ -1,8 +1,8 @@
-@include('includes.head')
+@include('includes.admin.head')
 <body style="background-image: url(https://www.peopleg2.com/wp-content/uploads/2014/02/Depositphotos_18398501_xl-2015-scaled-1-2048x1536.jpg)">
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 @include('includes.errors')
 
 <table class="table table-bordered table-dark">
@@ -16,6 +16,7 @@
         <th scope="col">Author name</th>
         <th scope="col">Author surname</th>
         <th scope="col">Library name</th>
+        <th scope="col">Images</th>
         <th scope="col">Operations</th>
 
 
@@ -32,6 +33,11 @@
             <td>{{$book->author->author_name}}</td>
             <td>{{$book->author->author_surname}}</td>
             <td>{{$book->library->library_name}}</td>
+            <td>
+                @foreach($book->images as $image)
+                    <img class="img-fluid" src="{{asset('/storage/'. $image->images)}}" width="150" height="200" />
+                @endforeach
+            </td>
 
 
 

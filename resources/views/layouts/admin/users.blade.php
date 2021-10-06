@@ -1,8 +1,8 @@
-@include('includes.head')
+@include('includes.admin.head')
 <body style="background-image: url(https://www.peopleg2.com/wp-content/uploads/2014/02/Depositphotos_18398501_xl-2015-scaled-1-2048x1536.jpg)">
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 @include('includes.errors')
 
 <table class="table table-bordered table-dark">
@@ -14,6 +14,8 @@
         <th scope="col">Surname</th>
         <th scope="col">email</th>
         <th scope="col">birthday</th>
+        <th scope="col">banned</th>
+        <th scope="col">Images</th>
         <th scope="col">operations</th>
 
 
@@ -28,10 +30,17 @@
             <td>{{$user->surname}}</td>
             <td>{{$user->email}}</td>
             <td>{{$user->birthday}}</td>
+            <td>{{$user->banned}}</td>
+            <td>
+                @foreach($user->images as $image)
+                    <img class="img-fluid" src="{{asset('/storage/'. $image->images)}}" width="150" height="200" />
+                @endforeach
+            </td>
             <td>
               <a href="{{route('admin.userEdit', $user)}}"><button class="btn btn-primary">Edit</button></a>
+                @can('admin.delete')
                <a href="{{route('admin.userDelete', $user)}}"><button class="btn btn-danger">Delete</button></a>
-
+                @endcan
             </td>
 
 

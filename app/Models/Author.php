@@ -45,7 +45,7 @@ class Author extends Model
      * @return HasMany
      */
 
-    public function book(): HasMany
+    public function books(): HasMany
     {
         return $this->hasMany(Book::class, 'author_id', 'id');
     }
@@ -66,6 +66,11 @@ class Author extends Model
      * @var string[]
      */
     protected $dates = ['birthday', 'death_day'];
+
+    public function getFullnameAttribute()
+    {
+        return "{$this->author_name} {$this->author_surname}";
+    }
 
 }
 

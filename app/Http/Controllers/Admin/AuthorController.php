@@ -9,12 +9,13 @@ use App\Models\Author;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
 class AuthorController extends Controller
 {
-    public function authors(Request $request)
+    public function view(Request $request)
     {
         $search_author = $request->input('search_author');
 
@@ -29,18 +30,19 @@ class AuthorController extends Controller
             })
             ->get();
 
+
         return view('layouts.admin.authors', ['authors' => $authors,]);
     }
 
 
-    public function authorCreate(){
+    public function create(){
 
         $authors =Author::all();
 
         return view ('layouts.admin.author_create', ['authors'=>$authors]);
     }
 
-    public function authorCreateSubmit(AuthorCreateRequest $request): RedirectResponse
+    public function store(AuthorCreateRequest $request): RedirectResponse
     {
         $author = new Author();
 
@@ -51,12 +53,12 @@ class AuthorController extends Controller
         return redirect()->route('admin.authors')->with('success', 'Автор был добавлен');
     }
 
-    public function authorEdit(Author $author)
+    public function edit(Author $author)
     {
         return view('layouts.admin.author_edit', ['author'=>$author]);
     }
 
-    public function authorEditSubmit(AuthorEditRequest $request, Author $author): RedirectResponse
+    public function update(AuthorEditRequest $request, Author $author): RedirectResponse
     {
 
         $author->fill($request->all());
@@ -66,7 +68,7 @@ class AuthorController extends Controller
         return redirect()->route('admin.authors', ['author'=>$author])->with('success', 'Автор был отредактирован');
     }
 
-    public function authorDelete(Author $author): RedirectResponse
+    public function delete(Author $author): RedirectResponse
     {
         $author->delete();
 

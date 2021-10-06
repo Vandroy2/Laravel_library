@@ -17,6 +17,7 @@ class AddColumnsToUsersTable extends Migration
             $table->string('surname')->after('name');
             $table->string('birthday')->after('password');
             $table->string('type')->default('client')->after('id');
+            $table->integer('banned')->nullable();
         });
     }
 

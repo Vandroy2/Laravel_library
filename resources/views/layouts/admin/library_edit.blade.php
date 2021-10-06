@@ -1,35 +1,24 @@
-@include('includes.head')
+@include('includes.admin.head')
 
 <body>
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 
 @include('includes.errors')
 
 
-<form action="{{route('admin.libraryEditSubmit', $library )}}" method = "Post">
+<form action="{{route('admin.libraryUpdate', $library )}}" method = "Post">
 
     @csrf
     <div class="form-group">
         <label for="name"></label>
-        <input type="text" name="name" value="{{$library->name}}" placeholder="Введите имя" id = "name" class="form-control">
+        <input type="text" name="library_name" value="{{$library->library_name}}" placeholder="Введите имя" id = "name" class="form-control">
     </div>
     <div class="form-group">
         <label for="name"></label>
         <input type="text" name="city_id" value="{{$library->city_id}}" placeholder="Введите имя" id = "city_id" class="form-control">
     </div>
-
-{{--    <div class="btn-group">--}}
-{{--        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
-{{--            Action--}}
-{{--        </button>--}}
-{{--        <div class="dropdown-menu">--}}
-{{--            @foreach($libraries as $library)--}}
-{{--            <a class="dropdown-item" href="#">{{$library->city->name}}</a>--}}
-{{--            @endforeach--}}
-{{--        </div>--}}
-{{--    </div>--}}
 
     <button type="submit" class="btn btn-success">Edit library</button>
 

@@ -24,8 +24,8 @@ class AuthorEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string','min:3','max:255'],
-            'surname' => ['required','string','min:3','max:255'],
+            'author_name' => ['required','string','min:3','max:255'],
+            'author_surname' => ['required','string','min:3','max:255'],
             'birthday' => ['required','date'],
         ];
     }
@@ -33,10 +33,10 @@ class AuthorEditRequest extends FormRequest
     {
 
         return [
-            'name.required' => 'Введите имя',
-            'name.min' => 'Недостаточно символов',
-            'surname.required' => 'Введите фамилию',
-            'surname.min' => 'Недостаточно символов',
+            'author_name.required' => 'Введите имя',
+            'author_name.min' => 'Недостаточно символов',
+            'author_surname.required' => 'Введите фамилию',
+            'author_surname.min' => 'Недостаточно символов',
             'birthday.required' => 'Введите дату рождения',
             'birthday.date' => 'Введите дату рождения в формате Год-Месяц-День',
 

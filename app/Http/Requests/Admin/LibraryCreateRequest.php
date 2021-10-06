@@ -24,7 +24,7 @@ class LibraryCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string','min:3','max:255',],
+            'library_name' => ['required','string','min:3','max:255',],
 //            'city_id' => ['required'],
             'city_id' => ['required','exists:cities,id'],
         ];
@@ -33,8 +33,8 @@ class LibraryCreateRequest extends FormRequest
     {
 
         return [
-            'name.required' => 'Введите имя',
-            'name.min' => 'Недостаточно символов',
+            'library_name.required' => 'Введите имя',
+            'library_name.min' => 'Недостаточно символов',
             'city_id.required' => 'Введите идентификатор города',
             'city_id.exists' => 'Такого идентификатора не существует'
 

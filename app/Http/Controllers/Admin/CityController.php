@@ -8,11 +8,14 @@ use App\Http\Requests\Admin\CityEditRequest;
 use App\Models\City;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CityController extends Controller
 {
-    public function cities(Request $request)
+    public function view(Request $request)
     {
+
+
         $reqName = $request->input('search_name');
 
         $cities = City::query()
@@ -27,14 +30,14 @@ class CityController extends Controller
         return view('layouts.admin.cities',['cities'=>$cities]);
     }
 
-    public function cityCreate()
+    public function create()
     {
         $cities = City::all();
 
         return view('layouts.admin.city_create', ['cities'=>$cities]);
     }
 
-    public  function cityCreateSubmit(CityCreateRequest $request): RedirectResponse
+    public  function store(CityCreateRequest $request): RedirectResponse
     {
         $city = new City();
 
@@ -46,12 +49,12 @@ class CityController extends Controller
 
     }
 
-    public function  cityEdit(City $city)
+    public function  edit(City $city)
     {
         return view('layouts.admin.city_edit', ['city'=>$city]);
     }
 
-    public function cityEditSubmit(CityEditRequest $request, City $city): RedirectResponse
+    public function update(CityEditRequest $request, City $city): RedirectResponse
     {
         $city->fill($request->all());
 
@@ -62,7 +65,7 @@ class CityController extends Controller
         ])->with('success', 'Город был отредактирован');
     }
 
-    public function cityDelete(City $city): RedirectResponse
+    public function delete(City $city): RedirectResponse
     {
         $city->delete();
 

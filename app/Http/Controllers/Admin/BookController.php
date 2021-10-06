@@ -5,18 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookCreateRequest;
 use App\Models\Book;
+use App\Models\Image;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 
 class BookController extends Controller
 {
-    public function books(Request $request)
+    public function view(Request $request)
     {
         $search_book = $request->input('search_book');
 
 
         $books = Book::query()
+            ->select('books.*')
             ->with(['library', 'author'])
 
 
@@ -33,18 +37,19 @@ class BookController extends Controller
 
             ->paginate(8);
 
+
         return view('layouts.admin.books', compact('books'));
 
     }
 
-    public function bookCreate()
+    public function create()
     {
         $books = Book::all();
 
         return view('layouts.admin.book_create', ['books'=>$books]);
     }
 
-    public function bookCreateSubmit(BookCreateRequest $request): RedirectResponse
+    public function store(BookCreateRequest $request): RedirectResponse
     {
         $book = new Book();
 
@@ -52,26 +57,50 @@ class BookController extends Controller
 
         $book->save();
 
+        foreach (Arr::wrap($request->file('images', [])) as $imageFile)
+        {
+
+            $image = new Image();
+
+            $image->images = $imageFile->store('uploads', 'public');
+
+            $book->images()->save($image);
+        }
+
         return redirect()->route('admin.books')->with('success', 'Книга была создана');
     }
 
-    public function bookEdit(Book $book)
+    public function edit(Book $book)
     {
-        return view('layouts.admin.book_edit', ['book'=>$book]);
+        $images = Image::all();
+        return view('layouts.admin.book_edit', ['book'=>$book, 'images'=>$images]);
 
     }
 
-    public function bookEditSubmit(BookCreateRequest $request, Book $book): RedirectResponse
+    public function update(BookCreateRequest $request, Book $book, Image $image): RedirectResponse
     {
         $book->fill($request->all());
 
         $book->save();
 
-        return redirect()->route('admin.books', ['book'=>$book])->with('success', 'Книга была отредактирована');
+        $image->delete();
+
+
+        foreach (Arr::wrap($request->file('images', [])) as $imageFile)
+        {
+
+            $image = new Image();
+
+            $image->images = $imageFile->store('uploads', 'public');
+
+            $book->images()->save($image);
+        }
+
+        return redirect()->route('admin.books', ['book'=>$book,])->with('success', 'Книга была отредактирована');
 
     }
 
-    public function bookDelete(Book $book): RedirectResponse
+    public function delete(Book $book): RedirectResponse
     {
         $book->delete();
 

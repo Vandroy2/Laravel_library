@@ -1,18 +1,18 @@
-@include('includes.head')
+@include('includes.admin.head')
 
 <body>
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 
 @include('includes.errors')
 
-<form action="{{route('admin.bookCreateSubmit')}}" method = "Post">
+<form action="{{route('admin.bookStore')}}" method = "Post" enctype="multipart/form-data">
 
     @csrf
     <div class="form-group">
-        <label for="name"></label>
-        <input type="text" name="name" value="" placeholder="Введите название книги" id = "name" class="form-control">
+        <label for="book_name"></label>
+        <input type="text" name="book_name" value="" placeholder="Введите название книги" id = "book_name" class="form-control">
     </div>
 
     <div class="form-group">
@@ -34,6 +34,14 @@
     <div class="form-group">
         <label for="name"></label>
         <input type="text" name="library_id" value="" placeholder="Введите id библиотеки" id = "author_id" class="form-control">
+    </div>
+
+    <div class="file-upload">
+        <label>
+            <input type="file" id="images" accept=".jpg, .png" name="images[]" multiple>
+            <span class="icon-user"></span>
+
+        </label>
     </div>
 
 

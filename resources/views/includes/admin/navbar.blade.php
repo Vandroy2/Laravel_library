@@ -20,8 +20,9 @@
                     <h6 class="dropdown-header">Select</h6>
 
                    <a class="dropdown-item" href="{{route('admin.users')}}">Users List</a>
+                    @can('admin.create')
                    <a class="dropdown-item" href="{{route('admin.userCreate')}}">User create</a>
-
+                    @endcan
 
 
                 </div>
@@ -152,6 +153,7 @@
 
                     <a class="dropdown-item" href="/">Main page</a>
                     <a class="dropdown-item" href="/admin">Main admin page</a>
+                    <a class="dropdown-item" href="{{route('admin.personalCabinet')}}">Personal Cabinet</a>
                     <a class="dropdown-item" href="{{route('admin.logout')}}">logout</a>
 
 

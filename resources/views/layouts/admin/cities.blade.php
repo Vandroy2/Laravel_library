@@ -1,8 +1,8 @@
-@include('includes.head')
+@include('includes.admin.head')
 <body style="background-image: url(https://www.peopleg2.com/wp-content/uploads/2014/02/Depositphotos_18398501_xl-2015-scaled-1-2048x1536.jpg)">
-@include('includes.navbar')
+@include('includes.admin.navbar')
 
-@include('includes.scripts')
+@include('includes.admin.scripts')
 @include('includes.errors')
 
 <table class="table table-bordered table-dark" style="width: max-content">

@@ -2,8 +2,23 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\LibraryController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CommentController;
+use App\Models\Author;
+use App\Models\Book;
+use App\Models\City;
+use App\Models\Comment;
+use App\Models\Library;
+use App\Models\User;
+use App\Policies\CommentPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Access\Response;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +28,21 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        CommentController::class => CommentPolicy::class,
+        UserController::class => CommentPolicy::class,
+//        AuthorController::class =>CommentPolicy::class,
+//        BookController::class => CommentPolicy::class,
+//        CityController::class => CommentPolicy::class,
+//        LibraryController::class => CommentPolicy::class,
+//
+        Comment::class => CommentPolicy::class,
+        User::class => CommentPolicy::class,
+//        Author::class => CommentPolicy::class,
+//        Book::class => CommentPolicy::class,
+//        City::class => CommentPolicy::class,
+//        Library::class => CommentPolicy::class,
+
+    'App\Models\Comment' => 'App\Policies\CommentPolicy'
     ];
 
     /**
@@ -25,6 +54,45 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //========================Поиск классов=======================================
+//        Gate::guessPolicyNamesUsing(function ($className){
+//            return CommentController::class;
+//        });
+
+//        ========================Поиск классов=======================================
+
+//        Gate::define('client', function (User $user){
+//            return $user->type == 'client';
+//        });
+//
+//        Gate::define('admin', function (User $user){
+//            return $user->type == 'admin';
+//        });
+//
+//
+//
+//
+        Gate::define('auth', function (User $user){
+           return
+               $user->type =='admin' ||
+               $user->type =='super_admin';
+        });
+       Gate::define('admin.create', function (User $user){
+            return $user->type == 'super_admin';
+        });
+       Gate::define('admin.delete', function (User $user){
+            return $user->type == 'super_admin';
+        });
+//        Gate::define('banned', function (){
+//            if (Auth::user()->banned){
+//                return false;
+//            }
+//            return true;
+//        });
+//        Gate::define('banned', function (){
+//           if(Auth::user()) {
+//               return false;
+//               };
+//        });
     }
 }

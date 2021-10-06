@@ -24,12 +24,10 @@ class BookCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string','min:3','max:255',],
+            'book_name' => ['required','string','min:3','max:255',],
             'num_pages' => ['required','integer'],
-//            'created_date'=>['required','date'],
             'author_id'=>['required','exists:authors,id'],
-//            'library_id'=>['required'],
-          'created_date'=>['required','date_format:"Y"'],
+            'created_date'=>['required','date_format:"Y"'],
 
         ];
     }
@@ -37,8 +35,8 @@ class BookCreateRequest extends FormRequest
     {
 
         return [
-            'name.required' => 'Введите имя',
-            'name.min' => 'Недостаточно символов',
+            'book_name.required' => 'Введите имя',
+            'book_name.min' => 'Недостаточно символов',
             'num_page.required' => 'Введите колличество страниц',
             'num_page.integer' => 'Введите числовое значение',
             'created_date.required'=>'Введите дату создания книги',
