@@ -19,6 +19,8 @@ class OnlineLibraryController extends Controller
     {
         $comments = Comment::all();
 
+
+
         $search_book = $request->input('search_book');
 
         $books = Book::query()
@@ -35,7 +37,7 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, ]);
+        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books,]);
     }
 
     public function addToFavorite(Book $book)
@@ -43,6 +45,9 @@ class OnlineLibraryController extends Controller
         Auth::user()->books()->toggle($book);
 
         if (Auth::user()->books->contains($book)){
+
+
+
             return response()->json([
                 'added' => true,
                 'book' => [

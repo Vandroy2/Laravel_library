@@ -13,7 +13,8 @@
 
                 <div style="display: flex; flex-direction: column;">
 
-                    <div class="card" style="width: 11rem; height: 15rem;border-radius: 10px;"  >
+                    <a href="{{route('bookOrder', $book)}}">
+                    <div class="card" style="width: 11.1rem; height: 16rem;border-radius: 10px;"  >
                         <div id="carouselExampleControls{{$book->id}}" class="carousel slide" data-ride="carousel" >
                             <div class="carousel-inner" style="width: 11rem; height: 9rem;border-radius: 10px">
                                 @foreach($book->images as $image)
@@ -35,11 +36,18 @@
                         <div class="card-body">
                             <h6 class="card-title">{{$book->book_name}}</h6>
                             <p class="card-text">{{$book->author->fullname}}</p>
+                            <p class="card-text" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Осталось книг:{{$book->books_limit}}</p>
                         </div>
                     </div>
 
+                    </a>
 
-                <form action="{{route('onLineLibraryAddToFavorite', ['book' => $book])}}" class="add_fav_form" method ="POST" style="margin-bottom: 5px ; margin-top: 10px; position: absolute; left: 0; top: 0; z-index: 1000;">
+                    <a href="" id="orderBasket{{$book->id}}" style="display: none"><img src="assets/img/basket.png" class = "basket"></a>
+                    @if(\Illuminate\Support\Facades\Auth::user()->books->contains($book))
+                        <a href="" id="basket{{$book->id}}" style="display: block"><img src="assets/img/basket.png" class = "basket"></a>
+                    @endif
+
+                    <form action="{{route('onLineLibraryAddToFavorite', ['book' => $book])}}" class="add_fav_form" method ="POST" style="margin-bottom: 5px ; margin-top: 10px; position: absolute; left: 0; top: -10px; z-index: 1000;">
                     @csrf
                     <button type="submit" class="border-0 bg-transparent btn-ens-action btn-ens-style " data-rel="4a9f99dc105">
                         @auth()
@@ -68,22 +76,29 @@
     </script>
     <script>
 
+        {{--let basket = document.getElementById(`orderBasket${!! $book->id !!}`)--}}
+        {{--let addedBooks =  {!! $addedBooks !!};--}}
+        {{--    if(addedBooks){--}}
+        {{--        basket.style.display = "block"--}}
+        {{--}--}}
+
         $(function()
         {
-
-        $(".add_fav_form").on('submit', function(e) {
+            $(".add_fav_form").on('submit', function(e) {
             e.preventDefault();
             let $this = $(this);
             let url = $this.attr('action');
 
-
-
-            $.ajax({
+                $.ajax({
                 url: url,
                 method: "GET" ,
                 headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
 
                 success: function(result) {
+
+                    let basket = document.getElementById(`basket${result.book.id}`);
+
+                    let orderBasket = document.getElementById(`orderBasket${result.book.id}`);
 
                     let cartCount = document.getElementById('cartCount');
 
@@ -91,15 +106,24 @@
 
                     console.log(num)
 
+
+
                     let bookNode = document.getElementById(`favImgId${result.book.id}`)
 
-                    if (result.added){
 
+
+                    if (result.added)
+                    {
                         $(bookNode).attr("src","https://pngicon.ru/file/uploads/zvezda.png");
 
                         num += 1;
 
                         cartCount.innerText = num;
+
+                      orderBasket.style.display = "block"
+                        basket.style.display = "none"
+
+                        console.log(result.book.id)
 
                     }
                     else
@@ -109,16 +133,20 @@
                         $(bookNode).attr("src", "http://s1.iconbird.com/ico/2013/6/363/w256h2561372346250Favorite256.png")
 
                         cartCount.innerText = num;
+
+                        orderBasket.style.display = "none"
+
+                        basket.style.display = "none"
+
+                        console.log(result.book.id)
+
+
                     }
                 },
 
             });
-        });
+        })
 });
-
-
-
-
     </script>
 
 

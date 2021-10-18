@@ -59,6 +59,8 @@
             </div>
         </div>
     </div>
+    @include('layouts.comments.comments')
 </section>
 @endsection
+
 

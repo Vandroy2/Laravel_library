@@ -41,6 +41,9 @@
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdown">
 
                     <h6 class="dropdown-header">Select</h6>
+
+                    <a class="btn btn-light"  href="/">Main Page</a>
+
                     @if(\Illuminate\Support\Facades\Auth::check())
 
                         <a class="btn btn-light"  href="{{route('personalCabinet')}}">Personal Cabinet</a>

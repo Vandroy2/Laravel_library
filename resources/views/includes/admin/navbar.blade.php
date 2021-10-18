@@ -154,6 +154,7 @@
                     <a class="dropdown-item" href="/">Main page</a>
                     <a class="dropdown-item" href="/admin">Main admin page</a>
                     <a class="dropdown-item" href="{{route('admin.personalCabinet')}}">Personal Cabinet</a>
+                    <a class="dropdown-item" href="{{route('admin.orders')}}">Orders</a>
                     <a class="dropdown-item" href="{{route('admin.logout')}}">logout</a>
 
 

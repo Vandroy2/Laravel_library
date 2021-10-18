@@ -11366,3 +11366,89 @@ footer.footer {
   padding-top: 4rem;
   padding-bottom: 4rem;
 }
+
+.basket {
+    position: absolute;
+    right: 0;
+    bottom: 65px;
+    z-index: 1000;
+    width: 30px;
+    height: 30px;
+    transition: width 0.3ms,height 0.1s;
+
+}
+
+.basket:hover{
+    width: 35px;
+    height: 35px;
+}
+
+.card{
+
+    transition: box-shadow 0.2s;
+}
+
+.card:hover{
+
+    box-shadow: 7px 10px 7px 0px rgba(19, 19, 17, 0.8);
+}
+
+.book_card{
+    margin-right: 50px;
+    margin-top: 50px;
+    margin-left: 100px;
+    background-color: #DFDFDF;
+}
+
+.book_card:hover{
+    box-shadow: none;
+}
+
+.order_table{
+
+    margin-top: 50px;
+    width: 450px;
+    height: 150px;
+    margin-left: 50px;
+}
+
+.table_row{
+
+    width: 200px;
+}
+
+.btn_book_order{
+    margin-left: 50px;
+}
+
+.book_number{
+    display: flex;
+}
+
+.number{
+    margin-top: 30px;
+    justify-content: center;
+}
+.btn_book_order_delivery{
+    padding-left: 0;
+    padding-top: 0;
+}
+.a_menu{
+    color: black;
+}
+.admin{
+    padding: 5px 14px 5px 0px;
+    width: 180px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 100;
+
+    opacity: 70%;
+}
+.number_2{
+   margin-left: 5px;
+    margin-right: 5px;
+    border: 1.5px solid;
+    padding: 0px 4px 0px 4px;
+}
+
+

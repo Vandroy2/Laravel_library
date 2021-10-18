@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BookOrderController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\OnlineLibraryController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,11 +49,13 @@ Route::prefix('comments')->group(function (){
 
     Route::post('/store', [commentController::class, 'store'])->name('commentStore');
 
+
+
 });
 
 Route::prefix('olineLibrary')->group(function (){
 
-    Route::get('/', [OnlineLibraryController::class, 'view'])->name('onlineLibrary');
+    Route::match(['get', 'post'], '/', [OnlineLibraryController::class, 'view'])->name('onlineLibrary');
 
     Route::match(['get', 'post'], '/favorite/{book}', [OnlineLibraryController::class, 'addToFavorite'])->name('onLineLibraryAddToFavorite');
 
@@ -60,6 +64,16 @@ Route::prefix('olineLibrary')->group(function (){
     Route::get('/favoriteBooks', [OnlineLibraryController::class, 'favoriteBooks'])->name('onLineLibraryFavoritesBooks');
 });
 
+Route::prefix('bookOrder')->group(function (){
+
+Route::match(['get','post'], '/{book}', [BookOrderController::class, 'bookOrder'])->name('bookOrder');
+
+Route::match(['get','post'], '/incNumber/{bookOrder}', [BookOrderController::class, 'incNumber'])->name('bookOrderincNumber');
+
+Route::match(['get','post'], '/decNumber/{bookOrder}', [BookOrderController::class, 'decNumber'])->name('bookOrderdecNumber');
+
+
+});
 
 });
 

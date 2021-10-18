@@ -15,7 +15,7 @@ background-image: url(https://upload.wikimedia.org/wikipedia/commons/d/d3/Britis
         @csrf
         <div class="form-group">
             <label for="textarea"></label>
-            <textarea class="form-control" id="textarea" name="comment_text" rows="3"></textarea>
+            <textarea class="form-control" id="textarea" name="comment_text" ></textarea>
 
         </div>
         <button type="submit" id="btn_create" class="btn btn-success" style="display: none">Add comment</button>
@@ -24,14 +24,14 @@ background-image: url(https://upload.wikimedia.org/wikipedia/commons/d/d3/Britis
 @foreach($comments as $comment)
 
             <div class="col-lg-4">
-                <div class="testimonial-item mx-auto mb-5 mb-lg-0">
+                <div class="testimonial-item mx-auto mb-5 mb-lg-0" >
 
                     @foreach($comment->user->images as $image)
-                        <img class="img-fluid" src="{{asset('/storage/'. $image->images)}}" width="150" height="200" />
+                        <img class="img-fluid" src="{{asset('/storage/'. $image->images)}}" style="width: 100px; height: 100px; margin-bottom: 5px" alt="image" />
                     @endforeach
 
                     <h5>{{$comment->user->name}}</h5>
-                    <p class="font-weight-light mb-0">{{$comment->comment_text}}</p>
+                    <p class="font-weight-light mb-0" style="display: block; word-wrap: break-word;">{{$comment->comment_text}}</p>
 
 
 
@@ -48,5 +48,5 @@ background-image: url(https://upload.wikimedia.org/wikipedia/commons/d/d3/Britis
             @endforeach
 
         </div>
-
+</div>
 </section>

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthorController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\LibraryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PersonalCabinetController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
@@ -137,6 +138,26 @@ Route::middleware([
         Route::get('/deleteByUser/{image}', [ImageController::class, 'deleteByUser'])->name('imageDeleteByUser');
 
     });
+
+    Route::prefix('orders')->group(function (){
+
+        Route::match(['get','post'], '/', [OrderController::class, 'view'])->name('orders');
+
+        Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
+
+        Route::match(['get','post'], '/order/{order}', [OrderController::class, 'order'])->name('order');
+
+        Route::match(['get','post'], '/edit/{order}', [OrderController::class, 'edit'])->name('orderEdit');
+
+        Route::match(['get','post'], '/update/{order}', [OrderController::class, 'update'])->name('orderUpdate');
+
+        Route::match(['get','post'], '/delete/{order}', [OrderController::class, 'delete'])->name('orderDelete');
+
+
+
+    });
+
+
 
 
 
