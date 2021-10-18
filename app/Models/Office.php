@@ -41,7 +41,7 @@ class Office extends Model
      * @return BelongsTo
      */
 
-    public function deliveries(): BelongsTo
+    public function delivery(): BelongsTo
     {
         return $this->belongsTo(Delivery::class, 'delivery_id', 'id');
     }

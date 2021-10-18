@@ -22,8 +22,8 @@
 
     <div class="form-group">
         <h6>Служба доставки</h6>
-        <select class="admin delivery" name="delivery_name" >
-            <option><label >{{$deliveryOrder->delivery_name}}</label></option>
+        <select class="admin delivery" name="delivery_id" >
+            <option value="{{$order->delivery->id}}" ><label >{{$order->delivery->delivery_name}}</label></option>
             @foreach($deliveries as $delivery)
                 <option value="{{$delivery->id}}" class="option" name="delivery_id">{{$delivery->delivery_name}}</option>
 
@@ -33,47 +33,44 @@
 
     <div class="form-group" >
         <h6>Номер отделения</h6>
-        <select class="admin office" name="office_number">
-            <option><label class="admin_label" >{{$officeOrder->office_number}}</label></option>
+        <select class="admin office" name="office_id">
+            <option value="{{$order->office->id}}" ><label class="admin_label" >{{$order->office->office_number}}</label></option>
+
             @foreach($offices as $office)
-
                 <option value="{{$office->id}}" class="option" >{{$office->office_number}}</option>
-
             @endforeach
         </select>
     </div>
 
     <div class="form-group">
         <h6>Название книги</h6>
-        <select class="admin office" name="book_name" >
-            <option><label class="admin_label" >{{$bookOrder->book_name}}</label></option>
+        <select class="admin office" name="book_id" >
+            <option value="{{$bookOrder->id}}"><label class="admin_label" >{{$bookOrder->book_name}}</label></option>
+
             @foreach($books as $book)
-
                 <option value="{{$book->id}}" class="option" >{{$book->book_name}}</option>
-
             @endforeach
         </select>
     </div>
 
     <div class="form-group">
         <h6>Город</h6>
-        <select class="admin office" name="ukrcity_name">
-            <option><label class="admin_label" >{{$ukrcityOrder->ukrcity_name}}</label></option>
+        <select class="admin office" name="ukrcity_id">
+            <option value="{{$order->ukrcity->id}}"><label class="admin_label" >{{$order->ukrcity->ukrcity_name}}</label></option>
+
             @foreach($ukrcities as $ukrcity)
-
                 <option value="{{$ukrcity->id}}" class="option" >{{$ukrcity->ukrcity_name}}</option>
-
             @endforeach
         </select>
     </div>
 
     <div class="form-group">
         <h6>Статус заказа</h6>
-        <select class="admin office" name="status">
-            <option><label class="admin_label" >{{$statusOrder->status}}</label></option>
+        <select class="admin office" name="status_id">
+            <option value="{{$order->status->id}}"><label class="admin_label" >{{$order->status->status}}</label></option>
             @foreach($status as $stat)
 
-                <option value="{{$stat->status}}" class="option" >{{$stat->status}}</option>
+                <option value="{{$stat->id}}" class="option" >{{$stat->status}}</option>
 
             @endforeach
         </select>
@@ -94,7 +91,7 @@
     </div>
 
 
-        <button type="submit" id="submit" class="btn btn-success">Edit order</button>
+    <button type="submit" id="submit" class="btn btn-success">Edit order</button>
 
 
 </form>

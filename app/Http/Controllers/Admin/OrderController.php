@@ -22,31 +22,34 @@ class OrderController extends Controller
         return view('layouts.admin.orders', ['orders'=>$orders]);
     }
 
-
     public function create(Request $request): RedirectResponse
     {
         $order = new Order();
 
-        $order->delivery_id = $request->get('delivery_name');
-        $order->ukrcity_id = $request->get('ukrcity_name');
-        $order->office_id = $request->get('office_number');
+//       =====================Проверка на невыбранные поля==============================================================
 
+        $delivery = $request->get('delivery_id');
+        $ukrcity = $request->get('ukrcity_id');
+        $office = $request->get('office_id');
 
-        if ($order->delivery_id === 'Служба доставки' || $order->ukrcity_id ==='Город'|| $order->office_id ==='Отделение'){
+        if ($delivery === 'delivery' || $ukrcity==='ukrcity'|| $office ==='office'){
             return redirect()->back()->with('errors', 'Выберите необходимые пареметры для оформления заказа');
         }
 
+//        ==============================================================================================================
+
         $order->fill($request->all());
 
-        $book_id = $order->book_id;
-
         $bookOrder = Book::query()
-            ->where('id', '=', $book_id)->first();
+            ->where('id', '=', $order->book_id)->first();
+
+//        =======================Проверка на пустой заказ===============================================================
 
         if ($bookOrder->books_number == 0){
-
             return redirect()->back()->with('errors', 'Количество книг в заказе не может быть меньше 1');
         }
+
+//        ==============================================================================================================
 
         $order->save();
 
@@ -56,53 +59,14 @@ class OrderController extends Controller
 
     public function order(Order $order)
     {
-        $orders = Order::all();
 
-        $status_id = $order->status_id;
-
-        $book_id = $order->book_id;
-
-        $delivery_id = $order->delivery_id;
-
-        $ukrcity_id = $order->ukrcity_id;
-
-        $office_id = $order->office_id;
-
-        $bookOrder = Book::query()
-            ->where('id', '=', $book_id)
-        ->first();
-
-        $delivery  = Delivery::query()
-            ->where('id', '=', $delivery_id)
-            ->first();
-        $ukrcity  = Ukrcity::query()
-            ->where('id', '=', $ukrcity_id)
-            ->first();
-
-        $office  = Office::query()
-            ->where('id', '=', $office_id)
-            ->first();
         $book  = Book::query()
-            ->where('id', '=', $book_id)
+            ->where('id', '=', $order->book_id)
             ->first();
-
-        $status  = Status::query()
-            ->where('id', '=', $status_id)
-            ->first();
-
-        $deliveries = Delivery::all();
 
         return view('layouts.admin.order', [
-            'orders'=>$orders,
             'order'=>$order,
-            'bookOrder'=>$bookOrder,
-            'delivery' =>$delivery,
-            'ukrcity' =>$ukrcity,
-            'office' =>$office,
             'book' =>$book,
-            'deliveries'=>$deliveries,
-            'status'=>$status,
-
         ]);
     }
 
@@ -122,35 +86,8 @@ class OrderController extends Controller
         $books = Book::all();
         $ukrcities = Ukrcity::all();
         $status = Status::all();
-        $book_id = $order->book_id;
         $bookOrder = Book::query()
-            ->where('id', '=', $book_id)->first();
-
-        $status_id = $order->status_id;
-
-        $delivery_id = $order->delivery_id;
-
-        $ukrcity_id = $order->ukrcity_id;
-
-        $office_id = $order->office_id;
-
-        $deliveryOrder  = Delivery::query()
-            ->where('id', '=', $delivery_id)
-            ->first();
-        $ukrcityOrder  = Ukrcity::query()
-            ->where('id', '=', $ukrcity_id)
-            ->first();
-
-        $officeOrder  = Office::query()
-            ->where('id', '=', $office_id)
-            ->first();
-
-
-        $statusOrder  = Status::query()
-            ->where('id', '=', $status_id)
-            ->first();
-
-
+            ->where('id', '=', $order->book_id)->first();
 
 
         return view('layouts.admin.order_edit', [
@@ -161,36 +98,21 @@ class OrderController extends Controller
             'ukrcities'=> $ukrcities,
             'status'=>$status,
             'bookOrder'=>$bookOrder,
-            'deliveryOrder'=>$deliveryOrder,
-            'ukrcityOrder'=>$ukrcityOrder,
-            'officeOrder'=>$officeOrder,
-            'statusOrder'=>$statusOrder,
-
-
         ]);
     }
 
     public function update(Request $request, Order $order): RedirectResponse
     {
 
-        $status_name = $request->get('status');
-
-        $status = Status::query()
-            ->where('status', '=', $status_name)->first();
-
-        $order->status_id = $status->id;
-
         $order->fill($request->all());
 
         $order->save();
 
-        $book_id = $order->book_id;
-
         $bookOrder = Book::query()
-            ->where('id', '=', $book_id)
+            ->where('id', '=', $order->book_id)
             ->first();
 
-        if($status->status == 'allowed'){
+        if($order->status->status == 'allowed'){
             if ($bookOrder->books_limit >= $bookOrder->books_number) {
                 $bookOrder->books_limit -= $bookOrder->books_number;
                 $bookOrder->books_number = 0;
@@ -198,13 +120,11 @@ class OrderController extends Controller
             }
         }
 
-        if ($status->status == 'canceled'){
+        if ($order->status->status == 'canceled'){
             $bookOrder->books_number = 0;
 
             return redirect()->route('admin.orders')->with('success', 'заказ был отменен');
         }
-
-
 
         return redirect()->route('admin.orders', ['order'=>$order])->with('success', 'заказ успешно отредактирован');
     }

@@ -48,8 +48,8 @@
             <th scope="row">Выберите службу доставки</th>
             <td class = "table_row">
 
-                <select class="admin delivery" id="delivery" name="delivery_name" >
-                    <option><label >Служба доставки</label></option>
+                <select class="admin delivery" id="delivery" name="delivery_id" >
+                    <option value="delivery"><label >Служба доставки</label></option>
                     @foreach($deliveries as $delivery)
                     <option value="{{$delivery->id}}" class="option" name="delivery_id">{{$delivery->delivery_name}}</option>
 
@@ -63,8 +63,8 @@
             <th scope="row">Выберите Город</th>
             <td class = "table_row">
 
-                <select class="admin" name="ukrcity_name" >
-                    <option><label >Город</label></option>
+                <select class="admin" name="ukrcity_id" >
+                    <option value="ukrcity"><label >Город</label></option>
                     @foreach($ukrcities as $ukrcity)
                     <option value="{{$ukrcity->id}}" name="ukrcity_id" >{{$ukrcity->ukrcity_name}}</option>
                     @endforeach
@@ -78,7 +78,7 @@
             <td colspan="2" class = "table_row">
 
                 <select class="admin office" name="office_id" id="offices">
-                    <option><label >Отделение</label></option>
+                    <option value="office"><label >Отделение</label></option>
                     @foreach($offices as $office)
                         <option value="{{$office->id}}" class="option" >{{$office->office_number}}</option>
 

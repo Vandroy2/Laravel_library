@@ -90,21 +90,21 @@ class Order extends Model
     }
 
     /**
-     * @return HasMany
+     * @return BelongsTo
      */
 
-    public function deliveries(): HasMany
+    public function delivery(): BelongsTo
     {
-        return $this->hasMany(Delivery::class, 'delivery_id', 'id');
+        return $this->belongsTo(Delivery::class, 'delivery_id', 'id');
     }
 
     /**
-     * @return HasMany
+     * @return BelongsTo
      */
 
-    public function ukrcities(): HasMany
+    public function ukrcity(): BelongsTo
     {
-        return $this->hasMany(Ukrcity::class, 'ukrcity_id', 'id');
+        return $this->belongsTo(Ukrcity::class, 'ukrcity_id', 'id');
     }
 
 

@@ -33,9 +33,9 @@
                     <tr class="table-active">
                         <th scope="row">{{$order->id}}</th>
                         <td>{{$order->user->name}}</td>
-                        <td>{{$delivery->delivery_name}}</td>
+                        <td>{{$order->delivery->delivery_name}}</td>
                         <td>{{$order->office->office_number}}</td>
-                        <td>{{$ukrcity->ukrcity_name}}</td>
+                        <td>{{$order->ukrcity->ukrcity_name}}</td>
                         <td>{{$book->book_name}}</td>
                         <td>{{$book->books_number}}</td>
                         <td>{{$order->order_comment}}</td>

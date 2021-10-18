@@ -42,12 +42,12 @@ class Delivery extends Model
     }
 
     /**
-     * @return BelongsTo
+     * @return HasMany
      */
 
-    public function order(): BelongsTo
+    public function orders(): HasMany
     {
-        return $this->belongsTo(Order::class, 'delivery_id', 'id');
+        return $this->hasMany(Order::class, 'delivery_id', 'id');
     }
 
 
