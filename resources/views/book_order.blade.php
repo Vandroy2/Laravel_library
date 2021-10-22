@@ -91,17 +91,21 @@
             <th scope="row">
                 <div>
                <p>Выберите количество</p>
-                    <div class = "book_number ">
-                    <p>Всего книг в наличии</p>
-                    <p style="margin-left: 20px">{{$bookOrder->books_limit}}</p>
+                    <div class = "book_number" >
+                    <p>Осталось книг в наличии</p>
+                    <p style="margin-left: 20px" data-book-limit="{{$bookOrder->books_limit}}" id="bookLimit">{{$bookOrder->books_limit}}</p>
                     </div>
                 </div>
             </th>
             <td colspan="2" class = "table_row">
-                <div class = "book_number number">
-                    <a href="{{route('bookOrderdecNumber', $bookOrder)}}" class = "numberHref"><img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px" alt="Minus" id="decbookNumber"></a>
-                    <p class = "number_2" id="number_2" data-book-number="{{$bookOrder->books_number}}">{{$bookOrder->books_number}}</p>
-                    <a href="{{route('bookOrderincNumber', $bookOrder)}}" class = "numberHref"><img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px" alt="Plus" id="incbookNumber"></a>
+                <div class = "quantity_buttons_container number ">
+                    <button type="button" class="numberBookOrder " style="border: none;  background-color: transparent" id="decBookNumber">
+                        <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
+                    </button>
+                    <p class = "bookNumber" id="bookNumber" data-book-number="{{$bookOrder->books_number}}">{{$bookOrder->books_number}}</p>
+                    <button type="button" class="numberBookOrder" style="border: none;background-color: transparent" id="incBookNumber">
+                        <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
+                    </button>
                 </div>
             </td>
 
@@ -128,97 +132,52 @@
 
 
 
+    let changeQuantity = function(quantity){
+        let parentButtons = document.querySelector('.quantity_buttons_container');
+        parentButtons.classList.add('disabled')
+        let form = document.getElementById('bookOrderForm');
+        let book_id = form.getAttribute('data-book-order-id');
 
 
 
-    $(function()
-    {
-        $("#decbookNumber").on('click', function (e){
+        $.ajax({
+            headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+            url : `/bookOrder/${book_id}`,
+            method: "Post" ,
+            data:{'book_id': book_id, 'quantity': quantity},
 
-            e.preventDefault()
+            success: function (response)
+            {
 
-            let $this = $(this)
+                parentButtons.classList.remove('disabled');
+                let bookNumber = document.getElementById('bookNumber')
+                let bookLimit = document.getElementById('bookLimit')
+                bookLimit.innerText = response.bookOrder.books_limit
+                bookNumber.innerText = response.bookOrder.books_number
 
-            let url = $this.parent().attr('href')
-
-
-            $.ajax({
-
-                url : url,
-                method: "GET" ,
-
-                success: function ()
-                {
-
-                    let number_2 = document.getElementById('number_2')
-
-                    let num = number_2.innerText
-
-                    if (num > 1){
-
-                        num -=1
-
-                        number_2.innerText = num
-
-                        // console.log(num)
-                    }
-
-
-                }
-
-            })
-
+            }
         })
 
+    }
 
+
+    $("#decBookNumber").on('click', function () {
+        changeQuantity(-1)
     })
 
-    $(function()
-    {
-        $("#incbookNumber").on('click', function (e){
-
-            e.preventDefault()
-
-            let $this = $(this)
-
-            let url = $this.parent().attr('href')
-
-
-            $.ajax({
-
-                url : url,
-                method: "GET" ,
-
-                success: function (response)
-                {
-                    let number_2 = document.getElementById('number_2')
-
-                    let num = Number(number_2.innerText)
-
-                    if (num < response.book.books_limit){
-
-                        num +=1
-
-                        number_2.innerText = num
-
-                        // console.log(num)
-                    }
-                }
-            })
-        })
+    $("#incBookNumber").on('click', function (){
+        changeQuantity(1)
     })
 
 
-    $(function (){
-        // debugger
-        $('#bookOrderForm').on('submit', function (e){
-            // e.preventDefault()
-            let number_2 = document.getElementById('number_2')
+    $('#bookOrderForm').on('submit', function (){
+
+            let bookNumber = document.getElementById('bookNumber')
             let $this = $(this)
             let url = $this.attr('action')
-            let books_number = number_2.dataset.bookNumber
+            let books_number = bookNumber.dataset.bookNumber
             console.log(books_number)
-            // console.log({'books_number': books_number},)
+
             $.ajax({
 
                 type: 'POST',
@@ -228,65 +187,60 @@
 
                 success:function (response)
                 {
-                   console.log(response)
+                    console.log(response)
                 }
 
             })
         })
-    })
 
-    $(function (){
+        $(".delivery").change(function (){
 
-$(".delivery").change(function (){
-
-    let form = document.getElementById('bookOrderForm')
-    let id = form.getAttribute('data-book-order-id')
-    let delivery_id = document.getElementById('delivery').value
+            let form = document.getElementById('bookOrderForm')
+            let id = form.getAttribute('data-book-order-id')
+            let delivery_id = document.getElementById('delivery').value
 
 
 
-    $.ajax({
-        type: 'POST',
-        headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-        url: `/bookOrder/${id}` ,
-        data: {'delivery_id': delivery_id},
+            $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+                url: `/bookOrder/${id}` ,
+                data: {'delivery_id': delivery_id},
 
 
 
-        success: function (response)
-        {
-            let newOffices =  response.offices;
+                success: function (response)
+                {
+                    let newOffices =  response.offices;
 
-            function createOptions(arr) {
+                    function createOptions(arr) {
 
-                let options = arr.map(function (office){
-                    let option = document.createElement('option');
-                    option.value = office.office_number
-                    option.innerText = `№ ${office.office_number} some address`
-                    return option
-                })
-                let option = document.createElement('option');
-                option.innerText = 'Отделение'
-                options.unshift(option)
-                return options;
-            }
+                        let options = arr.map(function (office){
+                            let option = document.createElement('option');
+                            option.value = office.office_number
+                            option.innerText = `№ ${office.office_number} some address`
+                            return option
+                        })
+                        let option = document.createElement('option');
+                        option.innerText = 'Отделение'
+                        options.unshift(option)
+                        return options;
+                    }
 
-           let allOffices = document.getElementById('offices')
+                    let allOffices = document.getElementById('offices')
 
-            while (allOffices.firstChild) {
-                allOffices.removeChild(allOffices.firstChild);
-            }
+                    while (allOffices.firstChild) {
+                        allOffices.removeChild(allOffices.firstChild);
+                    }
 
-            let newOptions = createOptions(newOffices)
+                    let newOptions = createOptions(newOffices)
 
-            for (let option of newOptions){
-                allOffices.appendChild(option);
-            }
-        }
-    })
-    })
-    })
-
+                    for (let option of newOptions){
+                        allOffices.appendChild(option);
+                    }
+                }
+            })
+        })
 
 
 

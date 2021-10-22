@@ -23,8 +23,9 @@
                     <a class="btn btn-light"  href="/">Main page</a>
                     <a class="btn btn-light"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
                     <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
-                    <a class="btn btn-light"  href="{{route('personalCabinetComments')}}">Comments</a>
+                    <a class="btn btn-light"  href="{{route('personalCabinetOrders')}}">Orders</a>
                     <a class="btn btn-light"  href="{{route('onLineLibraryFavoritesBooks')}}">Favorites Books</a>
+                    <a class="btn btn-light"  href="{{route('personalCabinetComments')}}">Comments</a>
                     <a class="btn btn-light"  href="{{route('logout')}}">Logout</a>
 
 

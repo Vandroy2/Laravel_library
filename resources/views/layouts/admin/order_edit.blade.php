@@ -7,9 +7,10 @@
 
 @include('includes.errors')
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-<form action="{{route('admin.orderUpdate', $order)}}" method = "Post" enctype="multipart/form-data" >
+<form action="{{route('admin.orderUpdate', $order)}}" data-order-id="{{$order->id}}" data-book-id="{{$bookOrder->id}}" method = "Post" enctype="multipart/form-data" id="orderForm">
 
     @csrf
 
@@ -22,7 +23,7 @@
 
     <div class="form-group">
         <h6>Служба доставки</h6>
-        <select class="admin delivery" name="delivery_id" >
+        <select class="admin orderDelivery" name="delivery_id" id="orderDelivery">
             <option value="{{$order->delivery->id}}" ><label >{{$order->delivery->delivery_name}}</label></option>
             @foreach($deliveries as $delivery)
                 <option value="{{$delivery->id}}" class="option" name="delivery_id">{{$delivery->delivery_name}}</option>
@@ -33,7 +34,7 @@
 
     <div class="form-group" >
         <h6>Номер отделения</h6>
-        <select class="admin office" name="office_id">
+        <select class="admin office" name="office_id" id="orderOffices">
             <option value="{{$order->office->id}}" ><label class="admin_label" >{{$order->office->office_number}}</label></option>
 
             @foreach($offices as $office)
@@ -44,11 +45,11 @@
 
     <div class="form-group">
         <h6>Название книги</h6>
-        <select class="admin office" name="book_id" >
+        <select class="admin office bookOrder" name="book_id" id="bookOption">
             <option value="{{$bookOrder->id}}"><label class="admin_label" >{{$bookOrder->book_name}}</label></option>
 
             @foreach($books as $book)
-                <option value="{{$book->id}}" class="option" >{{$book->book_name}}</option>
+                <option value="{{$book->id}}" class="option"  >{{$book->book_name}}</option>
             @endforeach
         </select>
     </div>
@@ -66,7 +67,7 @@
 
     <div class="form-group">
         <h6>Статус заказа</h6>
-        <select class="admin office" name="status_id">
+        <select class="admin office" name="status_id" >
             <option value="{{$order->status->id}}"><label class="admin_label" >{{$order->status->status}}</label></option>
             @foreach($status as $stat)
 
@@ -78,12 +79,29 @@
 
 
     <div class="form-group">
-        <h6>Выберите количество книг</h6>
-        <div class = "book_number number" style="display: flex">
-            <a href="{{route('bookOrderdecNumber', $bookOrder)}}" class = "numberHref"><img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" id="decbookNumber"></a>
-            <p class = "number_2" id="number_2" data-book-number="{{$bookOrder->books_number}}">{{$bookOrder->books_number}}</p>
-            <a href="{{route('bookOrderincNumber', $bookOrder)}}" class = "numberHref"><img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px; margin-left: 5px" alt="Plus" id="incbookNumber"></a>
+
+
+        <div style="display: flex">
+            <h6>Количество книг в заказе</h6>
+            <h6 style="color: red; margin-left: 10px;">При повторном редактировании названия книги нужно выполнить сброс количества книг в заказе до 0</h6>
+
+
         </div>
+
+        <div class = "book_number number quantity_order_buttons_container" style="display: flex" >
+            <button data-url="{{route('admin.orderBookDecNumber')}}" type="button" class = "numberBookOrder" style="border: none; background-color: white; height: 10px" id="decOrderBookNumber">
+                <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
+            </button>
+
+            <p class = "orderBookNumber" id="orderBookNumber" style="display: block;" data-book-number="{{$order->book_number}}">{{$order->book_number}}</p>
+
+            <button data-url="{{route('admin.orderBookIncNumber')}}" type="button" class = "numberBookOrder" style="border: none; background-color: white; height: 10px"  id="incOrderBookNumber">
+                <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Plus" >
+            </button>
+
+        </div>
+
+        <h6 id="orderBookLimit">Количeство книг в библиотеке: {{$bookOrder->books_limit}}</h6>
     </div>
     <div class="form-group" style="margin-top: 0">
         <label for="name"></label>
@@ -98,12 +116,6 @@
 </body>
 
 
-
-
-
-
-
-
 <script
     src="https://code.jquery.com/jquery-3.6.0.js"
     integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -111,137 +123,182 @@
 </script>
 
 <script>
-
-    $(function()
-    {
-        $("#decbookNumber").on('click', function (e){
-
-            e.preventDefault()
-
-            let $this = $(this)
-
-            let url = $this.parent().attr('href')
+    //=============================Количество книг===============================================================
+    $(function () {
+        $(".bookOrder").change(function () {
+            let form = document.getElementById('orderForm')
+            let id = form.getAttribute('data-order-id')
+            let book_id = document.getElementById('bookOption').value
+            let reset = 'reset';
 
 
             $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+                url: `/admin/orders/edit/${id}`,
+                data: {'book_id': book_id, 'reset':reset},
 
-                url : url,
-                method: "GET" ,
+                success: function (response){
 
-                success: function ()
-                {
+                    let orderBookLimit = document.getElementById('orderBookLimit')
+                    let orderBookNumber = document.getElementById('orderBookNumber')
+                    // console.log(response.order.book_number);
+                    console.log(response.bookOrder.id);
 
-                    let number_2 = document.getElementById('number_2')
-
-                    let num = number_2.innerText
-
-                    if (num > 1){
-
-                        num -=1
-
-                        number_2.innerText = num
-
-                        // console.log(num)
-                    }
-
+                    orderBookLimit.innerText = `Количество книг в библиотеке: ${response.bookOrder.books_limit}` ;
+                    orderBookNumber.innerText = response.order.book_number;
 
                 }
-
             })
-
-        })
-
-
+        });
     })
 
-    $(function()
-    {
-        $("#incbookNumber").on('click', function (e){
 
-            e.preventDefault()
-
-            let $this = $(this)
-
-            let url = $this.parent().attr('href')
+    //=============================Изменения количества===============================================================
 
 
-            $.ajax({
 
-                url : url,
-                method: "GET" ,
+    let changeBookOrderQuantity = function (quantity){
 
-                success: function (response)
-                {
-                    let number_2 = document.getElementById('number_2')
+        let buttonsContainer = document.querySelector('.quantity_order_buttons_container');
+        buttonsContainer.classList.add('disabled');
+        let form = document.getElementById('orderForm')
+        let id = form.getAttribute('data-order-id')
+        let book_id = document.getElementById('bookOption').value
 
-                    let num = Number(number_2.innerText)
+        $.ajax({
+            headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+            method: "Post",
+            url: `/admin/orders/edit/${id}`,
+            data:{'quantity':quantity, 'book_id':book_id},
 
-                    if (num < response.book.books_limit){
+            success: function (response){
 
-                        num +=1
-
-                        number_2.innerText = num
-
-                        // console.log(num)
-                    }
-                }
-            })
+                buttonsContainer.classList.remove('disabled')
+                let orderBookLimit = document.getElementById('orderBookLimit')
+                let orderBookNumber = document.getElementById('orderBookNumber')
+                console.log(response.order.book_number);
+                console.log(response.bookOrder.books_limit);
+                orderBookLimit.innerText = `Количество книг в библиотеке: ${response.bookOrder.books_limit}`;
+                orderBookNumber.innerText = response.order.book_number;
+            }
         })
+    }
+    $("#decOrderBookNumber").on('click', function (){
+        changeBookOrderQuantity(-1);
+    })
+
+    $("#incOrderBookNumber").on('click', function (){
+        changeBookOrderQuantity(1);
     })
 
 
 
-    // $(function (){
+
+    // //=============================Отделения доставки===============================================================
     //
-    //     $(".delivery").change(function (){
+    $("#orderDelivery").change(function (){
+
+        let form = document.getElementById('orderForm')
+        let id = form.getAttribute('data-order-id')
+        let delivery_id = document.getElementById('orderDelivery').value
+
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+            url: `/admin/orders/edit/${id}` ,
+            data: {'delivery_id': delivery_id},
+
+            success: function (response)
+            {
+                let newOffices =  response.offices;
+
+                function createOptions(arr) {
+
+                    return arr.map(function (office) {
+                        let option = document.createElement('option');
+                        option.value = office.office_number
+                        option.innerText = `№ ${office.office_number} some address`
+                        return option
+                    });
+                }
+
+                let allOffices = document.getElementById('orderOffices')
+
+                while (allOffices.firstChild) {
+                    allOffices.removeChild(allOffices.firstChild);
+                }
+
+                let newOptions = createOptions(newOffices)
+
+                for (let option of newOptions){
+                    allOffices.appendChild(option);
+                }
+            }
+        })
+    })
+
+
+    //=============================Увеличение количества===============================================================
+
+    // function handleClick(num) {
+    //     console.log(num)
+    // }
+
+    //     $(".numberBookOrder").on('click', function (e) {
+    //         e.preventDefault();
+    //     })
     //
-    //         let form = document.getElementById('bookOrderForm')
-    //         let id = form.getAttribute('data-book-order-id')
-    //         let delivery_id = document.getElementById('delivery').value
+    //             let form = document.getElementById('orderForm')
+    //             let id = form.getAttribute('data-order-id')
     //
     //
+    //             $.ajax({
     //
-    //         $.ajax({
-    //             type: 'POST',
-    //             headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-    //             url: `/bookOrder/${id}` ,
-    //             data: {'delivery_id': delivery_id},
+    //                 url : `/admin/orders/edit/${id}`,
+    //                 method: "GET" ,
     //
+    //                 success: function (response)
+    //                 {
     //
+    //                     let number_2 = document.getElementById('number_2')
     //
-    //             success: function (response)
-    //             {
-    //                 let newOffices =  response.offices;
+    //                     let num = number_2.innerText
     //
-    //                 function createOptions(arr) {
+    //                     if (num > 1){
     //
-    //                     let options = arr.map(function (office){
-    //                         let option = document.createElement('option');
-    //                         option.value = office.office_number
-    //                         option.innerText = `№ ${office.office_number} some address`
-    //                         return option
-    //                     })
-    //                     let option = document.createElement('option');
-    //                     option.innerText = 'Отделение'
-    //                     options.unshift(option)
-    //                     return options;
-    //                 }
+    //                         num -=1
     //
-    //                 let allOffices = document.getElementById('offices')
+    //                         number_2.innerText = num
     //
-    //                 while (allOffices.firstChild) {
-    //                     allOffices.removeChild(allOffices.firstChild);
-    //                 }
+    //                     }
+    //                     if (num < response.bookOrder.books_limit){
     //
-    //                 let newOptions = createOptions(newOffices)
+    //                         num +=1
     //
-    //                 for (let option of newOptions){
-    //                     allOffices.appendChild(option);
+    //                         number_2.innerText = num
     //                 }
     //             }
-    //         })
+    //
     //     })
-    // })
+    // }
+    //
+    // let number =  bookOrder.books_number;
+    //
+    // num = number;
+    //
+    // handleClick(num);
+
+    // $(".numberBookOrder").on('click', function (e) {
+    //            e.preventDefault();
+    //        })
+    //
+    // function handleClick(num){
+    //     console.log(num);
+    // }
+
+
+
         </script>
 
 

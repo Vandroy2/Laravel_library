@@ -37,7 +37,7 @@
                         <td>{{$order->office->office_number}}</td>
                         <td>{{$order->ukrcity->ukrcity_name}}</td>
                         <td>{{$book->book_name}}</td>
-                        <td>{{$book->books_number}}</td>
+                        <td>{{$order->book_number}}</td>
                         <td>{{$order->order_comment}}</td>
                         <td>{{$order->status->status}}</td>
 

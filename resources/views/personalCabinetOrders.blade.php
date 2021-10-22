@@ -11,29 +11,37 @@
         </div>
 
         <div class="bs-component">
-            <table class="table table-hover">
+            <table class="table table-hover"; style="background-color: #969b99">
 
                 <thead>
                 <tr>
-                    <th scope="col">Book id</th>
-                    <th scope="col">City id</th>
-                    <th scope="col">Delivery id</th>
+                    <th scope="col">Order number</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Delivery</th>
+                    <th scope="col">Office number</th>
                     <th scope="col">Status</th>
-                </tr>
 
+
+
+                </tr>
                 </thead>
                 <tbody>
                 @foreach($orders as $order)
                     <tr class="table-active">
-                        <td>{{$order->book_id}}</td>
-                        <td>{{$order->ukrcity_id}}</td>
-                        <td>{{$order->delivery_id}}</td>
-                        <td>{{$order->status_id}}</td>
+                        <th scope="row">{{$order->id}}</th>
+                        <td>{{$order->ukrcity->ukrcity_name}}</td>
+                        <td>{{$order->delivery->delivery_name}}</td>
+                        <td>{{$order->office->office_number}}</td>
+                        <td>{{$order->status->status}}</td>
 
                 @endforeach
 
+
                 </tbody>
+
             </table>
+
+
         </div>
     </div>
 </div>

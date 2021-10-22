@@ -11421,7 +11421,7 @@ footer.footer {
     margin-left: 50px;
 }
 
-.book_number{
+.quantity_buttons_container{
     display: flex;
 }
 
@@ -11451,4 +11451,20 @@ footer.footer {
     padding: 0px 4px 0px 4px;
 }
 
+.numberBookOrder{
 
+    border: none;
+    background-color: white;
+}
+
+.disabled{
+    pointer-events: none;
+}
+
+.book_number{
+    display: flex;
+}
+
+.bookNumber{
+    margin-bottom: 0;
+}

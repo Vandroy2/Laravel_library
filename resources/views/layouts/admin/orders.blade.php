@@ -16,8 +16,9 @@
                 <tr>
                     <th scope="col">Order number</th>
                     <th scope="col">User name</th>
-                    <th scope="col">Comment</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Created_at</th>
+                    <th scope="col">Comment</th>
                     <th scope="col">Operations</th>
 
 
@@ -28,13 +29,16 @@
                     <tr class="table-active">
                         <th scope="row">{{$order->id}}</th>
                         <td>{{$order->user->name}}</td>
-                        <td>{{$order->order_comment}}</td>
                         <td>{{$order->status->status}}</td>
+                        <td>{{$order->created_at}}</td>
+                        <td>{{$order->order_comment}}</td>
 
 
 
 
                         <td>
+
+                            <a href="{{route('admin.orderEdit', $order)}}}"><button class="btn btn-primary">Редактировать заказ</button></a>
 
                             <a href="{{route('admin.order', $order)}}}"><button class="btn btn-success">Детали заказа</button></a>
 

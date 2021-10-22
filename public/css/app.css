@@ -10002,12 +10002,3 @@ h3 {
     border-color: #dee2e6;
   }
 }
-
-.basket {
-    position: absolute;
-    right: 0;
-    bottom: 65px;
-    z-index: 1000;
-    width: 30px;
-    height: 30px;
-}

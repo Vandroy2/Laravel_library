@@ -17,6 +17,8 @@ use mysql_xdevapi\Collection;
  *
  * @property integer $id
  * @property string $book_name
+ * @property integer $books_limit
+ * @property integer $books_number
  * @property Carbon $num_pages
  * @property Carbon $created_date
  * @property integer $author_id

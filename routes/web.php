@@ -6,7 +6,6 @@ use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\OnlineLibraryController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +35,9 @@ Route::middleware('auth')->group(function (){
     Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
 
     Route::get('/personal', function (){
-        return view('personalCabinet');
-    })->name('personalCabinet');
+        return view('personalCabinet');})->name('personalCabinet');
+
+    Route::match(['post', 'get'], '/orders', [CabinetController::class, 'orders'])->name('personalCabinetOrders');
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -68,9 +68,11 @@ Route::prefix('bookOrder')->group(function (){
 
 Route::match(['get','post'], '/{book}', [BookOrderController::class, 'bookOrder'])->name('bookOrder');
 
-Route::match(['get','post'], '/incNumber/{bookOrder}', [BookOrderController::class, 'incNumber'])->name('bookOrderincNumber');
+//Route::match(['get','post'], '/changeQuantity/{bookOrder}', [BookOrderController::class, 'changeQuantity'])->name('bookChangeQuantity');
 
-Route::match(['get','post'], '/decNumber/{bookOrder}', [BookOrderController::class, 'decNumber'])->name('bookOrderdecNumber');
+//Route::match(['get','post'], '/incNumber/{bookOrder}', [BookOrderController::class, 'incNumber'])->name('bookOrderincNumber');
+//
+//Route::match(['get','post'], '/decNumber/{bookOrder}', [BookOrderController::class, 'decNumber'])->name('bookOrderdecNumber');
 
 
 });

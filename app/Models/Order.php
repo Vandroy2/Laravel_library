@@ -17,6 +17,7 @@ use phpDocumentor\Reflection\Types\Collection;
  * @property integer $id
  * @property integer $user_id
  * @property integer $book_id
+ * @property integer $book_number
  * @property integer $status_id
  * @property integer $delivery_id
  * @property integer $ukrcity_id
@@ -43,6 +44,7 @@ class Order extends Model
         [
             'user_id',
             'book_id',
+            'book_number',
             'status_id',
             'delivery_id',
             'ukrcity_id',
