@@ -6,13 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CityCreateRequest;
 use App\Http\Requests\Admin\CityEditRequest;
 use App\Models\City;
+use App\Models\Delivery;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class CityController extends Controller
 {
-    public function view(Request $request)
+    public function show(Request $request): JsonResponse
+    {
+        $delivery_id = $request->get('delivery_id');
+
+        $delivery = Delivery::query()->find($delivery_id);
+
+        $id = $delivery->cities->pluck('id');
+
+        $cities = City::query()->find($id);
+
+        return response()->json([
+               'cities' => $cities,
+               JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT,
+           ]);
+       }
+
+       public function view(Request $request)
     {
 
 
@@ -24,7 +42,7 @@ class CityController extends Controller
         ->when(!empty($reqName), function ($query) use($reqName){
          return $query->where('city_name', 'like', "%$reqName%");
         })
-            ->orderBy('city_name','asc')
+            ->orderBy('city_name')
             ->paginate(10);
 
         return view('layouts.admin.cities',['cities'=>$cities]);

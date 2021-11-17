@@ -25,6 +25,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $remember_token
  * @property Carbon $birthday
  * @property integer $banned
+ *
+ *
  */
 
 class User extends Authenticatable
@@ -104,6 +106,11 @@ class User extends Authenticatable
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)->withTimestamps();
+    }
+
+    public function booksInBasket(): BelongsToMany
+    {
+        return $this->belongsToMany(Book::class, 'baskets', 'user_id', 'book_id');
     }
 
     public function images(): HasMany

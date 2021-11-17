@@ -47,6 +47,15 @@ class Office extends Model
     }
 
     /**
+     * @return BelongsTo
+     */
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
+    /**
      * @return string
      */
 

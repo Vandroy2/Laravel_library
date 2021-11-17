@@ -10,7 +10,7 @@
 
     <div style="width: max-content; height: 20rem; display: flex; position: relative">
 
-                <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; flex-direction: column;">
 
                     <div class="card book_card" style="width: 23rem; height: 38rem;border-radius: 10px">
                         <div id="carouselExampleControls{{$bookOrder->id}}" class="carousel slide" data-ride="carousel" >
@@ -44,29 +44,26 @@
         <table class="table table-bordered table-secondary order_table">
 
             <tbody class ="order_table">
-
             <th scope="row">Выберите службу доставки</th>
             <td class = "table_row">
 
-                <select class="admin delivery" id="delivery" name="delivery_id" >
-                    <option value="delivery"><label >Служба доставки</label></option>
+                <select required class="admin delivery " id="delivery" name="delivery_id" >
+                    <option value=""><label >Служба доставки</label></option>
                     @foreach($deliveries as $delivery)
-                    <option value="{{$delivery->id}}" class="option" name="delivery_id">{{$delivery->delivery_name}}</option>
+                    <option value="{{$delivery->id}}" class="option" id="option_book" name="delivery_id">{{$delivery->delivery_name}}</option>
 
                     @endforeach
                 </select>
-
             </td>
 
-
-        <tr>
+            <tr>
             <th scope="row">Выберите Город</th>
             <td class = "table_row">
 
-                <select class="admin" name="ukrcity_id" >
-                    <option value="ukrcity"><label >Город</label></option>
-                    @foreach($ukrcities as $ukrcity)
-                    <option value="{{$ukrcity->id}}" name="ukrcity_id" >{{$ukrcity->ukrcity_name}}</option>
+                <select required class="admin city disabled_option" name="city_id" id="city">
+                    <option value=""><label >Город</label></option>
+                    @foreach($cities as $city)
+                    <option value="{{$city->id}}" name="ukrcity_id" >{{$city->city_name}}</option>
                     @endforeach
                 </select>
 
@@ -77,8 +74,8 @@
             <th scope="row">Выберите отделение</th>
             <td colspan="2" class = "table_row">
 
-                <select class="admin office" name="office_id" id="offices">
-                    <option value="office"><label >Отделение</label></option>
+                <select required class="admin office disabled_option" name="office_id" id="office">
+                    <option value=""><label >Отделение</label></option>
                     @foreach($offices as $office)
                         <option value="{{$office->id}}" class="option" >{{$office->office_number}}</option>
 
@@ -113,137 +110,13 @@
         </tbody>
 
     </table>
-
         <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::id()}}">
-        <input type="hidden" name="book_id" value="{{$bookOrder->id}}">
-
+        <input type="hidden" name="booksOrder[]" value="{{$bookOrder->id}}">
         <button type="submit" class = 'btn btn-secondary btn_book_order'>Оформить заказ</button>
     </form>
 
 </section>
 
-<script
-    src="https://code.jquery.com/jquery-3.6.0.js"
-    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-    crossorigin="anonymous">
-</script>
-
-<script>
-
-
-
-    let changeQuantity = function(quantity){
-        let parentButtons = document.querySelector('.quantity_buttons_container');
-        parentButtons.classList.add('disabled')
-        let form = document.getElementById('bookOrderForm');
-        let book_id = form.getAttribute('data-book-order-id');
-
-
-
-        $.ajax({
-            headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-            url : `/bookOrder/${book_id}`,
-            method: "Post" ,
-            data:{'book_id': book_id, 'quantity': quantity},
-
-            success: function (response)
-            {
-
-                parentButtons.classList.remove('disabled');
-                let bookNumber = document.getElementById('bookNumber')
-                let bookLimit = document.getElementById('bookLimit')
-                bookLimit.innerText = response.bookOrder.books_limit
-                bookNumber.innerText = response.bookOrder.books_number
-
-            }
-        })
-
-    }
-
-
-    $("#decBookNumber").on('click', function () {
-        changeQuantity(-1)
-    })
-
-    $("#incBookNumber").on('click', function (){
-        changeQuantity(1)
-    })
-
-
-    $('#bookOrderForm').on('submit', function (){
-
-            let bookNumber = document.getElementById('bookNumber')
-            let $this = $(this)
-            let url = $this.attr('action')
-            let books_number = bookNumber.dataset.bookNumber
-            console.log(books_number)
-
-            $.ajax({
-
-                type: 'POST',
-                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-                url: url ,
-                data: {'books_number': books_number},
-
-                success:function (response)
-                {
-                    console.log(response)
-                }
-
-            })
-        })
-
-        $(".delivery").change(function (){
-
-            let form = document.getElementById('bookOrderForm')
-            let id = form.getAttribute('data-book-order-id')
-            let delivery_id = document.getElementById('delivery').value
-
-
-
-            $.ajax({
-                type: 'POST',
-                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-                url: `/bookOrder/${id}` ,
-                data: {'delivery_id': delivery_id},
-
-
-
-                success: function (response)
-                {
-                    let newOffices =  response.offices;
-
-                    function createOptions(arr) {
-
-                        let options = arr.map(function (office){
-                            let option = document.createElement('option');
-                            option.value = office.office_number
-                            option.innerText = `№ ${office.office_number} some address`
-                            return option
-                        })
-                        let option = document.createElement('option');
-                        option.innerText = 'Отделение'
-                        options.unshift(option)
-                        return options;
-                    }
-
-                    let allOffices = document.getElementById('offices')
-
-                    while (allOffices.firstChild) {
-                        allOffices.removeChild(allOffices.firstChild);
-                    }
-
-                    let newOptions = createOptions(newOffices)
-
-                    for (let option of newOptions){
-                        allOffices.appendChild(option);
-                    }
-                }
-            })
-        })
-
-
-
-</script>
+@include('includes.main.scripts')
 
 </body>

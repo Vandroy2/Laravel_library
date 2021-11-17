@@ -120,6 +120,11 @@ class Book extends Model
     {
         return $this->belongsToMany(Order::class)->withTimestamps();
     }
+
+    public function usersInBasket(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'baskets', 'book_id', 'user_id');
+    }
 }
 
 

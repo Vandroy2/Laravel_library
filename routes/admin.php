@@ -49,6 +49,8 @@ Route::middleware([
 
         Route::get('/', [CityController::class, 'view'])->name('cities');
 
+        Route::match(['get', 'post'],'/show', [CityController::class, 'show'])->name('citiesShow');
+
         Route::get('/create', [CityController::class, 'create'])->name('cityCreate');
 
         Route::post('/store', [CityController::class, 'store'])->name('cityStore');
@@ -97,7 +99,7 @@ Route::middleware([
 
     });
 
-//    =======================================================Books==============================================================
+//    =======================================================Books======================================================
 
     Route::prefix('books')->group(function (){
 
@@ -113,8 +115,24 @@ Route::middleware([
 
         Route::get('/delete/{book}', [bookController::class, 'delete'])->name('bookDelete');
 
+        Route::get('/order/book/{book}', [bookController::class, 'order'])->name('bookOrder');
+
+        Route::match(['get', 'post'],'/order/books', [bookController::class, 'multipleOrder'])->name('bookMultipleOrder');
+
+        Route::match(['get', 'post'], '/book/changeQuantity', [bookController::class, 'changeQuantity'])->name('bookChangeQuantity');
+
+        Route::match(['get', 'post'], '/book/resetQuantity', [bookController::class, 'resetQuantity'])->name('bookResetQuantity');
+
+        Route::match(['get', 'post'], '/book/addToBasket', [bookController::class, 'addToBasket'])->name('bookAddToBasket');
+
+        Route::match(['get', 'post'], '/book/deleteFromBasket', [bookController::class, 'deleteFromBasket'])->name('bookDeleteFromBasket');
+
+        Route::match(['get', 'post'], '/book/clearBasket', [bookController::class, 'clearBasket'])->name('bookClearBasket');
+
+        Route::match(['get', 'post'], '/book/limit', [bookController::class, 'limit'])->name('bookLimit');
+
     });
-    //===============================================Comments================================================================
+    //===============================================Personal cabinet===================================================
 
     Route::prefix('personalCabinet')->group(function (){
 
@@ -131,6 +149,7 @@ Route::middleware([
         ->name('personalCabinetDelete');
     });
 
+    //=================================================Images===========================================================
     Route::prefix('images')->group(function (){
 
         Route::get('/delete/{image}', [ImageController::class, 'delete'])->name('imageDelete');
@@ -139,30 +158,29 @@ Route::middleware([
 
     });
 
+    //===============================================Orders=============================================================
+
     Route::prefix('orders')->group(function (){
 
         Route::match(['get','post'], '/', [OrderController::class, 'view'])->name('orders');
 
         Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
 
+        Route::match(['get','post'], '/createMultiple', [OrderController::class, 'createMultiple'])->name('orderCreateMultiple');
+
         Route::match(['get','post'], '/order/{order}', [OrderController::class, 'order'])->name('order');
 
-        Route::match(['get','post'], '/edit/{order}', [OrderController::class, 'edit'])->name('orderEdit');
+        Route::match(['get','post'], '/edit/{order}', [OrderController::class, 'edit'])->middleware('status')->name('orderEdit');
 
-        Route::match(['get','post'], '/update/{order}', [OrderController::class, 'update'])->name('orderUpdate');
+        Route::match(['get','post'], '/update/{order}', [OrderController::class, 'update'])->middleware('orderUpdateStatus')->name('orderUpdate');
 
-        Route::match(['get','post'], '/delete/{order}', [OrderController::class, 'delete'])->name('orderDelete');
+        Route::match(['get','post'], '/delete', [OrderController::class, 'delete'])->name('orderDelete');
 
+        Route::match(['get','post'], '/changeQuantityBookOrder', [OrderController::class, 'changeQuantityBookOrder'])->name('orderChangeQuantityBookOrder');
 
-
-
+        Route::match(['get','post'], '/deleteBookOrder', [OrderController::class, 'deleteBookOrder'])->name('orderDeleteBookOrder');
 
     });
-
-
-
-
-
 });
 
 

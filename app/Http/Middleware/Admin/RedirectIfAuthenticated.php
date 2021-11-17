@@ -8,7 +8,8 @@ class RedirectIfAuthenticated extends BaseRedirectIfAuthenticated {
     /**
      * @return string
      */
-    protected function redirectTo() {
+    protected function redirectTo(): string
+    {
         return route('admin.index');
     }
 }

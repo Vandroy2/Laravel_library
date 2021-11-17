@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use phpDocumentor\Reflection\Types\Collection;
 
 /**
  * @OrderModel Order
@@ -16,20 +16,20 @@ use phpDocumentor\Reflection\Types\Collection;
  *
  * @property integer $id
  * @property integer $user_id
- * @property integer $book_id
- * @property integer $book_number
  * @property integer $status_id
  * @property integer $delivery_id
- * @property integer $ukrcity_id
+ * @property integer $city_id
  * @property integer $office_id
  * @property integer $order_comment
  *
  *
  * @property User $user
- *
- * @property Book[] |Collection Books
+ * @property Book[]|Collection $books
+ * @property Status $status
+ * @property Delivery $delivery
+ * @property City $city
+ * @property Book_Order[]|Collection $orderBooks
  */
-
 class Order extends Model
 {
     use HasFactory;
@@ -43,11 +43,9 @@ class Order extends Model
     protected $fillable =
         [
             'user_id',
-            'book_id',
-            'book_number',
             'status_id',
             'delivery_id',
-            'ukrcity_id',
+            'city_id',
             'office_id',
             'order_comment',
         ];
@@ -104,11 +102,16 @@ class Order extends Model
      * @return BelongsTo
      */
 
-    public function ukrcity(): BelongsTo
+    public function city(): BelongsTo
     {
-        return $this->belongsTo(Ukrcity::class, 'ukrcity_id', 'id');
+        return $this->belongsTo(City::class, 'city_id', 'id');
     }
 
-
-
+    /**
+     * @return HasMany
+     */
+    public function orderBooks(): HasMany
+    {
+        return $this->hasMany(Book_Order::class, 'order_id', 'id');
+    }
 }

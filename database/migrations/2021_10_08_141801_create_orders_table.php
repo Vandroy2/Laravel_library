@@ -23,7 +23,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('delivery_id');
             $table->foreign('delivery_id')->references('id')->on('deliveries');
             $table->unsignedBigInteger('ukrcity_id');
-            $table->foreign('ukrcity_id')->references('id')->on('ukrcities');
+            $table->foreign('ukrcity_id')->references('id')->on('ukrcities')->onDelete('cascade');
             $table->unsignedBigInteger('office_id');
             $table->foreign('office_id')->references('id')->on('offices');
             $table->text('order_comment');

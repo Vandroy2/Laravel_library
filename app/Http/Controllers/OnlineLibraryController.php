@@ -9,6 +9,7 @@ use App\Models\Book_User;
 use App\Models\Comment;
 use App\Models\Image;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class OnlineLibraryController extends Controller
     {
         $comments = Comment::all();
 
-
+        $booksInBasket = Auth::user()->booksInBasket;
 
         $search_book = $request->input('search_book');
 
@@ -37,16 +38,15 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books,]);
+        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'booksInBasket'=>$booksInBasket]);
+
     }
 
-    public function addToFavorite(Book $book)
+    public function addToFavorite(Book $book): JsonResponse
     {
         Auth::user()->books()->toggle($book);
 
         if (Auth::user()->books->contains($book)){
-
-
 
             return response()->json([
                 'added' => true,
@@ -55,34 +55,13 @@ class OnlineLibraryController extends Controller
                     'name' => $book->book_name,
                 ],
             ]);
-
-
         }
 
         return response()->json([
             'added' => false,
-            'book' => [
-                'id' => $book->id,
-                'name' => $book->book_name,
-            ],
+            'book' => ['id' => $book->id, 'name' => $book->book_name,],
         ]);
     }
-
-    public function addToFavoritePersonal(Book $book): RedirectResponse
-    {
-        Auth::user()->books()->toggle($book);
-
-        return redirect()->back();
-    }
-
-    public function favoriteBooks()
-    {
-        $books = Auth::user()->books->unique();
-
-        return view('favorites_books', compact('books'));
-    }
-
-
 }
 
 

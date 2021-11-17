@@ -1,16 +1,12 @@
 @include('includes.main.head')
 @include('includes.main.personalNav')
 @include('includes.admin.scripts')
-
 <body >
 <section style="display: flex; flex-wrap:wrap ;text-align: left; height: 100vh;background-image: url(https://images.adsttc.com/media/images/5f17/67a5/b357/65a5/ed00/0076/large_jpg/Luuk_Kramer_study_library_19260-101.jpg?1595369364)">
     @foreach($books as $book)
         <div class="container row align-items-start" style="height: 18rem; width:calc( ( 100% - 40px ) / 8 ); margin-top: 30px;">
-
             <div style="width: max-content; height: 20rem; display: flex; position: relative">
-
                 <div style="display: flex; flex-direction: column;">
-
                     <form action="{{route('onLineLibraryAddToFavoritePersonal', $book)}}" method = "Post"  style="margin-bottom: 5px ; margin-top: 10px;position: absolute; left: 5px; top: -10px; z-index: 1000;">
                         @csrf
                         <button type="submit" class="border-0 bg-transparent btn-ens-action btn-ens-style " data-rel="4a9f99dc105">
@@ -31,7 +27,6 @@
                                         <img src="{{asset('/storage/'. $image->images)}}" class="d-block img" style="width: 11rem; height: 9rem;border-radius: 5px" alt="...">
                                     </div>
                                 @endforeach
-
                             </div>
                             <a class="carousel-control-prev" href="#carouselExampleControls{{$book->id}}" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

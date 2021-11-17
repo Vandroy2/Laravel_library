@@ -16,12 +16,10 @@
                 <tr>
                     <th scope="col">Order number</th>
                     <th scope="col">User name</th>
-                    <th scope="col">Status</th>
                     <th scope="col">Created_at</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Comment</th>
                     <th scope="col">Operations</th>
-
-
                 </tr>
                 </thead>
                 <tbody>
@@ -29,20 +27,23 @@
                     <tr class="table-active">
                         <th scope="row">{{$order->id}}</th>
                         <td>{{$order->user->name}}</td>
-                        <td>{{$order->status->status}}</td>
                         <td>{{$order->created_at}}</td>
+                        <td>{{$order->status->status}}</td>
                         <td>{{$order->order_comment}}</td>
+                        <td class="flex">
 
+                            <a href="{{route('admin.orderEdit', $order)}}}"><button class="btn btn-primary mr-1">Редактировать заказ</button></a>
 
+                            <a href="{{route('admin.order', $order)}}}"><button class="btn btn-success mr-1">Детали заказа</button></a>
 
-
-                        <td>
-
-                            <a href="{{route('admin.orderEdit', $order)}}}"><button class="btn btn-primary">Редактировать заказ</button></a>
-
-                            <a href="{{route('admin.order', $order)}}}"><button class="btn btn-success">Детали заказа</button></a>
-
-                            <a href="{{route('admin.orderDelete', $order)}}"><button class="btn btn-danger">Удалить</button></a>
+                            <form action="{{route('admin.orderDelete')}}">
+                            @csrf
+                                <input type="hidden" name="order_id" value="{{$order->id}}">
+                                @foreach($multipleOrder as $multOrder)
+                                <input type="hidden" name="books_id[]" value="{{$multOrder->book_id}}">
+                                @endforeach
+                                <button type="submit" class = 'btn btn-danger'>Удалить</button>
+                            </form>
 
 
                         </td>

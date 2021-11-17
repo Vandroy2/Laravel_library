@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Comment;
 use App\Models\Order;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,6 +35,20 @@ class CabinetController extends Controller
 
 
         return view('personalCabinetOrders', ['orders' => $orders,]);
+    }
+
+    public function addToFavoritePersonal(Book $book): RedirectResponse
+    {
+        Auth::user()->books()->toggle($book);
+
+        return redirect()->back();
+    }
+
+    public function favoriteBooks()
+    {
+        $books = Auth::user()->books->unique();
+
+        return view('favorites_books', compact('books'));
     }
 
 }

@@ -1,12 +1,6 @@
 @extends('layouts.main')
-
-
 <body>
-
-
-
 @section('content')
-
     <section class="features-icons bg-light text-center">
     <div class="container">
         <div class="row">
@@ -59,7 +53,7 @@
             </div>
         </div>
     </div>
-    @include('layouts.comments.comments')
+    @include('includes.main.comments')
 </section>
 @endsection
 

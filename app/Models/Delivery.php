@@ -5,14 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use phpDocumentor\Reflection\Types\Collection;
 
 /**
  * @Delivery
  *
  * @package App\Models
  *
- * @property string $name
+ * @property string $delivery_name
+ *
+ * @property Office[]| Collection $offices
+ * @property Order[]| Collection $orders
+ * @property City[]|Collection $cities
  */
 
 class Delivery extends Model
@@ -26,10 +32,9 @@ class Delivery extends Model
 
     protected $fillable = [
         'delivery_name',
+
     ];
-    /**
-     * @var mixed
-     */
+
 
 
     /**
@@ -48,6 +53,15 @@ class Delivery extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'delivery_id', 'id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function cities(): BelongsToMany
+    {
+        return $this->belongsToMany(City::class);
     }
 
 

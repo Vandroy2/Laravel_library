@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Collection\Collection;
 
@@ -42,5 +43,23 @@ class City extends Model
     {
 
         return $this->hasMany(Library::class, 'city_id', 'id');
+    }
+
+    /**
+     * @return belongsToMany
+     */
+
+    public function deliveries(): BelongsToMany
+    {
+        return $this->belongsToMany(Delivery::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+
+    public function orders(): hasmany
+    {
+        return $this->hasMany(Order::class,'city_id', 'id');
     }
 }

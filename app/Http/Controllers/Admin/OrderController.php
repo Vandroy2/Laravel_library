@@ -4,174 +4,112 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Book_Order;
+use App\Models\City;
 use App\Models\Delivery;
 use App\Models\Office;
 use App\Models\Order;
 use App\Models\Status;
-use App\Models\Ukrcity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Arr;
 
 class OrderController extends Controller
 {
-
 //================================================Все заказы============================================================
     public function view()
     {
         $orders = Order::all();
 
-        return view('layouts.admin.orders', ['orders'=>$orders]);
-    }
+        $multipleOrder = Book_Order::all();
 
+        return view('layouts.admin.orders', [
+            'orders'=>$orders,
+            'multipleOrder'=>$multipleOrder,
+
+        ]);
+    }
 //================================================Создание заказа=======================================================
 
     public function create(Request $request): RedirectResponse
     {
+        /* @var Book $book */
+
+        //------------------------------------Получение данных из реквеста-----------------------------------------------
+
         $order = new Order();
-
-        // ---------------------------------Проверка на невыбранные поля--------------------------------------------------
-
-        $delivery = $request->get('delivery_id');
-
-        $ukrcity = $request->get('ukrcity_id');
-
-        $office = $request->get('office_id');
-
-        if ($delivery === 'delivery' || $ukrcity==='ukrcity'|| $office ==='office'|| $office === "Отделение"){
-
-            return redirect()->back()->with('errors', 'Выберите необходимые пареметры для оформления заказа');
-        }
-
-      //------------------------------------Получение данных из реквеста-----------------------------------------------
 
         $order->fill($request->all());
 
-        $bookOrder = Book::query()
-            ->where('id', '=', $order->book_id)->first();
-
-      //  -----------------------Проверка на количство книг и сохранение данных заказа----------------------------------
-
-        if ($bookOrder->books_number == 0){
-
-            return redirect()->back()->with('errors', 'Количество книг в заказе не может быть меньше 1');
-        }
-        $order->book_number = $bookOrder->books_number;
-
-        $bookOrder->books_number = 0;
-
-        $bookOrder->save();
-
         $order->save();
 
-        return redirect()->back()->with('success', 'Заказ успешно отправлен. Мы свяжемся с Вами в ближайшее время.');
+        $book_id = $request->get('booksOrder');
+
+        $books = Book::query()->whereIn('id', $book_id )->get();
+
+        //---------------------------------------Проверка на пустой заказ-----------------------------------------------
+
+        foreach ($books as $book){
+
+            if ($book->books_number == 0){
+
+                return redirect()->route('onlineLibrary')->with('errors', 'колличество книг не может быть меньше 1');
+            }
+            else
+        {
+            $multipleOrder = new Book_Order();
+
+            $multipleOrder->book_number = $book->books_number;
+
+            $multipleOrder->book_id = $book->id;
+
+            $multipleOrder->order_id = $order->id;
+
+            $multipleOrder->save();
+
+            $book->books_number = 0;
+
+            $book->save();
+        }
+        }
+        return redirect()->route('admin.bookClearBasket');
     }
 
 //===========================================Отображение выбранного заказа==============================================
 
     public function order(Order $order)
     {
-        $book  = Book::query()
-            ->where('id', '=', $order->book_id)->first(); # если нужно будет добавить в заказ несколько разных книг, нужно передавать коллекцию(get)
+
+        $multipleOrder = Book_Order::query()
+            ->where('order_id', $order->id)->get();
+
+        $book_id = Book_Order::query()->pluck('book_id');
+
+        $books = Book::query()->find($book_id);
 
         return view('layouts.admin.order', [
             'order'=>$order,
-            'book' =>$book,
+            'multipleOrder'=>$multipleOrder,
+            'books'=>$books,
         ]);
     }
 
 //===============================================Редактирование заказа==================================================
 
-    public function edit(Request $request, Order $order)
+    public function edit(Order $order)
     {
-        //------------------------------------------Получение данных из Ajax запроса---------------------------------------
-
-        $book_id = $request->get('book_id');
-
-        $reset = $request->get('reset');
-
-        $delivery_id = $request->get('delivery_id');
-
-
-
-        //----------------------------------------Проверка статуса заказа-----------------------------------------------
-
-        if ($order->status->status == 'allowed'){
-            return redirect()->back()->with('errors', 'Заказ уже отправлен. Вы не можете его отредактировать');
-        }
-
-        if ($order->status->status == 'canceled'){
-            return redirect()->back()->with('errors', 'Заказ был отменен. Вы не можете его отредактировать');
-        }
-
-        //--------------------------------Полученеие данных для редактирования заказа-----------------------------------
+    //----------------------------------------Полученеие данных для редактирования заказа-------------------------------
 
         $deliveries = Delivery::all();
 
-        $offices = Office::query()
-            ->when(!empty($delivery_id ), function ($query) use($delivery_id) {
-                return $query->where('delivery_id', '=', $delivery_id);
-            })->get();
+        $offices = Office::all();
 
         $books = Book::all();
 
-        $ukrcities = Ukrcity::all();
+        $cities = City::all();
 
         $status = Status::all();
-
-        if ($book_id) {
-            $bookOrder = Book::query()
-                ->when(!empty($book_id ), function ($query) use($book_id) {
-                    return $query->where('id', '=', $book_id);           # если нужно будет добавить в заказ несколько разных книг, нужно передавать коллекцию(get)
-                })->first();
-        }
-
-        else {$bookOrder = Book::query()
-            ->where('id', '=', $order->book_id)->first();} # если нужно будет добавить в заказ несколько разных книг, нужно передавать коллекцию(get)
-
-        if ($reset){
-
-            $book = Book::query()
-                ->where('id', '=', $order->book_id)->first();
-
-            $book->books_limit += $order->book_number;
-
-            $book->save();
-
-            $order->book_number = 0;
-
-            $order->save();
-
-            $reset = null;
-        }
-
-        //----------------------------------------Изменение количества при нажатии на кнопки----------------------------
-
-        $quantity = $request->get('quantity');
-
-        if ($order->book_number > 0 && $quantity < 0) {
-
-            $order->book_number += $quantity;
-
-            $bookOrder->books_limit -=$quantity;
-
-            $bookOrder->save();
-
-            $order->save();
-        }
-
-        if ($quantity > 0) {
-            if ($bookOrder->books_limit > 0){
-
-                $order->book_number += $quantity;
-
-                $bookOrder->books_limit -= $quantity;
-
-                $bookOrder->save();
-
-                $order->save();
-            }
-        }
 
         //-------------------------------------Передача данных----------------------------------------------------------
 
@@ -183,57 +121,139 @@ class OrderController extends Controller
                 'deliveries'=>$deliveries,
                 'offices' => $offices,
                 'books' => $books,
-                'ukrcities'=> $ukrcities,
+                'cities'=> $cities,
                 'status'=>$status,
-                'bookOrder'=>$bookOrder,
-
             ]);
         }
-
         return view('layouts.admin.order_edit', [
             'order'=>$order,
             'deliveries'=>$deliveries,
             'offices' => $offices,
             'books' => $books,
-            'ukrcities'=> $ukrcities,
+            'cities'=> $cities,
             'status'=>$status,
-            'bookOrder'=>$bookOrder,
+
         ]);
     }
 
 //=====================================================Обновление заказа================================================
 
-
-
+    /**
+     * @param Request $request
+     * @param Order $order
+     * @return RedirectResponse
+     */
     public function update(Request $request, Order $order): RedirectResponse
-    {//---------------------------------Получение данных из реквеста и сохранение заказа-----------------------------
+    {
+        //---------------------------------Получение данных из реквеста и сохранение заказа-----------------------------
+
+        if ($order->orderBooks->isEmpty()){
+            $order->delete();
+        }
+
+        foreach ($request->get('books') as $book){
+           if($book['book_number'] == 0){
+               return redirect()->back()->with('errors', 'количество книг в заказе не может быть меньше 1');
+           }
+        }
+        $editedOrderBooks = collect($request->get('books', []))->keyBy(function($orderBook) {
+            return Arr::get($orderBook, 'book_id');
+        });
+
+        $existsOrderBooks = $order->orderBooks->keyBy('book_id');
+
+        //------------------------------------------- add---------------------------------------------------------------
+        $newOrderBooks = $editedOrderBooks->diffKeys($existsOrderBooks);
+
+        //------------------------------------------- delete------------------------------------------------------------
+        $deletedOrderBooks = $existsOrderBooks->diffKeys($editedOrderBooks);
+
+
+        $deletedOrderBooks->each(function($orderBook) {
+            /* @var Book_Order $orderBook */
+
+            $book = Book::query()->where('id', '=', $orderBook->book_id)->first();
+
+            /* @var Book $book */
+
+            $book->books_limit += $orderBook->book_number;
+
+            $book->save();
+
+            $orderBook->delete();
+        });
+
+        //--------------------Создание нового заказа с измененными книгами----------------------------------------------
+
+        $newOrderBooks->each(function ($item) use($order) {
+
+            $order->orderBooks()->save(
+                new Book_Order(
+                    [
+                        'book_id' => Arr::get($item, 'book_id'),
+                        'book_number' => Arr::get($item, 'book_number'),
+                    ]
+                )
+            );
+
+            $book = Book::query()
+                ->where('id', '=', $item['book_id'])->first();
+
+            /* @var Book $book */
+
+            $book->books_limit =  $item['books_limit'];
+
+            $book->save();
+
+        });
+
+        //-------------------------Синхронизация остатков книги при Ajax запросе----------------------------------------
+
+        foreach ($editedOrderBooks as $editedOrderBook){
+
+            $book = Book::query()
+                ->where('id', '=', $editedOrderBook['book_id'])->first();
+
+            /* @var Book $book */
+
+            $book->books_limit =  $editedOrderBook['books_limit'];
+
+            $book->save();
+        }
+
+        //------------------------------Обработка измененного количества книг-------------------------------------------
+
+        foreach ($existsOrderBooks as $bookId => $existsOrderBook){
+
+            if (!Arr::has($editedOrderBooks, $bookId)){
+                continue;
+            }
+            $existsOrderBook->book_number = $editedOrderBooks->get($bookId)['book_number'];
+
+            $existsOrderBook->save();
+        }
 
         $order->fill($request->all());
 
         $order->save();
 
-        $bookOrder = Book::query()
-            ->where('id', '=', $order->book_id)
-            ->first();
-
         //------------------------------Проверка на статус заказа и редактирование количества книг----------------------
 
         if ($order->status->status == 'canceled'){
-            $bookOrder->books_limit +=$order->book_number;
 
-            $order->book_number = 0;
+            foreach ($editedOrderBooks as $editedOrderBook){
 
-            $bookOrder->save();
+                $book = Book::query()
+                    ->where('id', '=', $editedOrderBook['book_id'])->first();
 
-            $order->save();
+                /* @var Book $book */
+
+                $book->books_limit +=  $editedOrderBook['book_number'];
+
+                $book->save();
+            }
 
             return redirect()->route('admin.orders')->with('success', 'заказ был отменен');
-        }
-
-        if ($order->status->status == 'accepted'){
-
-            return redirect()->route('admin.orders')
-                ->with('success', 'Заказ принят. Для обработки перейдите на страницу редектирования');
         }
 
             return redirect()->route('admin.orders', ['order'=>$order])->with('success', 'заказ успешно отредактирован');
@@ -241,22 +261,123 @@ class OrderController extends Controller
 
     //-------------------------------------------Удаление заказа--------------------------------------------------------
 
-    public function delete(Order $order): RedirectResponse
+    public function delete(Request $request): RedirectResponse
     {
-        if($order->status->status != "allowed") {
-            $bookOrder = Book::query()
-                ->where('id', '=', $order->book_id)->first(); # если нужно будет добавить в заказ несколько разных книг, нужно передавать коллекцию(get)
+        /**
+         * @var Book $book
+         * @var Order $order
+         */
 
-            $bookOrder->books_limit += $order->book_number;
+        $order_id = $request->get('order_id');
 
-            $order->book_number = 0;
+        $books_id = $request->get('books_id');
 
-            $bookOrder->save();
+        $order = Order::query()->find($order_id);
 
-            $order->save();
+        $books = Book::query()->whereIn('id', $books_id)->get();
+
+        $multipleOrders = Book_Order::query()
+            ->where('order_id', $order->id)->get();
+
+        if($order->status->status != "allowed" && $order->status->status != "canceled") {
+
+            foreach ($multipleOrders as $multipleOrder) {
+
+                $book = Book::query()->find($multipleOrder->book_id);
+
+                $book->books_limit += $multipleOrder->book_number;
+
+                $book->save();
         }
-            $order->delete();
+        }
 
-            return redirect()->route('admin.orders')->with('success', 'Заказ удален');
+        foreach ($books as $book) {
+            $order->books()->detach($book);
+        }
+
+        $order->delete();
+
+        return redirect()->route('admin.orders')->with('success', 'Заказ удален');
+
     }
+
+//=========================================Изменение количества книг в заказе===========================================
+
+    public function changeQuantityBookOrder(Request $request): JsonResponse
+    {
+        /**
+         * @var Book $book
+         *
+         * @var Book_Order $multipleOrder
+         */
+
+        $quantity = $request->get('quantity');
+
+        $book_id = $request->get('book_id');
+
+        $order_id = $request->get('order_id');
+
+
+        $multipleOrder = Book_Order::query()
+            ->where('order_id', '=', $order_id)
+            ->where('book_id', '=', $book_id)->first();
+
+        $book = Book::query()->find($book_id);
+
+        if ($multipleOrder->book_number > 1 && $quantity < 0) {
+
+            $multipleOrder->book_number += $quantity;
+
+            $book->books_limit -=$quantity;
+
+            $book->save();
+
+            $multipleOrder->save();
+        }
+
+        if ($quantity > 0) {
+
+            if ($book->books_limit > 0){
+
+                $multipleOrder->book_number += $quantity;
+
+                $book->books_limit -= $quantity;
+
+                $book->save();
+
+                $multipleOrder->save();
+            }
+        }
+
+        return response()->json(['bookOrder'=>$book, 'multipleOrder'=>$multipleOrder]);
+    }
+
+    public function deleteBookOrder(Request $request): JsonResponse
+    {
+        /* @var Book_Order $multipleOrder
+         * @var Book $book
+         * @var Order $order
+         */
+
+        $delete_book_id = $request->get('delete_book_id');
+
+        $order_id = $request->get('order_id');
+
+        $book_number = $request->get('book_number');
+
+        $multipleOrder = Book_Order::query()
+            ->where('order_id', '=', $order_id)
+            ->where('book_id', '=', $delete_book_id)->first();
+
+        $book = Book::query()->find($delete_book_id);
+
+        $book->books_limit += $book_number;
+
+        $book->save();
+
+        $multipleOrder->delete();
+
+        return response()->json(['status'=>'success']);
+    }
+
 }

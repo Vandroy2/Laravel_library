@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav_library">
 
 
     <div style="display: flex; flex-direction: column; width: 25%; margin-left: 50px">
@@ -16,23 +16,10 @@
         <ul class="navbar-nav my-2 my-lg-0">
             <li class="nav-item active">
                 @if(\Illuminate\Support\Facades\Auth::check())
-                    <a class="btn btn-light" style="font-family: 'DejaVu Serif'; padding-top: 8px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
+                    <a class="btn btn-light" style="padding-top: 8px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
                 @endif
 
             </li>
-
-
-@auth()
-            <div style="display: flex; justify-content: space-between">
-                <h6 id = "cartCount" style="position: absolute; right: 0px;top: 0; z-index: 1000;margin-right: 198px; margin-top: 50px; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">{{count(\Illuminate\Support\Facades\Auth::user()->books)}}</h6>
-                <a href="{{route('onLineLibraryFavoritesBooks')}}">
-                    <img src="https://webformyself.com/wp-content/uploads/2017/124/2.jpg" alt="Remove" class="clear_buton" width="60" height="60" style="position: relative" >
-                    </a>
-
-
-
-
-            @endauth
 
             <li class="nav-item dropdown" style="margin-right: 50px">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -66,12 +53,12 @@
 
             </li>
 
-        </ul>
-    </div>
 
 
 
 
 
+
+@include('includes.main.scripts')
 </nav>
 

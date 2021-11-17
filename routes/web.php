@@ -4,8 +4,10 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BookOrderController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\OnlineLibraryController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,20 +28,26 @@ Route::post('/registration', [LoginController::class, 'registration'])->name('re
 
 Route::post('/auth', [LoginController::class, 'auth'])->name('auth');
 
-Route::get('/reg', function () {
-   return view('registration');
-})->name('reg');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/reg', function () { return view('registration'); })->name('reg');
 
 Route::middleware('auth')->group(function (){
 
-    Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
+    Route::prefix('cabinet')->group(function (){
 
-    Route::get('/personal', function (){
-        return view('personalCabinet');})->name('personalCabinet');
+        Route::get('/personal', function (){ return view('personalCabinet');})->name('personalCabinet');
 
-    Route::match(['post', 'get'], '/orders', [CabinetController::class, 'orders'])->name('personalCabinetOrders');
+        Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
 
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+        Route::match(['post', 'get'], '/orders', [CabinetController::class, 'orders'])->name('personalCabinetOrders');
+
+        Route::get('/favoriteBooks', [CabinetController::class, 'favoriteBooks'])->name('onLineLibraryFavoritesBooks');
+
+        Route::match(['get', 'post'], '/favoritePersonal/{book}', [CabinetController::class, 'addToFavoritePersonal'])->name('onLineLibraryAddToFavoritePersonal');
+
+    });
+
 
 //    =======================================================Publications==========================================================
 
@@ -49,8 +57,6 @@ Route::prefix('comments')->group(function (){
 
     Route::post('/store', [commentController::class, 'store'])->name('commentStore');
 
-
-
 });
 
 Route::prefix('olineLibrary')->group(function (){
@@ -59,23 +65,20 @@ Route::prefix('olineLibrary')->group(function (){
 
     Route::match(['get', 'post'], '/favorite/{book}', [OnlineLibraryController::class, 'addToFavorite'])->name('onLineLibraryAddToFavorite');
 
-    Route::match(['get', 'post'], '/favoritePersonal/{book}', [OnlineLibraryController::class, 'addToFavoritePersonal'])->name('onLineLibraryAddToFavoritePersonal');
-
-    Route::get('/favoriteBooks', [OnlineLibraryController::class, 'favoriteBooks'])->name('onLineLibraryFavoritesBooks');
+    Route::match(['get', 'post'], '/addToBasket', [OnlineLibraryController::class, 'addToBasket'])->name('onlineLibraryAddToBasket');
 });
 
-Route::prefix('bookOrder')->group(function (){
+    Route::match(['get','post'],'/multipleOrder', [BookOrderController::class, 'booksMultipleOrder'])->name('booksMultipleOrder');
 
-Route::match(['get','post'], '/{book}', [BookOrderController::class, 'bookOrder'])->name('bookOrder');
+    Route::prefix('offices')->group(function (){
 
-//Route::match(['get','post'], '/changeQuantity/{bookOrder}', [BookOrderController::class, 'changeQuantity'])->name('bookChangeQuantity');
+        Route::match(['get','post'], '/show', [OfficeController::class, 'show'])->name('officesShow');
+    });
 
-//Route::match(['get','post'], '/incNumber/{bookOrder}', [BookOrderController::class, 'incNumber'])->name('bookOrderincNumber');
-//
-//Route::match(['get','post'], '/decNumber/{bookOrder}', [BookOrderController::class, 'decNumber'])->name('bookOrderdecNumber');
+    Route::prefix('delivery')->group(function (){
 
-
-});
+        Route::match(['get', 'post'], '/', [DeliveryController::class, 'view'])->name('deliveries');
+    });
 
 });
 
