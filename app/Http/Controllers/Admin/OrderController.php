@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderFormRequest;
 use App\Models\Book;
 use App\Models\Book_Order;
 use App\Models\City;
@@ -10,10 +11,12 @@ use App\Models\Delivery;
 use App\Models\Office;
 use App\Models\Order;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -32,8 +35,9 @@ class OrderController extends Controller
     }
 //================================================Создание заказа=======================================================
 
-    public function create(Request $request): RedirectResponse
+    public function create(OrderFormRequest $request): RedirectResponse
     {
+
         /* @var Book $book */
 
         //------------------------------------Получение данных из реквеста-----------------------------------------------
@@ -48,6 +52,34 @@ class OrderController extends Controller
 
         $books = Book::query()->whereIn('id', $book_id )->get();
 
+        if (!Auth::check()){
+
+            $email = $request->get('email');
+
+            $existUser = User::query()->where('email', '=', $email)->first();
+
+            if ($existUser)
+            {
+                /**
+                 * @var User $existUser
+                 */
+                $order->user_id = $existUser ->id;
+            }
+            else{
+                $user = new User();
+
+                $user->fill($request->all());
+
+                $user->save();
+
+                $order->user_id = $user->id;
+            }
+            $order->save();
+        }
+
+
+
+
         //---------------------------------------Проверка на пустой заказ-----------------------------------------------
 
         foreach ($books as $book){
@@ -60,13 +92,7 @@ class OrderController extends Controller
         {
             $multipleOrder = new Book_Order();
 
-            $multipleOrder->book_number = $book->books_number;
-
-            $multipleOrder->book_id = $book->id;
-
-            $multipleOrder->order_id = $order->id;
-
-            $multipleOrder->save();
+            $multipleOrder->multipleOrderCreate($book, $order);
 
             $book->books_number = 0;
 
@@ -295,7 +321,22 @@ class OrderController extends Controller
             $order->books()->detach($book);
         }
 
+        //----------------------------Удаление пользователя-------------------------------------------------------------
+//        $user = User::query()->where('id', '=', $order->user_id)->first();
+//
+//        /* @var User $user */
+
+//        $user_id = Order::query()->pluck('user_id')->toArray();
+//
+//        if (!$user->birthday && count(array_keys($user_id, $user->id)) <= 1){
+//
+//            $user->delete();
+//        }
+        //--------------------------------------------------------------------------------------------------------------
+
         $order->delete();
+
+
 
         return redirect()->route('admin.orders')->with('success', 'Заказ удален');
 

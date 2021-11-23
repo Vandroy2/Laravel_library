@@ -21,21 +21,32 @@
 
             </li>
 
-            @auth()
+@auth()
                 <div style="display: flex; justify-content: space-between">
                     <a href="{{route('onLineLibraryFavoritesBooks')}}">
-                        <h6 class="number_nav" id = "cartCount" style="position: absolute; right: 210px;top: 17px; z-index: 1000; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">{{count(\Illuminate\Support\Facades\Auth::user()->books)}}</h6>
+
+
+
+                        <h6 class="number_nav" id = "cartCount" style="position: absolute; right: 210px;top: 17px; z-index: 1000; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">
+                            {{count(\Illuminate\Support\Facades\Auth::user()->books)}}
+                        </h6>
                         <img src="/assets/img/star.png" alt="Remove" class="clear_buton" width="35" height="35" style="position: relative" >
                     </a>
-                    <a class="navButtonBasket">
-                        <h6 class="number_nav" id = "basketCount" style="position: absolute; right: 172px;top: 17px; z-index: 1000; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">{{count(\Illuminate\Support\Facades\Auth::user()->booksInBasket)}}</h6>
-                        <img src="/assets/img/basket_book.png" class="navBasket popup-link" id="popup-link">
-                    </a>
-
-
-
 
                     @endauth
+                    <a class="navButtonBasket">
+                        @if(!empty(\Illuminate\Support\Facades\Session::get('cartBooks')))
+                        <h6 class="number_nav" id = "basketCount" style="position: absolute; right: 172px;top: 17px; z-index: 1000; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">
+                            {{count($cartBooks)}}
+                        </h6>
+                        @endif
+                            @if(empty(\Illuminate\Support\Facades\Session::get('cartBooks')))
+                            <h6 class="number_nav" id = "basketCount" style="position: absolute; right: 172px;top: 17px; z-index: 1000; color: black; font-weight: bolder; font-family: Libre Baskerville,fantasy">
+                               0
+                            </h6>
+                            @endif
+                        <img src="/assets/img/basket_book.png" class="navBasket popup-link" id="popup-link">
+                    </a>
 
                     <li class="nav-item dropdown" style="margin-right: 50px">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

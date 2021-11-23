@@ -70,8 +70,9 @@
         <p>Оформление заказа</p>
     </div>
 
-    <form action="{{route('admin.orderCreate')}}" method="POST" data-book-order-id="{{$bookOrder->id}}" id="bookOrderForm">
-        @csrf
+
+        <form action="{{route('admin.orderCreate')}}" method="POST" id="bookOrderForm">
+            @csrf
         <table class="table  order_table multiple_order_table">
 
             <tbody class ="order_table">
@@ -117,19 +118,53 @@
                     </select>
 
                 </td>
+            </tr>
+
+            @if(!\Illuminate\Support\Facades\Auth::user())
+
+            <tr>
+                <th scope="row">Введите имя</th>
+                <td colspan="2" class = "table_row">
+
+                    <input type="text" name="name" placeholder="Введите имя" class = "inputOrder" required>
+
+                </td>
+            </tr>
+
+            <tr>
+                <th scope="row">Введите фамилию</th>
+                <td colspan="2" class = "table_row">
+
+                    <input type="text" name="surname" placeholder="Введите фамилию" class = "inputOrder" required>
+
+                </td>
+            </tr>
+
+            <tr>
+                <th scope="row">Введите email</th>
+                <td colspan="2" class = "table_row">
+
+                    <input type="email" name="email" placeholder="Введите email" class = "inputOrder" required>
+
+                </td>
+            </tr>
+            @endauth
 
             </tbody>
-
         </table>
 
         <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::id()}}">
         @foreach($booksOrder as $bookOrder)
         <input type="hidden" name="booksOrder[]" value="{{$bookOrder->id}}">
         @endforeach
-        <a href="{{route('onlineLibrary')}}" type="button" class="btn btn-secondary btn_multiple_order_cancel btn_clear_basket">Отменить заказ</a>
+        <a href="{{route('admin.bookClearBasket')}}" type="button" class="btn btn-secondary btn_multiple_order_cancel btn_clear_basket">Отменить заказ</a>
         <input type="submit" class = 'btn btn-secondary btn_book_order btn_book_multiple_order ' value="Оформить заказ">
 
+
+
     </form>
+
+
 
 </div>
 </section>
@@ -154,10 +189,6 @@
             data:{'reset':reset},
 
             success: function (response){
-
-                window.location.reload()
-
-                console.log(response)
             }
         })
     })

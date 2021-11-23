@@ -5,22 +5,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\Book_User;
 use App\Models\Comment;
-use App\Models\Image;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class OnlineLibraryController extends Controller
 {
     public function view(Request $request)
     {
+
         $comments = Comment::all();
 
-        $booksInBasket = Auth::user()->booksInBasket;
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $cartBooks = $cartBooks->map(function($book) use($cartBooksArr) {
+
+            $book->books_number = Arr::get(Arr::get($cartBooksArr, $book->id, []), 'count', 1);
+
+            $book->inCart = Arr::has($cartBooksArr, $book->id);
+
+            return $book;
+        });
 
         $search_book = $request->input('search_book');
 
@@ -38,7 +47,7 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'booksInBasket'=>$booksInBasket]);
+        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks]);
 
     }
 

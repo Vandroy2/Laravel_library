@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserEditRequest;
+use App\Models\Book;
+use App\Models\Book_Order;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use  Illuminate\Support\Facades\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -56,12 +60,9 @@ class UserController extends Controller
     public function view(Request $request)
     {
 
-
-
         $search_user = $request->input('search_user');
 
         $users = User::query()
-
 
             ->with('images')
             ->when(!empty($search_user), function ($query) use($search_user){
@@ -154,13 +155,36 @@ class UserController extends Controller
 
     public function delete(User $user): RedirectResponse
     {
+
+        $orders = Order::query()->where('user_id', '=', $user->id)->get();
+
+        foreach ($orders as $order){
+
+            $multipleOrders = Book_Order::query()
+                ->where('order_id', $order->id)->get();
+
+            foreach ($multipleOrders as $multipleOrder) {
+
+                $book = Book::query()->find($multipleOrder->book_id);
+
+                /**
+                 * @var Book $book
+                 */
+
+                $book->books_limit += $multipleOrder->book_number;
+
+                $book->save();
+
+            $order = Book_Order::query()->where('order_id', '=', $order->id)->delete();
+        }}
+
         $user->delete();
 
         return redirect()->route('admin.users')->with('success', 'Пользователь удален');
 
-
     }
-
-
-
 }
+
+
+
+

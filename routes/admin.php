@@ -11,6 +11,37 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+//================================================Order books===========================================================
+
+Route::prefix('books')->group(function (){
+
+    Route::get('/order/book/{book}', [bookController::class, 'order'])->name('bookOrder');
+
+    Route::match(['get', 'post'],'/order/books', [bookController::class, 'multipleOrder'])->name('bookMultipleOrder');
+
+    Route::match(['get', 'post'], '/book/changeQuantity', [bookController::class, 'changeQuantity'])->name('bookChangeQuantity');
+
+    Route::match(['get', 'post'], '/book/resetQuantity', [bookController::class, 'resetQuantity'])->name('bookResetQuantity');
+
+    Route::match(['get', 'post'], '/book/addToBasket/{id}', [bookController::class, 'addToBasket'])->name('bookAddToBasket');
+
+    Route::match(['get', 'post'], '/book/deleteFromBasket', [bookController::class, 'deleteFromBasket'])->name('bookDeleteFromBasket');
+
+    Route::match(['get', 'post'], '/book/clearBasket', [bookController::class, 'clearBasket'])->name('bookClearBasket');
+
+    Route::match(['get', 'post'], '/book/limit', [bookController::class, 'limit'])->name('bookLimit');
+
+});
+
+    Route::match(['get', 'post'],'/cities/show', [CityController::class, 'show'])->name('citiesShow');
+
+    Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
+
+
+
+
+//======================================================================================================================
+
 Route::middleware(['guest.admin',])->group(function () {
     Route::get('/login', [UserController::class, 'login'])->name('login');
 
@@ -31,6 +62,13 @@ Route::middleware([
 
     Route::prefix('users')->group(function (){
 
+        //------------------------------Тест сессии---------------------------------------------------------------------
+
+        Route::get('/session', [UserController::class, 'session'])->name('usersSession');
+
+        Route::get('/sessionAbout', [UserController::class, 'sessionAbout'])->name('usersSessionAbout');
+
+        //--------------------------------------------------------------------------------------------------------------
         Route::get('/', [UserController::class, 'view'])->name('users');
 
         Route::get('/create', [UserController::class, 'create'])->middleware('can:admin.create')->name('userCreate');
@@ -48,8 +86,6 @@ Route::middleware([
     Route::prefix('cities')->group(function (){
 
         Route::get('/', [CityController::class, 'view'])->name('cities');
-
-        Route::match(['get', 'post'],'/show', [CityController::class, 'show'])->name('citiesShow');
 
         Route::get('/create', [CityController::class, 'create'])->name('cityCreate');
 
@@ -69,7 +105,7 @@ Route::middleware([
 
         Route::get('/', [LibraryController::class, 'view'])->name('libraries');
 
-        Route::get('/create', [LibraryController::class, 'create'])->name('libraryCreate');
+        Route::post('/create', [LibraryController::class, 'create'])->name('libraryCreate');
 
         Route::post('/store', [LibraryController::class, 'store'])->name('libraryStore');
 
@@ -109,29 +145,14 @@ Route::middleware([
 
         Route::post('/store', [bookController::class, 'store'])->name('bookStore');
 
-         Route::get('/edit/{book}', [bookController::class, 'edit'])->name('bookEdit');
+        Route::get('/edit/{book}', [bookController::class, 'edit'])->name('bookEdit');
 
         Route::post('/update/{book}', [bookController::class, 'update'])->name('bookUpdate');
 
         Route::get('/delete/{book}', [bookController::class, 'delete'])->name('bookDelete');
 
-        Route::get('/order/book/{book}', [bookController::class, 'order'])->name('bookOrder');
-
-        Route::match(['get', 'post'],'/order/books', [bookController::class, 'multipleOrder'])->name('bookMultipleOrder');
-
-        Route::match(['get', 'post'], '/book/changeQuantity', [bookController::class, 'changeQuantity'])->name('bookChangeQuantity');
-
-        Route::match(['get', 'post'], '/book/resetQuantity', [bookController::class, 'resetQuantity'])->name('bookResetQuantity');
-
-        Route::match(['get', 'post'], '/book/addToBasket', [bookController::class, 'addToBasket'])->name('bookAddToBasket');
-
-        Route::match(['get', 'post'], '/book/deleteFromBasket', [bookController::class, 'deleteFromBasket'])->name('bookDeleteFromBasket');
-
-        Route::match(['get', 'post'], '/book/clearBasket', [bookController::class, 'clearBasket'])->name('bookClearBasket');
-
-        Route::match(['get', 'post'], '/book/limit', [bookController::class, 'limit'])->name('bookLimit');
-
     });
+
     //===============================================Personal cabinet===================================================
 
     Route::prefix('personalCabinet')->group(function (){
@@ -164,7 +185,7 @@ Route::middleware([
 
         Route::match(['get','post'], '/', [OrderController::class, 'view'])->name('orders');
 
-        Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
+//        Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
 
         Route::match(['get','post'], '/createMultiple', [OrderController::class, 'createMultiple'])->name('orderCreateMultiple');
 

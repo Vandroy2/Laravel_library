@@ -34,6 +34,6 @@ class RedirectIfAuthenticated
      * @return string
      */
     protected function redirectTo() {
-        return RouteServiceProvider::HOME;
+        return route('main');
     }
 }

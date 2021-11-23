@@ -9,12 +9,11 @@ use App\Models\City;
 use App\Models\Delivery;
 use App\Models\Image;
 use App\Models\Office;
-use App\Models\Ukrcity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Constraint\Count;
 
 
 class BookController extends Controller
@@ -90,7 +89,7 @@ class BookController extends Controller
     }
 //====================================Обновление книги==================================================================
 
-    public function update(BookCreateRequest $request, Book $book, Image $image): RedirectResponse
+    public function update(Request $request, Book $book, Image $image): RedirectResponse
     {
         $book->fill($request->all());
 
@@ -124,6 +123,10 @@ class BookController extends Controller
 
     public function changeQuantity(Request $request): JsonResponse
     {
+        /**
+         * @var Book $book
+         */
+        $cartBooksArr = $request->session()->get('cartBooks', []);
 
         $quantity = $request->get('quantity');
 
@@ -131,9 +134,7 @@ class BookController extends Controller
 
         $book = Book::query()->find($book_id);
 
-        /**
-         * @var Book $book
-         */
+
         if ($book->books_number > 1 && $quantity < 0) {
 
             $book->books_number += $quantity;
@@ -141,6 +142,10 @@ class BookController extends Controller
             $book->books_limit -=$quantity;
 
             $book->save();
+
+            $cartBooksArr[$book_id]['count'] = $book->books_number;
+
+            $request->session()->put('cartBooks', $cartBooksArr);
         }
 
         if ($quantity > 0) {
@@ -152,10 +157,14 @@ class BookController extends Controller
                 $book->books_limit -= $quantity;
 
                 $book->save();
+
+                $cartBooksArr[$book_id]['count'] = $book->books_number;
+
+                $request->session()->put('cartBooks', $cartBooksArr);
             }
         }
 
-        return response()->json(['book'=>$book,]);
+        return response()->json(['book'=>$book]);
     }
 //================================================Сброс количества при закрытии корзины=================================
 
@@ -212,9 +221,11 @@ class BookController extends Controller
     }
 //=============================================Множественный заказ книг=================================================
 
-    public function multipleOrder()
+    public function multipleOrder(Request $request)
     {
-        $booksInBasket = Auth::user()->booksInBasket;
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
 
         $deliveries = Delivery::all();
 
@@ -224,7 +235,7 @@ class BookController extends Controller
 
         return view('multiple_book_order', [
 
-            'booksOrder'=>$booksInBasket,
+            'booksOrder'=>$cartBooks,
             'deliveries'=> $deliveries ,
             'cities'=>$cities ,
             'offices'=>$offices,
@@ -233,74 +244,87 @@ class BookController extends Controller
 
 //=============================================Добавление книги в корзину===============================================
 
-    public function addToBasket(Request $request)
+    public function addToBasket(Request $request, $id): JsonResponse  #Добавить Request на id книги
     {
-        $book_id = $request->get('book_id');
 
-        $booksInBasket = Auth::user()->booksInBasket()->get();
+        $cartBooksArr = $request->session()->get('cartBooks', []);
 
-        if ($book_id) {
-            $book_add_to_basket = Book::query()->find($book_id);
+        if(Arr::has($cartBooksArr, $id))
+            return response()->json(['status' => 'fail', 'message' => 'Book is exist in cart.'], 422);
 
-            if (!($booksInBasket->contains($book_add_to_basket))) {
-                Auth::user()->booksInBasket()->toggle($book_add_to_basket);
-            }
+        /** cartBooks = [1 => ['count' => 1], ]*/
 
-            return response()->json([
-                'book_add_to_basket'=>$book_add_to_basket,
-                'booksInBasket'=>$booksInBasket,
-            ]);
+        $cartBooksArr[$id] = ['count' => 1];
 
-        }
+        $request->session()->put('cartBooks', $cartBooksArr);
 
-        return view('onlineLibrary', ['booksInBasket'=>$booksInBasket]);
+        $book = Book::query()->find($id);
+
+        $num = Count($cartBooksArr);
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'book_add_to_basket' => $book,
+                'number' =>$num
+            ]
+        );
     }
 
 //==============================================Удаление книги из корзины===============================================
 
-    public function deleteFromBasket(Request $request): JsonResponse
+    public function deleteFromBasket(Request $request): JsonResponse  #Добавить Request на id книги
     {
-        $book_delete_id = $request->get('delete_book_id');
+            $bookDeleteId = $request->get('delete_book_id');
 
-            /* @var Book $book_delete */
+            /* @var Book $bookDelete */
 
-            $book_delete = Book::query()
-                ->when(!empty($book_delete_id), function ($query) use ($book_delete_id){
-                    return $query->where('id', '=', $book_delete_id);
-                })->first();
+            $bookDelete = Book::query()->find($bookDeleteId);
 
-            $book_delete->books_limit += $book_delete->books_number;
+            $bookDelete->books_limit += $bookDelete->books_number;
 
-            $book_delete->books_number = 0;
+            $bookDelete->books_number = 0;
 
-            $book_delete->save();
+            $bookDelete->save();
 
-            Auth::user()->booksInBasket()->toggle($book_delete);
+            $cartBooksArr = $request->session()->get('cartBooks', []);
 
-            return response()->json(['book_delete_id'=>$book_delete->id]);
+            $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+            $books= $cartBooks->filter(function ($book) use($bookDeleteId)
+            {
+                return $book->id != $bookDeleteId;
+
+            })->all();
+
+            $request->session()->put('cartBooks', $books);
+
+            return response()->json(['bookDelete'=>$bookDelete]);
     }
 
 //===============================================Очистка корзины========================================================
 
     public function clearBasket(Request $request): RedirectResponse
     {
-
         $reset = $request->get('reset');
 
-        $booksInBasket = Auth::user()->booksInBasket;
+        $cartBooksArr = $request->session()->get('cartBooks', []);
 
-            foreach ($booksInBasket as $book) {
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
 
-                    Auth::user()->booksInBasket()->toggle($book);
+        $request->session()->forget('cartBooks');
+
+            foreach ($cartBooks as $book) {
 
                     $book->books_limit += $book->books_number;
 
                     $book->books_number = 0;
 
                     $book->save();
-                }
+            }
 
             if ($reset){
+
                 return redirect()->route('onlineLibrary')->with('errors', 'Заказ был отменен');
             }
 

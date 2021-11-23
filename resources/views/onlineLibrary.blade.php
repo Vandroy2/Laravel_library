@@ -1,4 +1,7 @@
 @extends('layouts.library')
+
+
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <body class = 'wrapper'>
 
@@ -25,21 +28,21 @@
                                 </thead>
                                 <tbody class="popupBooksInBasket">
 
-{{--                                @dd($booksInBasket)--}}
 
-                                @foreach($booksInBasket as $bookInBasket)
+                                @if(!empty($cartBooks))
+                                @foreach($cartBooks as $cartBook)
 
-                                <tr class = "data_book_basket_card" id="data_book_basket_card:{{$bookInBasket->id}}" data-book-basket-id = "{{$bookInBasket->id}}">
+                                <tr class = "data_book_basket_card" id="data_book_basket_card:{{$cartBook->id}}" data-book-basket-id = "{{$cartBook->id}}">
                                     <td class="garbage_button_container">
-                                        <button class="garbage_button" data-book-basket-delete_id ="{{$bookInBasket->id}}"> <img src="/assets/img/garbage_basket.jpeg" class="garbage_basket"></button>
+                                        <button class="garbage_button" data-book-basket-delete_id ="{{$cartBook->id}}"> <img src="/assets/img/garbage_basket.jpeg" class="garbage_basket"></button>
 
                                     </td>
                                     <td class = "vertical-align">
                                         <div class="flex align-content-center">
                                             <div class="card card_basket" style="width: 2.5rem; height: 4rem;border-radius: 10px;"  >
-                                                <div id="carouselExampleControls{{$bookInBasket->id}}" class="carousel slide" data-ride="carousel" data-order-book-id = "{{$bookInBasket->id}}" >
+                                                <div id="carouselExampleControls{{$cartBook->id}}" class="carousel slide" data-ride="carousel" data-order-book-id = "{{$cartBook->id}}" >
                                                     <div class="carousel-inner" style="width: 2.5rem; height: 4rem;border-radius: 10px">
-                                                        @foreach($bookInBasket->images as $image)
+                                                        @foreach($cartBook->images as $image)
                                                             <div class="carousel-item @if($loop->first) active @endif" data-interval="18000">
                                                                 <img src="{{asset('/storage/'. $image->images)}}" class="d-block img img_popup" alt="...">
                                                             </div>
@@ -47,25 +50,26 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        <div data-added-book-id="{{$bookInBasket->id}}" class ="addedBookContainer">{{$bookInBasket->book_name}}</div></div>
+                                        <div data-added-book-id="{{$cartBook->id}}" class ="addedBookContainer">{{$cartBook->book_name}}</div></div>
                                     </td >
                                     <td class="bookLimitBasket">
                                         <div class = "quantity_popup_buttons_container">
-                                        <button type="button" class="numberBookOrder decPopupBookNumber" style="border: none; background-color: transparent" data-order-book-id ="{{$bookInBasket->id}}">
+                                        <button type="button" class="numberBookOrder decPopupBookNumber" style="border: none; background-color: transparent" data-order-book-id ="{{$cartBook->id}}">
                                             <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
                                         </button>
-                                        <p class = "onlineBookNumber" id="onlineBookNumber:{{$bookInBasket->id}}" data-book-number="{{$bookInBasket->books_number}}">{{$bookInBasket->books_number}}</p>
-                                        <button type="button" class="numberBookOrder incPopupBookNumber" style="border: none; background-color: transparent" data-order-book-id ="{{$bookInBasket->id}}">
+                                        <p class = "onlineBookNumber" id="onlineBookNumber:{{$cartBook->id}}" data-book-number="{{$cartBook->books_number}}">{{$cartBook->books_number}}</p>
+                                        <button type="button" class="numberBookOrder incPopupBookNumber" style="border: none; background-color: transparent" data-order-book-id ="{{$cartBook->id}}">
                                             <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Plus" >
                                         </button>
                                         </div>
                                     </td>
 
-                                    <td class="bookLimitBasket" id = "bookLimitBasket:{{$bookInBasket->id}}">
-                                        {{$bookInBasket->books_limit}}</td>
+                                    <td class="bookLimitBasket" id = "bookLimitBasket:{{$cartBook->id}}">
+                                        {{$cartBook->books_limit}}</td>
 
                                 </tr>
                                 @endforeach
+                                @endif
                                 </tbody>
                             </table>
 
@@ -109,19 +113,20 @@
                         <div class="card-body">
                             <h6 class="card-title">{{$book->book_name}}</h6>
                             <p class="card-text">{{$book->author->fullname}}</p>
-                            <p class="card-text" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Осталось книг:{{$book->books_limit}}</p>
+                            <p class="card-text" id = "bookLimit{{$book->id}}" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Осталось книг:{{$book->books_limit}}</p>
                         </div>
                     </div>
                     </a>
 
-                    @if(\Illuminate\Support\Facades\Auth::user()->booksInBasket->contains($book))
-                        <a href="" id="basket{{$book->id}}" data-order-book-id = "{{$book->id}}" class = "addToBasket hidden_block"><img src="assets/img/basket_book.png" class = "basket"></a>
-                   @endif
 
-                    @if(!(\Illuminate\Support\Facades\Auth::user()->booksInBasket->contains($book)))
 
+                    @if($cartBooks->contains($book))
+                    <a href="" id="basket{{$book->id}}" data-order-book-id = "{{$book->id}}" class = "addToBasket hidden_block"><img src="assets/img/basket_book.png" class = "basket"></a>
+                    @endif
+                    @if(!$cartBooks->contains($book))
                     <a href="" id="basket{{$book->id}}" data-order-book-id = "{{$book->id}}" class = "addToBasket"><img src="assets/img/basket_book.png" class = "basket"></a>
                     @endif
+
                     <form action="{{route('onLineLibraryAddToFavorite', ['book' => $book])}}" class="add_fav_form" method ="POST" style="margin-bottom: 5px ; margin-top: 10px; position: absolute; left: 0; top: -10px; z-index: 1000;">
                     @csrf
                     <button type="submit" class="border-0 bg-transparent btn-ens-action btn-ens-style " data-rel="4a9f99dc105">
@@ -131,14 +136,16 @@
                             @else
                                 <img src="http://s1.iconbird.com/ico/2013/6/363/w256h2561372346250Favorite256.png" alt="Remove" class="clear_buton" id="favImgId{{$book->id}}" title="Удалить из избранного" width="25" height="25"/>
                             @endif
+                        @endauth
 
-                            @endauth
+
                     </button>
                 </form>
                 </div>
             </div>
         </div>
         @endforeach
+
     </section>
 {{$books->links()}}
 
@@ -254,24 +261,24 @@
 
         function popupClose(popupActive, doUnlock = true){
 
-            let data_book_basket_card = document.querySelectorAll('.popupBooksInBasket > .data_book_basket_card');
-            let arr = [];
-            for(let book of data_book_basket_card) {
-                let id = book.getAttribute('data-book-basket-id')
-                arr.push(id);
-            }
-
-            $.ajax({
-
-                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-                url: '/admin/books/book/resetQuantity',
-                method: "Post",
-                data: {'books_in_basket_id': arr},
-
-                success: function(response){
-
-                }
-            })
+            // let data_book_basket_card = document.querySelectorAll('.popupBooksInBasket > .data_book_basket_card');
+            // let arr = [];
+            // for(let book of data_book_basket_card) {
+            //     let id = book.getAttribute('data-book-basket-id')
+            //     arr.push(id);
+            // }
+            //
+            // $.ajax({
+            //
+            //     headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+            //     url: '/admin/books/book/resetQuantity',
+            //     method: "Post",
+            //     data: {'books_in_basket_id': arr},
+            //
+            //     success: function(response){
+            //
+            //     }
+            // })
 
             if (unlock){
                 popupActive.classList.remove('open');
@@ -337,10 +344,13 @@
                 $.ajax({
                    headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
                    method : 'POST',
-                   url: '/admin/books/book/addToBasket',
+                   url: `/admin/books/book/addToBasket/${book_id}`,
                    data:{'book_id':book_id},
 
                    success: function (response){
+
+                       let basketCount = document.getElementById('basketCount');
+                       basketCount.innerText = response.number
 
                        let popupBooksInBasket = document.querySelector('.popupBooksInBasket')
 
@@ -465,10 +475,10 @@
 
     //    --------------------------------------Изменение количества------------------------------------------------------------------------
 
-
         let changeQuantity = function(quantity, book_id)
         {
             let parentButtons = document.querySelector('.quantity_popup_buttons_container');
+
             parentButtons.classList.add('disabled')
 
                 $.ajax
@@ -480,8 +490,7 @@
 
                     success: function (response)
                     {
-
-                    parentButtons.classList.remove('disabled');
+                        parentButtons.classList.remove('disabled');
 
                     let onlineBookNumber = document.getElementById(`onlineBookNumber:${response.book.id}`)
 
@@ -491,11 +500,14 @@
 
                     bookLimitBasket.innerText = response.book.books_limit
 
+                        let bookLimit = (document.getElementById(`bookLimit${response.book.id}`))
+
+                    bookLimit.innerText = `Осталось книг:${response.book.books_limit}`
+
                     }
                 })
 
         }
-
 
         $(document).on('click','.decPopupBookNumber', function (e) {
 
@@ -546,23 +558,17 @@
 
                     success: function(response){
 
-                        let dataBookBasketCard = document.getElementById(`data_book_basket_card:${response.book_delete_id}`)
+                        console.log(response)
+                        let dataBookBasketCard = document.getElementById(`data_book_basket_card:${response.bookDelete.id}`)
                         dataBookBasketCard.remove();
-                        let addToBasket = document.getElementById(`basket${response.book_delete_id}`)
+                        let addToBasket = document.getElementById(`basket${response.bookDelete.id}`)
                         addToBasket.classList.remove('hidden_block')
+                        let bookLimit = document.getElementById(`bookLimit${response.bookDelete.id}`)
+                        bookLimit.innerText = `Осталось книг:${response.bookDelete.books_limit}`
+
                     }
             })
         })
-
-        $('.addToBasket').on('click', function (){
-
-            let basketCount = document.getElementById('basketCount');
-            let count = Number(basketCount.innerText);
-            console.log(count);
-            count += 1;
-            basketCount.innerText = count
-        })
-
     </script>
 
 

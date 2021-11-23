@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
         ],
 
         'admin' => [
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
+
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.admin' => \App\Http\Middleware\Admin\Authenticate::class,
@@ -81,9 +83,5 @@ class Kernel extends HttpKernel
         'ban' => \App\Http\Middleware\Ban::class,
         'status' => \App\Http\Middleware\Admin\OrderStatus::class,
         'orderUpdateStatus' => \App\Http\Middleware\Admin\OrderUpdateStatus::class,
-
-
-
-
     ];
 }

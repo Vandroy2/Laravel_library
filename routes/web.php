@@ -1,11 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\BookOrderController;
+
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DeliveryController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\OnlineLibraryController;
@@ -22,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {return view('login'); })->name('login');
+
 Route::get('/', [commentController::class, 'view'])->name('main');
 
 Route::post('/registration', [LoginController::class, 'registration'])->name('registration');
@@ -31,6 +31,30 @@ Route::post('/auth', [LoginController::class, 'auth'])->name('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/reg', function () { return view('registration'); })->name('reg');
+
+
+
+Route::prefix('olineLibrary')->group(function (){
+
+    Route::match(['get', 'post'], '/', [OnlineLibraryController::class, 'view'])->name('onlineLibrary');
+
+    Route::match(['get', 'post'], '/favorite/{book}', [OnlineLibraryController::class, 'addToFavorite'])->name('onLineLibraryAddToFavorite');
+
+    Route::match(['get', 'post'], '/addToBasket', [OnlineLibraryController::class, 'addToBasket'])->name('onlineLibraryAddToBasket');
+});
+
+Route::prefix('offices')->group(function (){
+
+    Route::match(['get','post'], '/show', [OfficeController::class, 'show'])->name('officesShow');
+});
+
+Route::prefix('delivery')->group(function (){
+
+    Route::match(['get', 'post'], '/', [DeliveryController::class, 'view'])->name('deliveries');
+});
+
+
+
 
 Route::middleware('auth')->group(function (){
 
@@ -49,7 +73,7 @@ Route::middleware('auth')->group(function (){
     });
 
 
-//    =======================================================Publications==========================================================
+//    =================================================================================================================
 
 Route::prefix('comments')->group(function (){
 
@@ -59,26 +83,7 @@ Route::prefix('comments')->group(function (){
 
 });
 
-Route::prefix('olineLibrary')->group(function (){
 
-    Route::match(['get', 'post'], '/', [OnlineLibraryController::class, 'view'])->name('onlineLibrary');
-
-    Route::match(['get', 'post'], '/favorite/{book}', [OnlineLibraryController::class, 'addToFavorite'])->name('onLineLibraryAddToFavorite');
-
-    Route::match(['get', 'post'], '/addToBasket', [OnlineLibraryController::class, 'addToBasket'])->name('onlineLibraryAddToBasket');
-});
-
-    Route::match(['get','post'],'/multipleOrder', [BookOrderController::class, 'booksMultipleOrder'])->name('booksMultipleOrder');
-
-    Route::prefix('offices')->group(function (){
-
-        Route::match(['get','post'], '/show', [OfficeController::class, 'show'])->name('officesShow');
-    });
-
-    Route::prefix('delivery')->group(function (){
-
-        Route::match(['get', 'post'], '/', [DeliveryController::class, 'view'])->name('deliveries');
-    });
 
 });
 

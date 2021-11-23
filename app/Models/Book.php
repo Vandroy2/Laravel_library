@@ -65,6 +65,8 @@ class Book extends Model
      * @var int|mixed
      */
 
+    public $inCart;
+
     /**
      * @return BelongsTo
      */
@@ -125,6 +127,17 @@ class Book extends Model
     {
         return $this->belongsToMany(User::class, 'baskets', 'book_id', 'user_id');
     }
+
+//        public function resetQty(): Book
+//        {
+//            $this->books_limit += $this->books_number;
+//
+//            $this->books_number = 0;
+//
+//            $this->save();
+//
+//            return $this;
+//        }
 }
 
 

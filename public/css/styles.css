@@ -11830,3 +11830,7 @@ body{
 .table-order-edit{
     text-align: center;
 }
+
+.inputOrder{
+    width: 180px;
+}

@@ -1,6 +1,7 @@
 
 @include('includes.main.head')
+<?php
+phpinfo();
+?>
 
-
-<p>{{$book->book_name}}</p>
 
