@@ -31,6 +31,10 @@ Route::prefix('books')->group(function (){
 
     Route::match(['get', 'post'], '/book/limit', [bookController::class, 'limit'])->name('bookLimit');
 
+    Route::match(['get', 'post'], '/book/add', [bookController::class, 'add'])->name('bookAdd');
+
+
+
 });
 
     Route::match(['get', 'post'],'/cities/show', [CityController::class, 'show'])->name('citiesShow');

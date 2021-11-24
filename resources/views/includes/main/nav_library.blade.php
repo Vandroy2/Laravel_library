@@ -60,7 +60,7 @@
 
                             @if(\Illuminate\Support\Facades\Auth::check())
 
-                                <a class="btn btn-light"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
+                                <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
 
 
                             @endif

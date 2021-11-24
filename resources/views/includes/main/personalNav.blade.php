@@ -21,7 +21,7 @@
 
                     <h6 class="dropdown-header">Select</h6>
                     <a class="btn btn-light"  href="/">Main page</a>
-                    <a class="btn btn-light"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
+                    <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
                     <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
                     <a class="btn btn-light"  href="{{route('personalCabinetOrders')}}">Orders</a>
                     <a class="btn btn-light"  href="{{route('onLineLibraryFavoritesBooks')}}">Favorites Books</a>

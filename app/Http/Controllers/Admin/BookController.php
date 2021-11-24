@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\Delivery;
 use App\Models\Image;
 use App\Models\Office;
+use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -340,6 +341,29 @@ class BookController extends Controller
 
         return response()->json(['bookOrder'=>$book]);
     }
+
+    public function add(Request $request): JsonResponse
+    {
+
+
+            $order_id = $request->get('order_id');
+
+            $order = Order::query()->find($order_id);
+
+        /**
+         * @var Order $order
+         */
+
+            $i = array_key_last($order->books->toArray());
+
+            $books = Book::all();
+
+                return response()->json([
+                   'books' =>$books,
+                    'order' =>$order,
+                    'i' => $i,
+                ]);
+        }
 
 
 }

@@ -171,6 +171,10 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order): RedirectResponse
     {
+
+
+
+
         //---------------------------------Получение данных из реквеста и сохранение заказа-----------------------------
 
         if ($order->orderBooks->isEmpty()){

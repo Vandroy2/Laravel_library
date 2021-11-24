@@ -11821,7 +11821,7 @@ body{
     /*flex-wrap: wrap;*/
 }
 .disabled_option{
-    pointer-events: none
+    pointer-events: none;
 }
 .numberBookOrder{
     background-color: transparent;
@@ -11829,8 +11829,64 @@ body{
 
 .table-order-edit{
     text-align: center;
+
+}
+.tableContainer{
+    position: relative;
 }
 
 .inputOrder{
     width: 180px;
+}
+
+.addBookIcon{
+    width: 29px;
+    height: 29px;
+
+}
+
+.form-group{
+    margin-top: 30px;
+}
+
+.addBookOrderBtn{
+    border: none;
+}
+
+.orderEditSelectText{
+    margin-bottom: 10px;
+}
+
+.decNumberEditBookOrder{
+    border: none;
+    background-color: transparent;
+    height: 10px;
+}
+
+.minusImg{
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    margin-right: 5px
+}
+
+.inputNumber{
+    width: 25px;
+    text-align: center;
+}
+
+.imgDeleteBook{
+    width: 25px;
+    height: 25px;
+    margin-left: 5px;
+    background-color: transparent;
+    margin-right: 5px
+}
+
+.btn{
+    margin-right: 10px;
+}
+
+.personalCabinet{
+    margin-right: 0;
 }

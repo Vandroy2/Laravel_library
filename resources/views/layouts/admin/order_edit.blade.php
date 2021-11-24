@@ -2,7 +2,7 @@
 /* @var \App\Models\Order $order */
 ?>
 
-@include('includes.admin.head')
+@include('includes.main.head')
 
 <body style="margin-left: 15px">
 @include('includes.admin.navbar')
@@ -27,7 +27,7 @@
     </div>
 
     <div class="form-group">
-        <h6>Служба доставки</h6>
+        <h6 class = "orderEditSelectText">Служба доставки</h6>
         <select class="admin orderDelivery delivery" name="delivery_id" id="orderDelivery" required>
             <option value="{{$order->delivery->id}}"><label>{{$order->delivery->delivery_name}}</label></option>
             @foreach($deliveries as $delivery)
@@ -39,8 +39,8 @@
     </div>
 
     <div class="form-group">
-        <h6>Город</h6>
-        <select class="admin city disabled_option" name="city_id" required>
+        <h6 class = "orderEditSelectText">Город</h6>
+        <select class="admin city disabled_option" name="city_id" required style="pointer-events: none">
             <option value="{{$order->city->id}}"><label class="admin_label">{{$order->city->city_name}}</label>
             </option>
 
@@ -51,8 +51,8 @@
     </div>
 
     <div class="form-group">
-        <h6>Номер отделения</h6>
-        <select class="admin office disabled_option" name="office_id" id="orderOffices" required>
+        <h6 class = "orderEditSelectText">Номер отделения</h6>
+        <select class="admin office disabled_option" name="office_id" id="orderOffices" required style="pointer-events: none">
             <option value="{{$order->office->id}}"><label
                     class="admin_label">{{$order->office->office_number}}</label></option>
 
@@ -64,7 +64,7 @@
 
 
     <div class="form-group">
-        <h6>Статус заказа</h6>
+        <h6 class = "orderEditSelectText">Статус заказа</h6>
         <select class="admin office" name="status_id">
             <option value="{{$order->status->id}}"><label class="admin_label">{{$order->status->status}}</label>
             </option>
@@ -76,10 +76,10 @@
         </select>
     </div>
 
-    <div class="form-group flex">
+    <div class="form-group flex-column tableContainer">
 
         <table class="table table-order-edit"
-               style="background-color: #ebefee; width: 35%; margin-right: 0;display:inline-table;text-align: center">
+               style="background-color: #ebefee; width: 40%; margin-right: 0;display:inline-table;text-align: center">
 
             <thead>
             <tr>
@@ -88,10 +88,12 @@
                 <th scope="col">Book quantity in library</th>
                 <th scope="col">Change quantity</th>
                 <th scope="col">Book delete</th>
+                <th scope="col">Book add</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class = "orderTableBody">
             @foreach($order->orderBooks as $i => $bookOrder)
+
 
 
                 <tr>
@@ -99,11 +101,16 @@
                         <select class="admin office bookOrder" name="books[{{ $i }}][book_id]"
                                 id="bookOption{{$bookOrder->book_id}}" data-book-order-id='{{$bookOrder->book_id}}' data-order-id = "{{$order->id}}">
 
-                            <option value="{{$bookOrder->book_id}}" id="bookOrderOption{{$bookOrder->book_id}}"><label
-                                    class="admin_label">{{$bookOrder->book->book_name}}</label></option>
+                            <option value="{{$bookOrder->book_id}}" id="bookOrderOption{{$bookOrder->book_id}}">
+                                <label
+                                    class="admin_label">{{$bookOrder->book->book_name}}
+                                </label>
+                            </option>
 
                             @foreach($books as $book)
                                 <option value="{{$book->id}}" class="option">{{$book->book_name}}</option>
+
+
 
                             @endforeach
                         </select>
@@ -116,14 +123,14 @@
                     </td>
 
                     <td class = "quantity_popup_buttons_container">
-                        <button data-url="" type="button" class="decNumberBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
-                                style="border: none; background-color: transparent; height: 10px"
+                        <button data-url="" type="button" class="decNumberBookOrder decNumberEditBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
+
                                 id="decNumber{{$bookOrder->id}}">
-                            <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png"
-                                 style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus">
+                            <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" class = "minusImg"
+                                 alt="Minus">
                         </button>
 
-                        <input class="order_book_number" style="width: 25px; text-align: center;" type="text" name="books[{{ $i }}][book_number]" value="{{ $bookOrder->book_number }}" />
+                        <input class="order_book_number inputNumber" type="text" name="books[{{ $i }}][book_number]" value="{{ $bookOrder->book_number }}" />
 
                         <input class="order_book_limit_hidden" style="width: 25px; text-align: center;" type="hidden" name="books[{{ $i }}][books_limit]" value="{{ $bookOrder->book->books_limit }}" />
 
@@ -143,15 +150,21 @@
                                  style="width: 25px; height: 25px;margin-left: 5px;background-color: transparent; margin-right: 5px" alt="Plus">
                         </button>
                     </td>
+
+                    <td >
+                        <button type="button" class = "addBookOrderBtn" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}" id="addBookOrder{{$bookOrder->id}}">
+                            <img src="/assets/img/add.png" class = "addBookIcon" alt="icon">
+                        </button>
+
+                    </td>
                 </tr>
+
+
             @endforeach
             </tbody>
         </table>
-    </div>
-    <div style="width: 100%; height: 10px">
 
     </div>
-
     <div class="form-group" style="margin-top: 0">
         <label for="name"></label>
         <input type="text" name="order_comment" value="{{$order->order_comment}}" placeholder="Оставьте комментарий"
@@ -171,12 +184,147 @@
 
 <script>
 
+    //======================================Добавление книги============================================================
+
+    $(function (){
+
+       let i = 1000
+        $(document).on('click', '.addBookOrderBtn', function (){
+
+            let bookOrder = document.querySelector('.bookOrder')
+            let order_id = bookOrder.getAttribute('data-order-id');
+            let add = 'add'
+            i +=1;
+
+            $.ajax({
+                type:'POST',
+                    headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+                    url: '/admin/books/book/add',
+                    data:{'add': add, 'order_id': order_id},
+
+                    success:function (response){
+
+                            let orderTableBody = document.querySelector('.orderTableBody')
+                            let tr = document.createElement('tr')
+                            orderTableBody.appendChild(tr)
+
+                            let tdBookSelect = document.createElement('td')
+                            tr.appendChild(tdBookSelect)
+
+                            let selectBook = document.createElement('select')
+                            tdBookSelect.appendChild(selectBook)
+                            selectBook.classList.add('bookOrder')
+                            selectBook.classList.add('admin')
+                            selectBook.classList.add('office')
+                            selectBook.setAttribute('data-order-id', `${response.order.id}`)
+                            selectBook.setAttribute('name',  `books[${i}][book_id]`)
+
+                            let defaultBookOption = document.createElement('option')
+                            selectBook.appendChild(defaultBookOption)
+
+                            let labelDefaultBookOption = document.createElement('label')
+                            defaultBookOption.appendChild(labelDefaultBookOption);
+                            labelDefaultBookOption.classList.add('admin_label')
+                            labelDefaultBookOption.innerText = 'Выберите книгу';
+
+                            response.books.forEach(function (book){
+
+                                let bookOption = document.createElement('option')
+                                selectBook.appendChild(bookOption)
+                                bookOption.setAttribute('value', book.id)
+                                bookOption.classList.add('option')
+                                bookOption.innerText = book.book_name
+                            });
+
+                            let tdBookLimit = document.createElement('td')
+                            tr.appendChild(tdBookLimit)
+                            tdBookLimit.classList.add('bookOrderLimit')
+                            tdBookLimit.innerText = '-'
+
+                            let tdButtonContainer = document.createElement('td')
+                            tr.appendChild(tdButtonContainer)
+                            tdButtonContainer.classList.add('quantity_popup_buttons_container')
+
+                            let btnDecQuantity = document.createElement('button')
+                            tdButtonContainer.appendChild(btnDecQuantity)
+                            btnDecQuantity.setAttribute('type', 'button')
+                            btnDecQuantity.classList.add('decNumberBookOrder')
+                            btnDecQuantity.classList.add('decNumberEditBookOrder')
+
+                            let minus = document.createElement('img')
+                            btnDecQuantity.appendChild(minus)
+                            minus.setAttribute('src', 'https://emojitool.ru/img/apple/ios-14.2/minus-2905.png')
+                            minus.classList.add('minusImg')
+                            minus.setAttribute('alt', 'Minus')
+
+                            let inputNumber = document.createElement('input')
+                            tdButtonContainer.appendChild(inputNumber)
+                            inputNumber.classList.add('order_book_number')
+                            inputNumber.classList.add('inputNumber')
+                            inputNumber.setAttribute('type', 'text')
+                            inputNumber.setAttribute('name', `books[${i}][book_number]`)
+
+                            let inputLimit = document.createElement('input')
+                            tdButtonContainer.appendChild(inputLimit)
+                            inputLimit.classList.add('order_book_limit_hidden')
+                            inputLimit.classList.add('inputNumber')
+                            inputLimit.setAttribute('type', 'hidden')
+                            inputLimit.setAttribute('name', `books[${i}][books_limit]`)
+                            inputNumber.setAttribute('value', '-')
+
+                            let btnIncQuantity = document.createElement('button')
+                            tdButtonContainer.appendChild(btnIncQuantity)
+                            btnIncQuantity.setAttribute('type', 'button')
+                            btnIncQuantity.classList.add('incNumberBookOrder')
+                            btnIncQuantity.classList.add('decNumberEditBookOrder')
+
+                            let plus = document.createElement('img')
+                            btnIncQuantity.appendChild(plus)
+                            plus.setAttribute('src', 'https://emojitool.ru/img/apple/ios-14.5/plus-2964.png')
+                            plus.classList.add('minusImg')
+
+                            let tdDeleteBook = document.createElement('td')
+                            tr.appendChild(tdDeleteBook)
+                            tdDeleteBook.classList.add('deleteBookOrderContainer')
+
+                            let btnDeleteBook = document.createElement('button')
+                            tdDeleteBook.appendChild(btnDeleteBook)
+                            btnDeleteBook.setAttribute('type', 'button')
+                            btnDeleteBook.classList.add('deleteBookOrder')
+                            btnDeleteBook.classList.add('decNumberEditBookOrder')
+
+                            let imgDeleteBook = document.createElement('img')
+                            btnDeleteBook.appendChild(imgDeleteBook)
+                            imgDeleteBook.setAttribute('src', '/assets/img/garbage_basket.jpeg')
+                            imgDeleteBook.setAttribute('alt', 'Plus')
+                            imgDeleteBook.classList.add('imgDeleteBook')
+
+                            let tdAddBook = document.createElement('td')
+                            tr.appendChild(tdAddBook)
+
+                            let btnAddBook = document.createElement('button')
+                            tdAddBook.appendChild(btnAddBook)
+                            btnAddBook.setAttribute('type', 'button')
+                            btnAddBook.classList.add('addBookOrderBtn')
+
+                            let imgAddBook = document.createElement('img')
+                            btnAddBook.appendChild(imgAddBook)
+                            imgAddBook.setAttribute('src', '/assets/img/add.png')
+                            imgAddBook.classList.add('addBookIcon')
+                            imgAddBook.setAttribute('alt', 'Icon')
+                        }
+
+
+
+            })
+        });
+    });
 
     //======================================Удаление книги==============================================================
 
     $(function (){
 
-        $('.deleteBookOrder').on('click', function (e){
+        $(document).on('click','.deleteBookOrder', function (e){
 
             let tr = e.currentTarget.closest('tr')
 
@@ -209,9 +357,10 @@
 
     $(function () {
 
-        $(".bookOrder").change(function (e) {
+        $(document).on('change', '.bookOrder',function (e) {
 
             let book_id = e.currentTarget.value
+
             $.ajax({
                 type: 'POST',
                 headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
@@ -234,7 +383,8 @@
 
     $(function () {
 
-        $(".bookOrder").change(function (e) {
+        // $(".bookOrder").change(function (e) {
+        $(document).on('change', '.bookOrder', function (e) {
 
             let tr = e.currentTarget.closest('tr')
 
@@ -287,7 +437,7 @@
                 }
     }
 
-    $(".decNumberBookOrder").on('click', function (e){
+    $(document).on('click',".decNumberBookOrder" , function (e){
 
         let tr = e.currentTarget.closest('tr')
 
@@ -298,7 +448,7 @@
         changeQuantity (-1, book_id, e);
     })
 
-    $(".incNumberBookOrder").on('click', function (e){
+    $(document).on('click', ".incNumberBookOrder" ,function (e){
 
         let tr = e.currentTarget.closest('tr')
 
@@ -327,7 +477,7 @@
                 console.log(response)
 
                 let city = document.querySelector('.city')
-                city.classList.remove('disabled_option')
+                city.style.pointerEvents = 'auto';
 
                 let newCities = response.cities;
 
@@ -374,7 +524,7 @@
 
             success: function (response) {
                 let office = document.querySelector('.office')
-                office.classList.remove('disabled_option');
+                office.style.pointerEvents = 'auto';
 
                 let newOffices = response.offices;
 
