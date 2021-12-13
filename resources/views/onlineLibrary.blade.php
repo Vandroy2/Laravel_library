@@ -444,7 +444,7 @@
                        p_PopupButton.classList.add('onlineBookNumber')
                        p_PopupButton.id = `onlineBookNumber:${response.book_add_to_basket.id}`
                        p_PopupButton.setAttribute('data-book-number', response.book_add_to_basket.books_number)
-                       p_PopupButton.textContent = response.book_add_to_basket.books_number
+                       p_PopupButton.textContent = 1
 
                        let popupButtonInc = document.createElement('button');
                        divPopupButtons.appendChild(popupButtonInc);
@@ -494,7 +494,7 @@
 
                     let onlineBookNumber = document.getElementById(`onlineBookNumber:${response.book.id}`)
 
-                    onlineBookNumber.innerText = response.book.books_number
+                    onlineBookNumber.innerText = response.number
 
                     let bookLimitBasket = document.getElementById(`bookLimitBasket:${response.book.id}`)
 

@@ -37,16 +37,16 @@ class Book_Order extends Model
         return $this->belongsTo(Book::class, 'book_id', 'id');
     }
 
-    public function multipleOrderCreate(Book $book, Order $order): Book_Order
-    {
-        $this->book_number = $book->books_number;
-
-        $this->book_id = $book->id;
-
-        $this->order_id = $order->id;
-
-        $this->save();
-
-        return $this;
-    }
+//    public function multipleOrderCreate(Book $book, Order $order): Book_Order
+//    {
+//        $this->book_number = $book->books_number;
+//
+//        $this->book_id = $book->id;
+//
+//        $this->order_id = $order->id;
+//
+//        $this->save();
+//
+//        return $this;
+//    }
 }

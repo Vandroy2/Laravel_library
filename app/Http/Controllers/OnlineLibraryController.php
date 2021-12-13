@@ -8,8 +8,9 @@ use App\Models\Book;
 use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+
+
 
 class OnlineLibraryController extends Controller
 {
@@ -21,15 +22,6 @@ class OnlineLibraryController extends Controller
         $cartBooksArr = $request->session()->get('cartBooks', []);
 
         $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
-
-        $cartBooks = $cartBooks->map(function($book) use($cartBooksArr) {
-
-            $book->books_number = Arr::get(Arr::get($cartBooksArr, $book->id, []), 'count', 1);
-
-            $book->inCart = Arr::has($cartBooksArr, $book->id);
-
-            return $book;
-        });
 
         $search_book = $request->input('search_book');
 

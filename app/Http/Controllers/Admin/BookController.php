@@ -14,7 +14,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use PHPUnit\Framework\Constraint\Count;
+use app\Helpers\Cart;
+
+
 
 
 class BookController extends Controller
@@ -124,73 +126,50 @@ class BookController extends Controller
 
     public function changeQuantity(Request $request): JsonResponse
     {
-        /**
-         * @var Book $book
-         */
+        /* @var Book $book */
+
         $cartBooksArr = $request->session()->get('cartBooks', []);
 
         $quantity = $request->get('quantity');
 
         $book_id = $request->get('book_id');
 
-        $book = Book::query()->find($book_id);
+        $book = Book::query()->where('id', '=', $book_id)->first();
 
 
-        if ($book->books_number > 1 && $quantity < 0) {
+            if ($cartBooksArr[$book_id]['count'] > 1 && $quantity < 0) {
 
-            $book->books_number += $quantity;
-
-            $book->books_limit -=$quantity;
-
-            $book->save();
-
-            $cartBooksArr[$book_id]['count'] = $book->books_number;
-
-            $request->session()->put('cartBooks', $cartBooksArr);
-        }
-
-        if ($quantity > 0) {
-
-            if ($book->books_limit > 0){
-
-                $book->books_number += $quantity;
+                $cartBooksArr[$book_id]['count'] += $quantity;
 
                 $book->books_limit -= $quantity;
 
                 $book->save();
 
-                $cartBooksArr[$book_id]['count'] = $book->books_number;
-
-                $request->session()->put('cartBooks', $cartBooksArr);
             }
-        }
 
-        return response()->json(['book'=>$book]);
-    }
-//================================================Сброс количества при закрытии корзины=================================
+            if ($quantity > 0) {
 
-    public function resetQuantity(Request $request)
-    {
-        $books_in_basket_id = $request->get('books_in_basket_id');
+                if ($book->books_limit > 0){
 
-        if ($books_in_basket_id) {
+                    $cartBooksArr[$book_id]['count'] += $quantity;
 
-            /* @var Book[] $resetBooks */
+                    $book->books_limit -=$quantity;
 
-            $resetBooks = Book::query()->whereIn('id', $books_in_basket_id)->get();
+                    $book->save();
 
-            foreach ($resetBooks as $resetBook){
-
-                $resetBook->books_limit += $resetBook->books_number;
-
-                $resetBook->books_number = 0;
-
-                $resetBook->save();
+                }
             }
-        }
+
+        $request->session()->put('cartBooks', $cartBooksArr);
+
+            $number = $cartBooksArr[$book_id]['count'];
+
+            return response()->json(['book'=>$book, 'number'=>$number]);
     }
+
 
 //==================================================Заказ книги=========================================================
+
     public function order(Book $book)
     {
         $deliveries = Delivery::all();
@@ -224,9 +203,17 @@ class BookController extends Controller
 
     public function multipleOrder(Request $request)
     {
+
         $cartBooksArr = $request->session()->get('cartBooks', []);
 
         $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $cartBooks = $cartBooks->map(function($book) use($cartBooksArr) {
+
+            $book->books_number = Arr::get(Arr::get($cartBooksArr, $book->id, []), 'count');
+
+            return $book;
+        });
 
         $deliveries = Delivery::all();
 
@@ -261,13 +248,21 @@ class BookController extends Controller
 
         $book = Book::query()->find($id);
 
+        /**
+         * @var Book| $book
+         */
+
+        $book->books_limit -= 1;
+
+        $book->save();
+
         $num = Count($cartBooksArr);
 
         return response()->json(
             [
                 'status' => 'success',
                 'book_add_to_basket' => $book,
-                'number' =>$num
+                'number' =>$num,
             ]
         );
     }
@@ -282,12 +277,6 @@ class BookController extends Controller
 
             $bookDelete = Book::query()->find($bookDeleteId);
 
-            $bookDelete->books_limit += $bookDelete->books_number;
-
-            $bookDelete->books_number = 0;
-
-            $bookDelete->save();
-
             $cartBooksArr = $request->session()->get('cartBooks', []);
 
             $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
@@ -298,6 +287,12 @@ class BookController extends Controller
 
             })->all();
 
+            $bookDelete->books_limit += $cartBooksArr[$bookDeleteId]['count'];
+
+            $cartBooksArr[$bookDeleteId]['count'] = 0;
+
+            $bookDelete->save();
+
             $request->session()->put('cartBooks', $books);
 
             return response()->json(['bookDelete'=>$bookDelete]);
@@ -307,30 +302,15 @@ class BookController extends Controller
 
     public function clearBasket(Request $request): RedirectResponse
     {
-        $reset = $request->get('reset');
+        /* @var Book $book,
+         * @var Book $cartBook
+         */
 
-        $cartBooksArr = $request->session()->get('cartBooks', []);
+        Cart::clearCart($request);
 
-        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
-
-        $request->session()->forget('cartBooks');
-
-            foreach ($cartBooks as $book) {
-
-                    $book->books_limit += $book->books_number;
-
-                    $book->books_number = 0;
-
-                    $book->save();
-            }
-
-            if ($reset){
-
-                return redirect()->route('onlineLibrary')->with('errors', 'Заказ был отменен');
-            }
-
-       return redirect()->route('onlineLibrary')->with('success', 'Заказ успешно отправлен. Мы свяжемся с Вами в ближайшее время.');
+        return redirect()->route('onlineLibrary')->with('errors', 'Заказ был отменен');
     }
+
 
     public function limit(Request $request): JsonResponse
     {
@@ -344,8 +324,6 @@ class BookController extends Controller
 
     public function add(Request $request): JsonResponse
     {
-
-
             $order_id = $request->get('order_id');
 
             $order = Order::query()->find($order_id);
@@ -364,6 +342,8 @@ class BookController extends Controller
                     'i' => $i,
                 ]);
         }
+
+
 
 
 }

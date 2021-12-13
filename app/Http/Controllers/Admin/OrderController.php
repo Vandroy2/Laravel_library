@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Cart;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderFormRequest;
 use App\Models\Book;
@@ -48,10 +49,6 @@ class OrderController extends Controller
 
         $order->save();
 
-        $book_id = $request->get('booksOrder');
-
-        $books = Book::query()->whereIn('id', $book_id )->get();
-
         if (!Auth::check()){
 
             $email = $request->get('email');
@@ -60,9 +57,8 @@ class OrderController extends Controller
 
             if ($existUser)
             {
-                /**
-                 * @var User $existUser
-                 */
+                /* @var User $existUser */
+
                 $order->user_id = $existUser ->id;
             }
             else{
@@ -79,10 +75,20 @@ class OrderController extends Controller
 
 
 
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $cartBooks = $cartBooks->map(function($book) use($cartBooksArr) {
+
+            $book->books_number = Arr::get(Arr::get($cartBooksArr, $book->id, []), 'count');
+
+            return $book;
+        });
 
         //---------------------------------------Проверка на пустой заказ-----------------------------------------------
 
-        foreach ($books as $book){
+        foreach ($cartBooks as $book){
 
             if ($book->books_number == 0){
 
@@ -92,14 +98,25 @@ class OrderController extends Controller
         {
             $multipleOrder = new Book_Order();
 
-            $multipleOrder->multipleOrderCreate($book, $order);
+            $multipleOrder->book_number = $cartBooksArr[$book->id]['count'];
+
+            $multipleOrder->book_id = $book->id;
+
+            $multipleOrder->order_id = $order->id;
+
+            $multipleOrder->save();
+
+            $book->books_limit -= $cartBooksArr[$book->id]['count'];
 
             $book->books_number = 0;
 
             $book->save();
         }
         }
-        return redirect()->route('admin.bookClearBasket');
+
+        Cart::clearCart($request);
+
+        return redirect()->route('onlineLibrary')->with('success', 'Ваш заказ успешно отправлен. Мы свяжемся с вами в ближайшее время');
     }
 
 //===========================================Отображение выбранного заказа==============================================
@@ -174,7 +191,6 @@ class OrderController extends Controller
 
 
 
-
         //---------------------------------Получение данных из реквеста и сохранение заказа-----------------------------
 
         if ($order->orderBooks->isEmpty()){
@@ -182,9 +198,11 @@ class OrderController extends Controller
         }
 
         foreach ($request->get('books') as $book){
-           if($book['book_number'] == 0){
+
+            if($book['book_number'] == 0){
                return redirect()->back()->with('errors', 'количество книг в заказе не может быть меньше 1');
            }
+
         }
         $editedOrderBooks = collect($request->get('books', []))->keyBy(function($orderBook) {
             return Arr::get($orderBook, 'book_id');

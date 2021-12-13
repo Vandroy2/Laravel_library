@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Book_Order;
 use App\Models\Comment;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
@@ -33,8 +34,25 @@ class CabinetController extends Controller
         $orders = Order::query()
             ->where('user_id', '=', $id)->get();
 
+        $orders_id = $orders->pluck('id');
 
-        return view('personalCabinetOrders', ['orders' => $orders,]);
+//        dd($orders_id);
+
+        $multipleOrder = Book_Order::query()
+            ->whereIn('order_id', $orders_id)->get();
+
+        $book_id = $multipleOrder->pluck('book_id');
+
+        $books = Book::query()->find($book_id);
+
+
+
+
+        return view('personalCabinetOrders', [
+            'orders' => $orders,
+            'multipleOrder'=>$multipleOrder,
+            'books'=>$books,
+            ]);
     }
 
     public function addToFavoritePersonal(Book $book): RedirectResponse

@@ -177,25 +177,7 @@
 
 <script>
 
-    $(".btn_clear_basket").on('click', function (e){
-
-
-
-        let reset = 'reset'
-
-        $.ajax({
-            url: '/admin/books/book/clearBasket',
-
-            data:{'reset':reset},
-
-            success: function (response){
-            }
-        })
-    })
-
-
-
-//------------------------------------Изменение количества--------------------------------------------------------------
+    //------------------------------------Изменение количества--------------------------------------------------------------
 
     let changeQuantity = function(quantity, book_id){
         let parentButtons = document.querySelector('.quantity_buttons_container');
@@ -214,21 +196,17 @@
                 let bookNumber = document.getElementById(`bookNumber${response.book.id}`)
                 let bookLimit = document.getElementById(`bookLimit${response.book.id}`)
                 bookLimit.innerText = response.book.books_limit
-                bookNumber.innerText = response.book.books_number
+                bookNumber.innerText = response.number
 
             }
         })
 
     }
 
-
     $(".decMultipleOrderNumber").on('click', function (e) {
 
-    console.log(e.currentTarget.dataset.bookOrderId)
 
         let book_id = e.currentTarget.dataset.bookOrderId
-
-        console.log(book_id)
 
         changeQuantity(-1, book_id)
 
@@ -238,36 +216,10 @@
 
         let book_id = e.currentTarget.getAttribute('data-book-order-id')
 
-        console.log(book_id)
-
-        changeQuantity(1 , book_id)
+        changeQuantity(1, book_id)
 
     })
 
-
-
-    // $('#bookOrderForm').on('submit', function (){
-    //
-    //     let bookNumber = document.getElementById('bookNumber')
-    //     let $this = $(this)
-    //     let url = $this.attr('action')
-    //     let books_number = bookNumber.dataset.bookNumber
-    //     console.log(books_number)
-    //
-    //     $.ajax({
-    //
-    //         type: 'POST',
-    //         headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-    //         url: url ,
-    //         data: {'books_number': books_number},
-    //
-    //         success:function (response)
-    //         {
-    //             console.log(response)
-    //         }
-    //
-    //     })
-    // })
 
     //------------------------------------Отделения доставки------------------------------------------------------------
 

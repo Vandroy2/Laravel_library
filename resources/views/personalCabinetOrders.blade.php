@@ -14,9 +14,10 @@
                 <thead>
                 <tr>
                     <th scope="col">Order number</th>
+                    <th scope="col">Book name</th>
                     <th scope="col">City</th>
                     <th scope="col">Delivery</th>
-{{--                    <th scope="col">Office number</th>--}}
+                    <th scope="col">Office number</th>
                     <th scope="col">Status</th>
                 </tr>
                 </thead>
@@ -24,9 +25,16 @@
                 @foreach($orders as $order)
                     <tr class="table-active">
                         <th scope="row">{{$order->id}}</th>
+
+                        <td>
+                            @foreach($order->books as $book)
+                            {{$book->book_name}}
+                            @endforeach
+                        </td>
+
                         <td>{{$order->city->city_name}}</td>
                         <td>{{$order->delivery->delivery_name}}</td>
-{{--                        <td>{{$order->office->office_number}}</td>--}}
+                        <td>{{$order->office->office_number}}</td>
                         <td>{{$order->status->status}}</td>
                 @endforeach
                 </tbody>

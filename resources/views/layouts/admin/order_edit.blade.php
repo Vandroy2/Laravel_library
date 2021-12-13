@@ -96,7 +96,7 @@
 
 
 
-                <tr>
+                <tr data-book-id="{{ $bookOrder->book_id }}">
                     <td>
                         <select class="admin office bookOrder" name="books[{{ $i }}][book_id]"
                                 id="bookOption{{$bookOrder->book_id}}" data-book-order-id='{{$bookOrder->book_id}}' data-order-id = "{{$order->id}}">
@@ -119,22 +119,21 @@
 
                     <td class="bookOrderLimit">
                         {{$bookOrder->book->books_limit}}
-
                     </td>
 
-                    <td class = "quantity_popup_buttons_container">
-                        <button data-url="" type="button" class="decNumberBookOrder decNumberEditBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
+                    <td class="quantity_popup_buttons_container">
+                        <button  type="button" class="decNumberBookOrder decNumberEditBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
 
                                 id="decNumber{{$bookOrder->id}}">
                             <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" class = "minusImg"
                                  alt="Minus">
                         </button>
 
-                        <input class="order_book_number inputNumber" type="text" name="books[{{ $i }}][book_number]" value="{{ $bookOrder->book_number }}" />
+                        <input class="order_book_number inputNumber book-quantity" type="text" name="books[{{ $i }}][book_number]" data-book-id="{{ $bookOrder->book_id }}" data-old-value="{{ $bookOrder->book_number }}" value="{{ $bookOrder->book_number }}" />
 
                         <input class="order_book_limit_hidden" style="width: 25px; text-align: center;" type="hidden" name="books[{{ $i }}][books_limit]" value="{{ $bookOrder->book->books_limit }}" />
 
-                        <button data-url="" type="button" class="incNumberBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
+                        <button  type="button" class="incNumberBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
                                 style="border: none; background-color: transparent; height: 10px"
                                 id="incNumber{{$bookOrder->id}}">
                             <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png"
@@ -143,7 +142,7 @@
                     </td>
 
                     <td class="deleteBookOrderContainer">
-                        <button data-url="" type="button" class="deleteBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
+                        <button  type="button" class="deleteBookOrder" data-book-order-id="{{$bookOrder->book_id}}" data-order-id = "{{$order->id}}"
                                 style="border: none; background-color: transparent; height: 10px"
                                 id="deleteBookOrder{{$bookOrder->id}}">
                             <img src="/assets/img/garbage_basket.jpeg"
@@ -184,6 +183,55 @@
 
 <script>
 
+    //======================================Количество книг в заказе ===================================================
+
+
+
+    $(document).on('change', '.book-quantity',function (e) {
+
+        // debugger
+
+        let $bookQuantity = $(this);
+
+        let bookId = $bookQuantity.attr('data-book-id');
+
+        let $wrap = $bookQuantity.closest('tr[data-book-id="' + bookId + '"]');
+
+        let bookLimitHidden = $wrap.find('td input[type="hidden"].order_book_limit_hidden')
+
+        let oldBookQuantity = +$bookQuantity.attr('data-old-value');
+
+        let newBookQuantity = +e.target.value;
+
+        let $bookLimit = $wrap.find('td.bookOrderLimit');
+
+        let oldBookLimit = +$bookLimit.text().trim();
+
+        console.log(oldBookQuantity, oldBookLimit);
+
+        if((oldBookLimit + oldBookQuantity) < newBookQuantity || newBookQuantity <= 0) {
+
+           $bookQuantity.val(oldBookQuantity)
+
+            return;
+        }
+
+        if(newBookQuantity > oldBookQuantity) {
+
+            $bookLimit.text(oldBookLimit-(newBookQuantity-oldBookQuantity));
+        } else {
+
+            $bookLimit.text(oldBookLimit+(oldBookQuantity-newBookQuantity));
+
+        }
+
+        bookLimitHidden.attr('value', +$bookLimit.text())
+
+        $bookQuantity.attr('data-old-value', newBookQuantity);
+
+    })
+
+
     //======================================Добавление книги============================================================
 
     $(function (){
@@ -206,6 +254,7 @@
 
                             let orderTableBody = document.querySelector('.orderTableBody')
                             let tr = document.createElement('tr')
+
                             orderTableBody.appendChild(tr)
 
                             let tdBookSelect = document.createElement('td')
@@ -248,8 +297,11 @@
                             let btnDecQuantity = document.createElement('button')
                             tdButtonContainer.appendChild(btnDecQuantity)
                             btnDecQuantity.setAttribute('type', 'button')
+                            btnDecQuantity.setAttribute('data-book-order-id', 0)
+                            btnDecQuantity.setAttribute('data-order-id', response.order.id)
                             btnDecQuantity.classList.add('decNumberBookOrder')
                             btnDecQuantity.classList.add('decNumberEditBookOrder')
+                            btnDecQuantity.id = 0
 
                             let minus = document.createElement('img')
                             btnDecQuantity.appendChild(minus)
@@ -257,10 +309,14 @@
                             minus.classList.add('minusImg')
                             minus.setAttribute('alt', 'Minus')
 
+
                             let inputNumber = document.createElement('input')
                             tdButtonContainer.appendChild(inputNumber)
                             inputNumber.classList.add('order_book_number')
                             inputNumber.classList.add('inputNumber')
+                            inputNumber.classList.add('book-quantity')
+                            inputNumber.setAttribute('data-book-id', 0)
+                            inputNumber.setAttribute('data-old-value', 0);
                             inputNumber.setAttribute('type', 'text')
                             inputNumber.setAttribute('name', `books[${i}][book_number]`)
 
@@ -275,8 +331,11 @@
                             let btnIncQuantity = document.createElement('button')
                             tdButtonContainer.appendChild(btnIncQuantity)
                             btnIncQuantity.setAttribute('type', 'button')
+                            btnIncQuantity.setAttribute('data-book-order-id', 0)
+                            btnIncQuantity.setAttribute('data-order-id', response.order.id)
                             btnIncQuantity.classList.add('incNumberBookOrder')
                             btnIncQuantity.classList.add('decNumberEditBookOrder')
+                            btnIncQuantity.id = 0
 
                             let plus = document.createElement('img')
                             btnIncQuantity.appendChild(plus)
@@ -371,9 +430,31 @@
 
                     let tr = e.currentTarget.closest('tr')
 
+                    tr.setAttribute('data-book-id', response.bookOrder.id)
+
+                    let inputNumber = tr.querySelector('.inputNumber')
+
+                    let btnDecQuantity = tr.querySelector('.decNumberBookOrder')
+
+                    btnDecQuantity.setAttribute('data-book-order-id', response.bookOrder.id)
+
+                    btnDecQuantity.id = `decNumber${response.bookOrder.id}`
+
+                    let btnIncQuantity = tr.querySelector('.incNumberBookOrder')
+
+                    btnIncQuantity.setAttribute('data-book-order-id', response.bookOrder.id)
+
+                    btnIncQuantity.id = `incNumber${response.bookOrder.id}`
+
+                    inputNumber.setAttribute('data-book-id', response.bookOrder.id)
+
                     let bookOrderLimit = tr.querySelector('.bookOrderLimit')
 
                     bookOrderLimit.innerText = response.bookOrder.books_limit;
+
+
+
+                    // inputNumber.setAttribute('data-old-value', bookOrderLimit.innerText)
                 }
             })
         });
@@ -383,81 +464,81 @@
 
     $(function () {
 
-        // $(".bookOrder").change(function (e) {
-        $(document).on('change', '.bookOrder', function (e) {
 
-            let tr = e.currentTarget.closest('tr')
+        $(document).on('change', '.bookOrder', function () {
 
-            let order_book_number = tr.querySelector('.order_book_number');
+            let $wrap = $(this).closest('tr');
 
-            order_book_number.setAttribute('value', 0);
+            let book_quantity = $wrap.find('td input[type="text"].book-quantity')
+
+            book_quantity.val(0);
+
+            book_quantity.attr('data-old-value', 0);
+
+
+
         });
     })
 
-    let changeQuantity = function(quantity, book_id, e)
+    let changeQuantity = function(quantity, bookId, $wrap,)
     {
+        let bookLimitHidden = $wrap.find('td input[type="hidden"].order_book_limit_hidden')
 
-                let cont = e.currentTarget.closest('tr')
+        let bookQuantity = $wrap.find('td input[type="text"].book-quantity')
 
-                let bookOrderLimit = cont.querySelector('.bookOrderLimit')
+        // let oldBookNumber = +bookQuantity.attr('data-old-value');
 
-                let limit = bookOrderLimit.innerText;
+        let $bookLimit = $wrap.find('td.bookOrderLimit');
 
-                let order_book_limit_hidden = cont.querySelector('.order_book_limit_hidden')
+        let $bookReserve = $wrap.find('td input[type="text"].book-quantity');
 
-                let bookOrderNumberInput = cont.querySelector('.order_book_number')
+        if (+$bookLimit.text() > 0 && quantity > 0 ||+$bookReserve.val() > 1 && quantity < 0)
+        {
 
-                let bookOrderNumber = Number(bookOrderNumberInput.getAttribute('value'));
+        let newBookQuantity = +$bookReserve.val()+quantity;
 
-                if (limit > 0 && quantity > 0)
-                {
-                    bookOrderNumber += quantity;
+        $bookReserve.val(newBookQuantity);
 
-                    bookOrderNumberInput.setAttribute('value', bookOrderNumber)
+        $bookLimit.text(+$bookLimit.text().trim()-quantity);
 
-                    limit -= quantity;
+        let oldBookQuantity = bookQuantity.val();
 
-                    bookOrderLimit.innerText = limit
+        // console.log(bookQuantity.val())
 
-                    order_book_limit_hidden.setAttribute('value', limit)
+        +bookQuantity.attr('data-old-value',  oldBookQuantity)
 
-                }
+        let count = +$bookLimit.text().trim()
 
-                    if (Number(bookOrderNumberInput.getAttribute('value')) > 1 && quantity < 1)
-                {
-                    limit -= quantity;
+            bookLimitHidden.val(count)
+        }
 
-                    bookOrderLimit.innerText = limit
-
-                    order_book_limit_hidden.setAttribute('value', limit)
-
-                    bookOrderNumber += quantity;
-
-                    bookOrderNumberInput.setAttribute('value', bookOrderNumber)
-                }
     }
 
     $(document).on('click',".decNumberBookOrder" , function (e){
 
-        let tr = e.currentTarget.closest('tr')
+        // debugger
 
-        let bookOrder = tr.querySelector('.bookOrder ');
+        let bookId = $(this).attr('data-book-order-id');
 
-        let book_id = bookOrder.value
+        let $wrap = $(this).closest('tr[data-book-id="' + bookId + '"]');
 
-        changeQuantity (-1, book_id, e);
-    })
+        changeQuantity (-1, bookId, $wrap,)
+
+        })
 
     $(document).on('click', ".incNumberBookOrder" ,function (e){
 
-        let tr = e.currentTarget.closest('tr')
 
-        let bookOrder = tr.querySelector('.bookOrder ');
 
-        let book_id = bookOrder.value
+        // debugger
 
-        changeQuantity(1, book_id, e);
-    })
+        let bookId = $(this).attr('data-book-order-id');
+
+        let $wrap = $(this).closest('tr[data-book-id="' + bookId + '"]');
+
+            changeQuantity (1, bookId, $wrap,);
+        }
+    )
 
 
 //=====================================Отделения доставки===============================================================
