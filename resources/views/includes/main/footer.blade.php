@@ -1,5 +1,6 @@
 <!-- Call to Action-->
-
+<html>
+<body>
 <section class="call-to-action text-white text-center" id="signup">
 
 </section>
@@ -43,6 +44,6 @@
 <!-- * *                               SB Forms JS                               * *-->
 <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+{{--<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>--}}
 </body>
 </html>

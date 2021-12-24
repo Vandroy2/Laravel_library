@@ -7,7 +7,7 @@ use App\Models\Book;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+
 
 class ImageController extends Controller
 {

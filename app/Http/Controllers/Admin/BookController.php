@@ -4,18 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookCreateRequest;
+use App\Models\Author;
 use App\Models\Book;
 use App\Models\City;
 use App\Models\Delivery;
+use App\Models\Genre;
 use App\Models\Image;
 use App\Models\Office;
 use App\Models\Order;
+
+
+use App\Models\Sale;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use app\Helpers\Cart;
-
 
 
 
@@ -87,13 +92,20 @@ class BookController extends Controller
     public function edit(Book $book)
     {
         $images = Image::all();
-        return view('layouts.admin.book_edit', ['book'=>$book, 'images'=>$images]);
+
+        $genres = Genre::all();
+        return view('layouts.admin.book_edit', [
+            'book'=>$book,
+            'images'=>$images,
+            'genres'=>$genres,
+        ]);
 
     }
 //====================================Обновление книги==================================================================
 
     public function update(Request $request, Book $book, Image $image): RedirectResponse
     {
+
         $book->fill($request->all());
 
         $book->save();
@@ -279,21 +291,21 @@ class BookController extends Controller
 
             $cartBooksArr = $request->session()->get('cartBooks', []);
 
-            $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
-
-            $books= $cartBooks->filter(function ($book) use($bookDeleteId)
-            {
-                return $book->id != $bookDeleteId;
-
-            })->all();
-
             $bookDelete->books_limit += $cartBooksArr[$bookDeleteId]['count'];
 
             $cartBooksArr[$bookDeleteId]['count'] = 0;
 
             $bookDelete->save();
 
-            $request->session()->put('cartBooks', $books);
+            foreach (array_keys($cartBooksArr) as $id)
+                {
+                    if ($id == $bookDeleteId)
+               {
+                    unset($cartBooksArr[$id]);
+               }
+                }
+
+            $request->session()->put('cartBooks', $cartBooksArr);
 
             return response()->json(['bookDelete'=>$bookDelete]);
     }
@@ -343,7 +355,159 @@ class BookController extends Controller
                 ]);
         }
 
+        public function selection()
+        {
+            $books = Book::all();
+
+            $images = Image::all();
+
+            $genres = Genre::all();
+
+            $authors = Author::all();
+
+            return view('admin.books.book_selection', compact('books', 'images', 'genres', 'authors'));
+        }
+
+        public function filterByGenre(Request $request): JsonResponse
+        {
+            $genre_id = $request->get('genre_id');
+
+            if ($genre_id){
+                if ($genre_id == 'default'){
+
+                    $books = Book::query()->with('author', 'images')->get();
+
+                    return response()->json(['books'=>$books,]);
+
+                }
+
+                $books = Book::query()->with('author', 'images')->where('genre_id', $genre_id)->get();
+
+                return response()->json(['books'=>$books,]);
+            }
+
+            return response()->json('status', 'errors');
 
 
+        }
 
+
+        public function filterByAuthor(Request $request): JsonResponse
+    {
+        $author_id = $request->get('author_id');
+
+        if ($author_id){
+            if ($author_id == 'default')
+            {
+                $books = Book::query()->with('author', 'images')->get();
+
+                return response()->json(['books'=>$books,]);
+            }
+
+            $books = Book::query()->with('author', 'images')->where('author_id', $author_id)->get();
+
+            return response()->json(['books'=>$books,]);
+        }
+
+        return response()->json('status', 'errors');
+    }
+
+    public function filterBySales(Request $request): JsonResponse
+    {
+//        SELECT * FROM `books` LEFT OUTER JOIN `sales` ON books.id = sales.book_id ORDER BY `count` DESC;
+
+        $sale = $request->get('sale');
+
+        $startDate = Carbon::now()->subMonth();
+
+        $endDate = Carbon::now();
+
+
+        if ($sale == 'sales_hi'){
+            $books = Book::query()
+                ->select('books.*')
+                ->with(['images', 'author'])
+                ->when(!empty($sale), function($query) use($startDate, $endDate){
+                    return $query
+                        ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+                        ->whereBetween('sales.created_at',[$startDate, $endDate])
+                        ->orderBy('count', 'desc');
+                })
+                ->get();
+
+            return response()->json(['books'=>$books,]);
+        }
+
+        if ($sale == 'sales_low'){
+            $books = Book::query()
+                ->select('books.*')
+                ->with(['images', 'author'])
+                ->when(!empty($sale), function($query) use($startDate, $endDate){
+                    return $query
+                        ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+                        ->whereBetween('sales.created_at',[$startDate, $endDate])
+                        ->orderBy('count');
+                })
+                ->get();
+
+            return response()->json(['books'=>$books,]);
+        }
+
+        if ($sale == 'sales_top'){
+            $books = Book::query()
+                ->select('books.*')
+                ->with(['images', 'author'])
+                ->when(!empty($sale), function($query) use($startDate, $endDate){
+                    return $query
+                        ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+                        ->whereBetween('sales.created_at',[$startDate, $endDate])
+                        ->orderBy('count','desc');
+                })
+                ->take(10)
+                ->get();
+
+            return response()->json(['books'=>$books,]);
+        }
+
+        if ($sale == 'default') {
+
+                $books = Book::query()->with('author', 'images')->get();
+
+                return response()->json(['books' => $books,]);
+            }
+
+        return response()->json('status', 'errors');
+    }
+
+    public function filterByPrice(Request $request): JsonResponse
+    {
+
+        $price = $request->get('price');
+
+        if ($price){
+            if ($price == 'default'){
+
+                $books = Book::query()->with('author', 'images')->get();
+
+                return response()->json(['books'=>$books,]);
+            }
+
+            if ($price == 'price_hi'){
+
+              $books = Book::query()->with('author', 'images')->orderBy('price', 'desc')->get();
+
+              return response()->json(['books'=>$books]);
+          }
+
+          if ($price == 'price_low')
+          {
+              $books = Book::query()->with('author', 'images')->orderBy('price')->get();
+
+              return response()->json(['books'=>$books]);
+          }
+      }
+
+      return response()->json('status', 'errors');
+
+    }
 }

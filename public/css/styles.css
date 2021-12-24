@@ -11890,3 +11890,96 @@ body{
 .personalCabinet{
     margin-right: 0;
 }
+
+.genre{
+    width: 200px;
+    height: 40px;
+}
+
+.genre_text{
+    margin-bottom: 15px;
+}
+
+.filter_text{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.filter{
+    margin-right: 50px;
+}
+
+
+.book_selection{
+
+    margin-top: 50px;
+    margin-left: 20px;
+    width: 2000px;
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.book_card_container{
+    width: max-content;
+    height: 20rem;
+    display: flex;
+    position: relative;
+    margin-right: 15px;
+}
+.filter_container{
+    display: flex;
+    justify-content: space-between;
+    background-color: #e5e7e6;
+    margin-left: 15px;
+
+}
+
+.filter_main_text{
+    margin-left: 15px;
+    margin-top: 15px;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-bottom: solid 1px;
+    width: 100px;
+}
+
+.btn_submit_filter{
+    height: 38px;
+    margin-top: 34px;
+    margin-right: 130px;
+}
+
+.card_filter{
+    width: 9.5rem;
+    height: 16rem;
+    border-radius: 10px;
+}
+
+    .img_slide_filter{
+    width: 9.5rem;
+    height: 7rem;
+    border-radius: 5px;
+}
+
+.carousel_inner{
+    width: 9.5rem;
+    height: 9rem;
+    border-radius: 10px
+}
+
+
+.div_slide_filter{
+    width: 9rem;
+    height: 7rem;
+    border-radius: 5px;
+}
+
+.margin_disable{
+    margin: 0;
+}
+
+.margin_filter{
+    margin-right: 15px;
+}

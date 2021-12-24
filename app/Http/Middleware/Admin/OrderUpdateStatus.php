@@ -28,7 +28,7 @@ class OrderUpdateStatus
         if ($order->status->status == 'accepted'){
 
             return redirect()->route('admin.orders')
-                ->with('success', 'Заказ принят. Для обработки перейдите на страницу редектирования');
+                ->with('success', 'Заказ принят. Для обработки перейдите на страницу редактирования');
         }
 
 

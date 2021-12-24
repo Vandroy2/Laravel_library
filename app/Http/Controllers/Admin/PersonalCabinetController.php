@@ -6,7 +6,7 @@ use App\Models\Comment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+
 
 
 class PersonalCabinetController extends Controller
@@ -14,7 +14,7 @@ class PersonalCabinetController extends Controller
     public function view(){
 
         $commentsNotPublished= Comment::query()
-            ->where('published','=', null)->get();
+            ->whereNull('published')->get();
 
         $commentPublished = Comment::query()
             ->where('published', '=', '1')->get();

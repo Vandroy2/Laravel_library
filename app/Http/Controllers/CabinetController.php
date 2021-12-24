@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Book;
 use App\Models\Book_Order;
 use App\Models\Comment;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 
 class CabinetController extends Controller
@@ -15,12 +16,12 @@ class CabinetController extends Controller
     public function view()
     {
         $commentsNotPublished = Comment::query()
-            ->where('published', '=', null)
+            ->whereNull('published')
             ->where('user_id', '=', Auth::user()->id)
             ->get();
 
         $commentPublished = Comment::query()
-            ->where('published', '=', '1')
+            ->where('published', '=', 1)
             ->where('user_id', '=', Auth::user()->id)
             ->get();
 
@@ -36,17 +37,12 @@ class CabinetController extends Controller
 
         $orders_id = $orders->pluck('id');
 
-//        dd($orders_id);
-
         $multipleOrder = Book_Order::query()
             ->whereIn('order_id', $orders_id)->get();
 
         $book_id = $multipleOrder->pluck('book_id');
 
         $books = Book::query()->find($book_id);
-
-
-
 
         return view('personalCabinetOrders', [
             'orders' => $orders,

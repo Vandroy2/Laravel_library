@@ -1,7 +1,9 @@
 
 @include('includes.main.head')
 <?php
-phpinfo();
+
+
+dd(session('cartBooks'))
 ?>
 
 

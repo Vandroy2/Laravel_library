@@ -2,21 +2,36 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Ramsey\Collection\Collection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
+
 
 /**
  * class City
  *
  * @package App\Models
- *
  * @property int $id
  * @property string $city_name
+
+ * @property-read Collection|Delivery[] $deliveries
+ * @property-read int|null $deliveries_count
+ * @property-read Collection|Library[] $libraries
+ * @property-read int|null $libraries_count
+ * @property-read Collection|Order[] $orders
+ * @property-read int|null $orders_count
  *
- * @property library[]| Collection $library
+ * @method static Builder|City newModelQuery()
+ * @method static Builder|City newQuery()
+ * @method static Builder|City query()
+ * @method static Builder|City whereCityName($value)
+ * @method static Builder|City whereId($value)
+ *
+ * @mixin Eloquent
  */
 
 class City extends Model

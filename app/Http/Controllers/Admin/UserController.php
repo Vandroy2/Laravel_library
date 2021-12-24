@@ -114,13 +114,11 @@ class UserController extends Controller
 
         }
 
-    /**
-     * @throws AuthorizationException
-     */
+
     public function edit(User $user)
         {
-
             $images = Image::all();
+
             return view('layouts.admin.user_edit', ['user'=>$user, 'images'=>$images]);
 
         }

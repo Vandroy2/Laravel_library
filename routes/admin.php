@@ -155,6 +155,18 @@ Route::middleware([
 
         Route::get('/delete/{book}', [bookController::class, 'delete'])->name('bookDelete');
 
+        Route::get('/selection', [bookController::class, 'selection'])->name('bookSelection');
+
+        Route::match(['get', 'post'],'/filterByGenre', [bookController::class, 'filterByGenre'])->name('filterByGenre');
+
+        Route::match(['get', 'post'],'/filterByAuthor', [bookController::class, 'filterByAuthor'])->name('filterByAuthor');
+
+        Route::match(['get', 'post'],'/filterBySales', [bookController::class, 'filterBySales'])->name('filterBySales');
+
+        Route::match(['get', 'post'],'/filterByPrice', [bookController::class, 'filterByPrice'])->name('filterByPrice');
+
+        Route::match(['get', 'post'],'/filterByDate', [bookController::class, 'filterByDate'])->name('filterByDate');
+
     });
 
     //===============================================Personal cabinet===================================================

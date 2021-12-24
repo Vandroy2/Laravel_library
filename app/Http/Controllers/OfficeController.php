@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Office;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OfficeController extends Controller
 {
-    public function show(Request $request): \Illuminate\Http\JsonResponse
+    public function show(Request $request): JsonResponse
     {
         $city_id = $request->get('city_id');
 

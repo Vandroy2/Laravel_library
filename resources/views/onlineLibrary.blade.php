@@ -261,25 +261,6 @@
 
         function popupClose(popupActive, doUnlock = true){
 
-            // let data_book_basket_card = document.querySelectorAll('.popupBooksInBasket > .data_book_basket_card');
-            // let arr = [];
-            // for(let book of data_book_basket_card) {
-            //     let id = book.getAttribute('data-book-basket-id')
-            //     arr.push(id);
-            // }
-            //
-            // $.ajax({
-            //
-            //     headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-            //     url: '/admin/books/book/resetQuantity',
-            //     method: "Post",
-            //     data: {'books_in_basket_id': arr},
-            //
-            //     success: function(response){
-            //
-            //     }
-            // })
-
             if (unlock){
                 popupActive.classList.remove('open');
                 if(doUnlock){
@@ -542,12 +523,16 @@
 
         $(document).on('click', '.garbage_button', function (e){
 
+            console.log('success');
+
             let basketCount = document.getElementById('basketCount');
             let count = Number(basketCount.innerText);
             count -= 1;
             basketCount.innerText = count
 
             let delete_book_id = e.currentTarget.getAttribute('data-book-basket-delete_id');
+
+            console.log(delete_book_id);
 
             $.ajax({
 

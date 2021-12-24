@@ -126,6 +126,7 @@
 
                     <a class="dropdown-item" href="{{route('admin.books')}}">Books list</a>
                     <a class="dropdown-item" href="{{route('admin.bookCreate')}}">Book Create</a>
+                    <a class="dropdown-item" href="{{route('admin.bookSelection')}}">Book selection</a>
 
 
                 </div>

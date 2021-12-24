@@ -189,7 +189,7 @@
 
     $(document).on('change', '.book-quantity',function (e) {
 
-        // debugger
+
 
         let $bookQuantity = $(this);
 
@@ -516,7 +516,7 @@
 
     $(document).on('click',".decNumberBookOrder" , function (e){
 
-        // debugger
+
 
         let bookId = $(this).attr('data-book-order-id');
 
@@ -530,7 +530,7 @@
 
 
 
-        // debugger
+
 
         let bookId = $(this).attr('data-book-order-id');
 

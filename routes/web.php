@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::view('/test', 'test')->name('test');
+
 Route::get('/', function () {return view('login'); })->name('login');
 
 Route::get('/', [commentController::class, 'view'])->name('main');

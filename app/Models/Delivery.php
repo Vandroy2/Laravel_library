@@ -2,23 +2,42 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use phpDocumentor\Reflection\Types\Collection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
+
 
 /**
+ * App\Models\Delivery
+ *
  * @Delivery
- *
  * @package App\Models
- *
  * @property string $delivery_name
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
- * @property Office[]| Collection $offices
- * @property Order[]| Collection $orders
- * @property City[]|Collection $cities
+ * @property-read int|null $cities_count
+ * @property-read Collection|Office[] $offices
+ * @property-read int|null $offices_count
+ * @property-read Collection|Order[] $orders
+ * @property-read int|null $orders_count
+ * @property-read Collection|City[] $cities
+ *
+ * @method static Builder|Delivery newModelQuery()
+ * @method static Builder|Delivery newQuery()
+ * @method static Builder|Delivery query()
+ * @method static Builder|Delivery whereCreatedAt($value)
+ * @method static Builder|Delivery whereDeliveryName($value)
+ * @method static Builder|Delivery whereId($value)
+ * @method static Builder|Delivery whereUpdatedAt($value)
+ *
+ * @mixin Eloquent
  */
 
 class Delivery extends Model
@@ -34,8 +53,6 @@ class Delivery extends Model
         'delivery_name',
 
     ];
-
-
 
     /**
      * @return HasMany
@@ -63,7 +80,4 @@ class Delivery extends Model
     {
         return $this->belongsToMany(City::class);
     }
-
-
-
 }

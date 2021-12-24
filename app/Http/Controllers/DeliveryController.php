@@ -10,7 +10,6 @@ class DeliveryController extends Controller
 {
     public function view(): JsonResponse
     {
-
         $deliveries = Delivery::all();
 
         return response()->json([

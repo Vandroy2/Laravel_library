@@ -3,22 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\User;
-use http\Env\Response;
+
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+
+
 
 class CommentController extends Controller
 {
     public function view(){
 
-
         $comments = Comment::query()
 
-        ->where('published', '=', '1')->get();
+        ->where('published', '=', 1)->get();
 
         return view('index', compact('comments'));
     }
@@ -65,18 +64,12 @@ class CommentController extends Controller
         return redirect()->route('main', ['comment'=>$comment])->with('success', 'Комментарий отредактирован');
     }
 
-    /**
-     * @param Comment $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function delete(Comment $comment): \Illuminate\Http\Response
+    public function delete(Comment $comment)
     {
-//        $this->authorize('delete',[self::class, $comment]);
-
         $comment->delete();
 
         $comments = Comment::all();
 
-        return response()->view('layouts.admin.personalCabinet', ['comments'=>$comments]);
+        return view('layouts.admin.personalCabinet', ['comments'=>$comments]);
     }
 }

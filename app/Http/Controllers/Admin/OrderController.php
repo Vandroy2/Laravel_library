@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\Delivery;
 use App\Models\Office;
 use App\Models\Order;
+use App\Models\Sale;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -92,7 +93,7 @@ class OrderController extends Controller
 
             if ($book->books_number == 0){
 
-                return redirect()->route('onlineLibrary')->with('errors', 'колличество книг не может быть меньше 1');
+                return redirect()->route('onlineLibrary')->with('errors', 'количество книг не может быть меньше 1');
             }
             else
         {
@@ -142,7 +143,7 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
-    //----------------------------------------Полученеие данных для редактирования заказа-------------------------------
+    //----------------------------------------Получение данных для редактирования заказа-------------------------------
 
         $deliveries = Delivery::all();
 
@@ -304,6 +305,41 @@ class OrderController extends Controller
             return redirect()->route('admin.orders')->with('success', 'заказ был отменен');
         }
 
+        //-----------------------------------Регистрация продажи книги--------------------------------------------------
+
+        if ($order->status->status == 'allowed'){
+
+            foreach ($editedOrderBooks as $editedOrderBook){
+
+                $book = Book::query()
+                    ->where('id', '=', $editedOrderBook['book_id'])->first();
+
+                $bookOrder = Book_Order::query()
+                    ->where('order_id', '=', $order->id)
+                    ->where('book_id', '=', $book->id)->first();
+
+                /* @var Book $book */
+
+                $sale = Sale::query()->where('book_id','=', $book->id)->first();
+
+                if($sale)
+                {
+                    $sale->count += $bookOrder->book_number;
+
+                    $sale->save();
+                }
+                else{
+                    $newSale = Sale::create(
+                        [
+                            'count' => $bookOrder->book_number,
+                            'order_id' => $order->id,
+                            'book_id' => $book->id,
+                        ]);
+
+                    $newSale->save();
+                }
+            }
+        }
             return redirect()->route('admin.orders', ['order'=>$order])->with('success', 'заказ успешно отредактирован');
     }
 

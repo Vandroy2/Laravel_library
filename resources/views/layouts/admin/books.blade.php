@@ -11,6 +11,7 @@
     <tr>
         <th scope="col">id</th>
         <th scope="col">Name</th>
+        <th scope="col">Genre</th>
         <th scope="col">Number of page</th>
         <th scope="col">Created date</th>
         <th scope="col">Author name</th>
@@ -28,6 +29,7 @@
 
             <td>{{$book->id}}</td>
             <td>{{$book->book_name}}</td>
+            <td>{{$book->genre->genre_name}}</td>
             <td>{{$book->num_pages}}</td>
             <td>{{$book->created_date}}</td>
             <td>{{$book->author->author_name}}</td>

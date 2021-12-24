@@ -28,7 +28,23 @@
         <label for="name"></label>
         <input type="text" name="author_id" value="{{$book->author->id}}" placeholder="Введите имя" id = "birthday" class="form-control">
     </div>
+
+    <div class="form-group">
+
+        <div class = genre_text>
+            Выберите жанр
+        </div>
+
+        <select class="admin genre" name="genre_id" style="width: 200px;height: 38px;">
+            <option value=""><label >{{$book->genre->genre_name}}</label></option>
+            @foreach($genres as $genre)
+                <option value="{{$genre->id}}" name="" >{{$genre->genre_name}}</option>
+            @endforeach
+        </select>
+
+    </div>
     <td>
+
 
 
         <div class="form-group" style="display: flex;flex-wrap: wrap">

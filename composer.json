@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "ext-json": "*",
+        "barryvdh/laravel-ide-helper": "*",
         "darryldecode/cart": "^4.2",
         "doctrine/dbal": "v2.4.2",
         "fruitcake/laravel-cors": "^2.0",
@@ -18,8 +19,9 @@
         "laravel/legacy-factories": "^1.1",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.3"
-
+        "laravel/ui": "^3.3",
+        "maatwebsite/excel": "^3.1",
+      "ext-mysql_xdevapi": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
