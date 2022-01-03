@@ -92,6 +92,14 @@
                     <p>Осталось книг в наличии</p>
                     <p style="margin-left: 20px" data-book-limit="{{$bookOrder->books_limit}}" id="bookLimit">{{$bookOrder->books_limit}}</p>
                     </div>
+                    <div class = "book_number" >
+                        <p>Цена</p>
+                        <p style="margin-left: 20px" data-book-limit="{{$bookOrder->price}}" id="bookLimit">{{$bookOrder->price}}</p>
+                    </div>
+                    <div class = "book_number" >
+                    <div>Сумма заказа:</div>
+                        <div class = "book_order_sum">{{$sum}}</div>
+                    </div>
                 </div>
             </th>
             <td colspan="2" class = "table_row">
@@ -103,7 +111,9 @@
                     <button type="button" class="numberBookOrder" style="border: none;background-color: transparent" id="incBookNumber">
                         <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
                     </button>
+
                 </div>
+
             </td>
 
         </tr>

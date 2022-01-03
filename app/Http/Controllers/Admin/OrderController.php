@@ -40,6 +40,9 @@ class OrderController extends Controller
     public function create(OrderFormRequest $request): RedirectResponse
     {
 
+
+
+
         /* @var Book $book */
 
         //------------------------------------Получение данных из реквеста-----------------------------------------------
@@ -73,8 +76,6 @@ class OrderController extends Controller
             }
             $order->save();
         }
-
-
 
         $cartBooksArr = $request->session()->get('cartBooks', []);
 

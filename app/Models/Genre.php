@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -43,10 +44,10 @@ class Genre extends Model
     ];
 
     /**
-     * @return BelongsToMany
+     *
      */
-    public function books(): BelongsToMany
+    public function books(): HasMany
     {
-        return $this->belongsToMany(Book::class)->withTimestamps();
+        return $this->hasMany(Book::class);
     }
 }

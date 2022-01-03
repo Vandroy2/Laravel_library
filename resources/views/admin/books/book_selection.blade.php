@@ -5,7 +5,7 @@
 
 @include('includes.admin.scripts')
 
-@include('includes.admin.jquery functions')
+@include('includes.admin.functions')
 
 @include('includes.errors')
 
@@ -58,11 +58,7 @@
             </select>
         </div>
 
-        <input type="submit" value="Применить фильтры" class="btn_submit_filter">
-
     </div>
-
-
 
 </form>
 
@@ -93,10 +89,9 @@
                         <div class="card-body">
                             <h6 class="card-title">{{$book->book_name}}</h6>
                             <p class="card-text">{{$book->author->fullname}}</p>
-                            <p class="card-text" id = "bookLimit{{$book->id}}" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Осталось книг:{{$book->books_limit}}</p>
+                            <p class="card-text" id = "bookLimit{{$book->id}}" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Цена: {{$book->price}}</p>
                         </div>
                     </div>
-
         </div>
         @endforeach
     </div>
@@ -107,58 +102,25 @@
 
     $(function(){
 
-        $(document).on('change', '.genre', function (e){
+        //--------------------Фильтр по жанрам--------------------------------------------------------------------------
 
-            removeOldBookList('.card_filter, .book_card_container');
+        changeSelect('.genre', '/admin/books/filterByGenre');
 
-            let genre_id = e.currentTarget.value
+        //--------------------Фильтр по авторам--------------------------------------------------------------------------
 
-            let url = '/admin/books/filterByGenre'
+        changeSelect('.author', '/admin/books/filterByAuthor');
 
-            let data = {'genre_id': genre_id}
+        //--------------------Фильтр по продажам--------------------------------------------------------------------------
 
-            ajaxRequest(url, data)
-        });
+        changeSelect('.sales', '/admin/books/filterBySales');
 
-        $(document).on('change', '.author', function (e){
+        //--------------------Фильтр по цене--------------------------------------------------------------------------
 
-            removeOldBookList('.card_filter, .book_card_container')
+        changeSelect('.price', '/admin/books/filterByPrice');
 
-            let author_id = e.currentTarget.value;
-
-            let data = {'author_id': author_id};
-
-            let url = '/admin/books/filterByAuthor';
-
-            ajaxRequest(url, data);
-        })
-
-        $(document).on('change', '.sales', function (e) {
-
-            removeOldBookList('.card_filter, .book_card_container')
-
-            let sale = e.currentTarget.value
-
-            let data = {'sale': sale};
-
-            let url = '/admin/books/filterBySales';
-
-            ajaxRequest(url, data);
-        })
-
-        $(document).on('change', '.price', function (e) {
-
-            removeOldBookList('.card_filter, .book_card_container')
-
-            let price = e.currentTarget.value
-
-            let data = {'price': price};
-
-            let url = '/admin/books/filterByPrice';
-
-            ajaxRequest(url, data);
-        })
     });
+
+
 
 
 

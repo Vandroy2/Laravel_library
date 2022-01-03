@@ -80,4 +80,23 @@
         })
     }
 
+    let changeSelect = function (filterType, urlSelect){
+
+        $(document).on('change', filterType, function (e){
+
+            removeOldBookList('.card_filter, .book_card_container');
+
+            let dataSend = e.currentTarget.value
+
+            let url = urlSelect
+
+            let data = {'data': dataSend}
+
+            ajaxRequest(url, data)
+        });
+
+    }
+
+
+
 </script>

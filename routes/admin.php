@@ -33,7 +33,17 @@ Route::prefix('books')->group(function (){
 
     Route::match(['get', 'post'], '/book/add', [bookController::class, 'add'])->name('bookAdd');
 
+    Route::get('/top', [bookController::class, 'top'])->name('bookTop10');
 
+    Route::get('/newest', [bookController::class, 'newest'])->name('bookNewest');
+
+    Route::get('/topAuthors', [bookController::class, 'topAuthors'])->name('bookTopAuthors');
+
+    Route::get('/topGenres', [bookController::class, 'topGenres'])->name('bookTopGenres');
+
+    Route::get('/lowPrice', [bookController::class, 'lowPrice'])->name('bookLowPrice');
+
+    Route::match(['post', 'get'],'/changeBookQuantity', [bookController::class, 'changeBookQuantity'])->name('bookChangeBookQuantity');
 
 });
 
@@ -166,6 +176,8 @@ Route::middleware([
         Route::match(['get', 'post'],'/filterByPrice', [bookController::class, 'filterByPrice'])->name('filterByPrice');
 
         Route::match(['get', 'post'],'/filterByDate', [bookController::class, 'filterByDate'])->name('filterByDate');
+
+
 
     });
 

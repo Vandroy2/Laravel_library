@@ -178,6 +178,11 @@ class Book extends Model
     {
         return $this->belongsTo(Sale::class, 'book_id', 'id');
     }
+
+    public function bookOrder(): BelongsTo
+    {
+        return $this->belongsTo(Book_Order::class, 'book_id', 'id');
+    }
 }
 
 

@@ -4511,6 +4511,7 @@ textarea.form-control-lg {
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
+
 }
 .card > hr {
   margin-right: 0;
@@ -11310,8 +11311,9 @@ header.masthead h1, header.masthead .h1 {
 }
 @media (min-width: 768px) {
   header.masthead {
+      height: 600px;
     padding-top: 12rem;
-    padding-bottom: 12rem;
+
   }
   header.masthead h1, header.masthead .h1 {
     font-size: 3rem;
@@ -11414,7 +11416,7 @@ footer.footer {
 }
 
 .number{
-    margin-top: 30px;
+    margin-top: 15px;
     justify-content: center;
 }
 .btn_book_order_delivery{
@@ -11594,6 +11596,11 @@ footer.footer {
 
 .bookLimitBasket, .bookLimitContainer, .addedBookContainer{
     vertical-align: middle;
+
+}
+
+.bookLimitBasket{
+    text-align: center;
 }
 
 .addedBookContainer{
@@ -11983,3 +11990,36 @@ body{
 .margin_filter{
     margin-right: 15px;
 }
+
+.sumOrder{
+    text-align: right;
+}
+
+.headerTitle{
+    margin-bottom: 350px;
+}
+
+.buttons_filter_container{
+    height: 70px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around; width: 100%;
+    text-align: center;
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/e/e4/Interior_view_of_Stockholm_Public_Library.jpg)
+    /*background-image: url(https://www.detroitlabs.com/wp-content/uploads/2018/02/alfons-morales-YLSwjSy7stw-unsplash.jpg)*/
+}
+
+.btn_filter, .top_select_text{
+    color: bisque;
+    background-color: rgba(36, 33, 33, 0.8);
+}
+
+.top_select_text
+{
+    height: 30px; font-size: 20px;
+}
+
+
+
+

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\BookCreateRequest;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\City;
+use App\Models\Comment;
 use App\Models\Delivery;
 use App\Models\Genre;
 use App\Models\Image;
@@ -14,7 +15,7 @@ use App\Models\Office;
 use App\Models\Order;
 
 
-use App\Models\Sale;
+
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -51,7 +52,6 @@ class BookController extends Controller
             })
 
             ->paginate(8);
-
 
         return view('layouts.admin.books', compact('books'));
 
@@ -134,7 +134,7 @@ class BookController extends Controller
 
         return redirect()->route('admin.books')->with('success', 'Книга была удалена');
     }
-//==============================================Изменение количества====================================================
+//==============================================Изменение количества книг в корзине=====================================
 
     public function changeQuantity(Request $request): JsonResponse
     {
@@ -176,19 +176,66 @@ class BookController extends Controller
 
             $number = $cartBooksArr[$book_id]['count'];
 
-            return response()->json(['book'=>$book, 'number'=>$number]);
+            return response()->json(['book'=>$book, 'number'=>$number, 'sumOrder'=>Cart::getOrderSum($request)]);
     }
 
+//===============================================Изменение количества при заказе одной книги============================
+
+    public function changeBookQuantity(Request $request): JsonResponse
+    {
+        $id = $request->get('book_id');
+
+        $quantity = $request->get('quantity');
+
+        $book = Book::query()->find($id);
+
+        if ($book->books_number > 1 && $quantity < 0 || $quantity > 0 && $book->books_limit > 0) {
+
+            $book->books_number += $quantity;
+
+            $book->books_limit -= $quantity;
+
+            $book->save();
+
+        }
+
+        $sum = $book->price * $book->books_number;
+
+            return response()->json(['book'=>$book, 'bookOrderSum'=> $sum, 'status' =>200]);
+    }
 
 //==================================================Заказ книги=========================================================
 
-    public function order(Book $book)
+    public function order(Request $request, Book $book)
     {
+
+
         $deliveries = Delivery::all();
 
         $cities = City::all();
 
         $offices = Office::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+//        if(Arr::has($cartBooksArr, $book->id))
+//            return response()->json(['status' => 'fail', 'message' => 'Book is exist in cart.'], 422);
+
+        /** cartBooks = [1 => ['count' => 1], ]*/
+
+        $cartBooksArr[$book->id] = ['count' => 1];
+
+        $request->session()->put('cartBooks', $cartBooksArr);
+
+        $book->books_limit -= 1;
+
+        $book->save();
+
+        $book->books_number = 1;
+
+        $count = $cartBooksArr[$book->id]['count'];
+
+        $sum = $book->price * $cartBooksArr[$book->id]['count'];
 
         if (\Illuminate\Support\Facades\Request::ajax()) {
 
@@ -198,6 +245,8 @@ class BookController extends Controller
                 'deliveries' => $deliveries,
                 'cities' => $cities,
                 'offices' => $offices,
+                'num' => $count,
+                'sum' => $sum
             ]);
         }
         else {
@@ -207,6 +256,7 @@ class BookController extends Controller
                 'deliveries' => $deliveries,
                 'cities' => $cities,
                 'offices' => $offices,
+                'sum' => $sum,
             ]);
         }
 
@@ -270,11 +320,15 @@ class BookController extends Controller
 
         $num = Count($cartBooksArr);
 
+        $sum = $book->price * $cartBooksArr[$book->id]['count'];
+
         return response()->json(
             [
                 'status' => 'success',
                 'book_add_to_basket' => $book,
                 'number' =>$num,
+                'sumOrder'=>Cart::getOrderSum($request),
+                'sum' => $sum
             ]
         );
     }
@@ -307,7 +361,7 @@ class BookController extends Controller
 
             $request->session()->put('cartBooks', $cartBooksArr);
 
-            return response()->json(['bookDelete'=>$bookDelete]);
+            return response()->json(['bookDelete'=>$bookDelete, 'sumOrder'=>Cart::getOrderSum($request)]);
     }
 
 //===============================================Очистка корзины========================================================
@@ -370,7 +424,7 @@ class BookController extends Controller
 
         public function filterByGenre(Request $request): JsonResponse
         {
-            $genre_id = $request->get('genre_id');
+            $genre_id = $request->get('data');
 
             if ($genre_id){
                 if ($genre_id == 'default'){
@@ -394,7 +448,7 @@ class BookController extends Controller
 
         public function filterByAuthor(Request $request): JsonResponse
     {
-        $author_id = $request->get('author_id');
+        $author_id = $request->get('data');
 
         if ($author_id){
             if ($author_id == 'default')
@@ -414,9 +468,9 @@ class BookController extends Controller
 
     public function filterBySales(Request $request): JsonResponse
     {
-//        SELECT * FROM `books` LEFT OUTER JOIN `sales` ON books.id = sales.book_id ORDER BY `count` DESC;
 
-        $sale = $request->get('sale');
+
+        $sale = $request->get('data');
 
         $startDate = Carbon::now()->subMonth();
 
@@ -482,7 +536,7 @@ class BookController extends Controller
     public function filterByPrice(Request $request): JsonResponse
     {
 
-        $price = $request->get('price');
+        $price = $request->get('data');
 
         if ($price){
             if ($price == 'default'){
@@ -509,5 +563,108 @@ class BookController extends Controller
 
       return response()->json('status', 'errors');
 
+    }
+
+    public function top(Request $request)
+    {
+        $comments = Comment::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $top = 'top10';
+
+        $books = Book::query()
+            ->select('books.*')
+            ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+            ->orderBy('count','desc')
+            ->take(10)
+            ->get();
+
+
+        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>$top]);
+    }
+
+    public function newest(Request $request)
+    {
+        $comments = Comment::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $top = 'top10';
+
+        $books = Book::query()
+          ->orderBy('created_date', 'desc')
+            ->take(10)
+            ->get();
+
+        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>$top]);
+    }
+
+    public function topAuthors(Request $request)
+    {
+        $comments = Comment::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $top = 'author';
+
+        // DB::statement("SET sql_mode='';");
+
+        $authors = Author::query()
+            ->selectRaw('authors.*, SUM(sales.count) as top_sales')
+            ->leftJoin('books', 'books.author_id', '=', 'authors.id')
+            ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+            ->groupBy('authors.id')
+            ->orderBy('top_sales', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('onlineLibraryTopAuthors', ['authors'=>$authors,'comments'=>$comments, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>$top]);
+    }
+
+    public function topGenres (Request $request)
+    {
+        $comments = Comment::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+        $top = 'genre';
+
+        $genres = Genre::query()
+            ->selectRaw('genres.*, SUM(sales.count) as top_sales')
+            ->leftJoin('books', 'books.genre_id', '=', 'genres.id')
+            ->leftJoin('sales', 'books.id', '=', 'sales.book_id')
+            ->groupBy('genres.id')
+            ->orderBy('top_sales', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('onlineLibraryTopGenres', ['genres'=>$genres,'comments'=>$comments, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>$top]);
+    }
+
+    public function lowPrice(Request $request)
+    {
+        $comments = Comment::all();
+
+        $cartBooksArr = $request->session()->get('cartBooks', []);
+
+        $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+
+
+        $books = Book::query()
+            ->where('price', '<', 200)
+            ->orderBy('price', 'desc')
+            ->paginate(18);
+
+        return view('onlineLibrary', ['books'=>$books,'comments'=>$comments, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>null]);
     }
 }

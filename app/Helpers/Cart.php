@@ -30,4 +30,20 @@ class Cart
 
         }
 
+        static function getOrderSum(Request $request)
+        {
+            $cartBooksArr = $request->session()->get('cartBooks', []);
+
+            $cartBooks = Book::query()->whereIn('id', array_keys($cartBooksArr))->get();
+
+            $sumOrder = 0;
+
+            foreach ($cartBooks as $cartBook)
+            {
+                $sumOrder += $cartBook->price * $cartBooksArr[$cartBook->id]['count'];
+            }
+
+            return $sumOrder;
+        }
+
 }
