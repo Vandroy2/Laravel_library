@@ -6,8 +6,11 @@ use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\LibraryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PersonalCabinetController;
+use App\Http\Controllers\Admin\SelectionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\BookSelectionController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +47,8 @@ Route::prefix('books')->group(function (){
     Route::get('/lowPrice', [bookController::class, 'lowPrice'])->name('bookLowPrice');
 
     Route::match(['post', 'get'],'/changeBookQuantity', [bookController::class, 'changeBookQuantity'])->name('bookChangeBookQuantity');
+
+    Route::get('/selections', [bookController::class, 'selections'])->name('bookSelections');
 
 });
 
@@ -157,7 +162,7 @@ Route::middleware([
 
         Route::get('/create', [bookController::class, 'create'])->name('bookCreate');
 
-        Route::post('/store', [bookController::class, 'store'])->name('bookStore');
+        Route::match(['get', 'post'],'/store', [bookController::class, 'store'])->name('bookStore');
 
         Route::get('/edit/{book}', [bookController::class, 'edit'])->name('bookEdit');
 
@@ -165,20 +170,9 @@ Route::middleware([
 
         Route::get('/delete/{book}', [bookController::class, 'delete'])->name('bookDelete');
 
-        Route::get('/selection', [bookController::class, 'selection'])->name('bookSelection');
+        Route::get('/filter', [bookController::class, 'selection'])->name('bookFilters');
 
-        Route::match(['get', 'post'],'/filterByGenre', [bookController::class, 'filterByGenre'])->name('filterByGenre');
-
-        Route::match(['get', 'post'],'/filterByAuthor', [bookController::class, 'filterByAuthor'])->name('filterByAuthor');
-
-        Route::match(['get', 'post'],'/filterBySales', [bookController::class, 'filterBySales'])->name('filterBySales');
-
-        Route::match(['get', 'post'],'/filterByPrice', [bookController::class, 'filterByPrice'])->name('filterByPrice');
-
-        Route::match(['get', 'post'],'/filterByDate', [bookController::class, 'filterByDate'])->name('filterByDate');
-
-
-
+        Route::match(['get', 'post'],'/filterBooks', [bookController::class, 'filterBooks'])->name('filterBooks');
     });
 
     //===============================================Personal cabinet===================================================
@@ -230,8 +224,35 @@ Route::middleware([
         Route::match(['get','post'], '/deleteBookOrder', [OrderController::class, 'deleteBookOrder'])->name('orderDeleteBookOrder');
 
     });
+
+    Route::prefix('genres')->group(function (){
+
+        Route::resource('genres', GenreController::class);
+
+    });
+
+    Route::prefix('selection')->group(function (){
+
+        Route::get('/index', [SelectionController::class, 'index'])->name('selections');
+
+        Route::get('/create', [SelectionController::class, 'create'])->name('selection.create');
+
+        Route::match(['get','post'], '/store', [SelectionController::class, 'store'])->name('selection.store');
+
+        Route::get('show', [SelectionController::class, 'show'])->name('bookSelection.show');
+
+        Route::match(['get', 'post'],'/edit/{selection}', [SelectionController::class, 'edit'])->name('selection.edit');
+
+        Route::match(['get', 'post'],'/update/{selection}', [SelectionController::class, 'update'])->name('selection.update');
+
+        Route::match(['get', 'post'],'/destroy/{selection}', [SelectionController::class, 'destroy'])->name('selection.destroy');
+
+
+
+    });
+
 });
 
 
-//Jca4B2LgduHemx2qb9nf
+
 

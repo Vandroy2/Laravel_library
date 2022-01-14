@@ -126,7 +126,39 @@
 
                     <a class="dropdown-item" href="{{route('admin.books')}}">Books list</a>
                     <a class="dropdown-item" href="{{route('admin.bookCreate')}}">Book Create</a>
-                    <a class="dropdown-item" href="{{route('admin.bookSelection')}}">Book selection</a>
+                    <a class="dropdown-item" href="{{route('admin.bookFilters')}}">Book filter</a>
+                    <a class="dropdown-item" href="{{route('admin.selections')}}">Book selections</a>
+                    <a class="dropdown-item" href="{{route('admin.selection.create')}}">Book selections create</a>
+
+
+
+
+                </div>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="mr-auto"></div>
+        <ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item active">
+
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Genres
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdown">
+
+
+
+                    <h6 class="dropdown-header">Select</h6>
+
+                    <a class="dropdown-item" href="{{route('admin.genres.index')}}">Genres list</a>
+                    <a class="dropdown-item" href="{{route('admin.genres.create')}}">Genre Create</a>
 
 
                 </div>

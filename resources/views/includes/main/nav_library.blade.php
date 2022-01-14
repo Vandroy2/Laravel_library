@@ -58,6 +58,10 @@
 
                             <a class="btn btn-light"  href="/">Main Page</a>
 
+                            <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
+
+                            <a class="btn btn-light"  href="{{route('admin.bookSelections')}}">Selections</a>
+
                             @if(\Illuminate\Support\Facades\Auth::check())
 
                                 <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>

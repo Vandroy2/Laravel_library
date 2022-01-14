@@ -37,12 +37,12 @@ class BookCreateRequest extends FormRequest
         return [
             'book_name.required' => 'Введите имя',
             'book_name.min' => 'Недостаточно символов',
-            'num_page.required' => 'Введите колличество страниц',
+            'num_page.required' => 'Введите количество страниц',
             'num_page.integer' => 'Введите числовое значение',
             'created_date.required'=>'Введите дату создания книги',
             'created_date.integer' => 'Введите год написания книги в числовом формате',
             'author_id.required'=>'Введите идентификатор автора',
-            'author_id.exists'=>'Такого идентификатора не сущетвует',
+            'author_id.exists'=>'Такого идентификатора не существует',
             'library_id.required'=>'Введите библиотеку',
             'created_date.date_format'=>'Введите год написания книги в формате: Год',
         ];

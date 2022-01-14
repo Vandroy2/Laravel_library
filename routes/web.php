@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function (){
 
     Route::prefix('cabinet')->group(function (){
 
-        Route::get('/personal', function (){ return view('personalCabinet');})->name('personalCabinet');
+        Route::get('/personal', function (){ return view('site.personalCabinet.index');})->name('personalCabinet');
 
         Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
 

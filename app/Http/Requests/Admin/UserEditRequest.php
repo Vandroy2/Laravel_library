@@ -27,7 +27,7 @@ class UserEditRequest extends FormRequest
             'name' => ['required','string','min:3','max:255',],
             'email' => ['required','email', 'min:8'],
             'surname'=>['required','string','min:3','max:255',],
-            'birthday'=>['required', 'date']
+//            'birthday'=>['required', 'date']
         ];
     }
     public function messages()

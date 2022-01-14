@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -84,10 +86,28 @@ class Author extends Model
      */
     protected $dates = ['birthday', 'death_day'];
 
-    public function getFullnameAttribute()
+    public function getFullnameAttribute(): string
     {
         return "{$this->author_name} {$this->author_surname}";
     }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function selections(): BelongsToMany
+    {
+        return $this->belongsToMany(Selection::class);
+    }
+
+//    /**
+//     * @return MorphToMany
+//     */
+//
+//    public  function bookSelections(): MorphToMany
+//    {
+//        return $this->morphToMany(BookSelection::class, 'bookSelectionable');
+//    }
 
 }
 

@@ -11,7 +11,7 @@ class CityCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,13 +21,18 @@ class CityCreateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'city_name' => ['required','string','min:3','max:255',],
         ];
     }
-    public function messages()
+
+    /**
+     * @return string[]
+     */
+
+    public function messages(): array
     {
 
         return [

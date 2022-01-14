@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AuthorCreateRequest;
 use App\Http\Requests\Admin\AuthorEditRequest;
 use App\Models\Author;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -31,7 +29,7 @@ class AuthorController extends Controller
             ->get();
 
 
-        return view('layouts.admin.authors', ['authors' => $authors,]);
+        return view('admin.authors.index', ['authors' => $authors,]);
     }
 
 
@@ -39,7 +37,7 @@ class AuthorController extends Controller
 
         $authors =Author::all();
 
-        return view ('layouts.admin.author_create', ['authors'=>$authors]);
+        return view ('admin.authors.edit', ['authors'=>$authors]);
     }
 
     public function store(AuthorCreateRequest $request): RedirectResponse
@@ -55,7 +53,7 @@ class AuthorController extends Controller
 
     public function edit(Author $author)
     {
-        return view('layouts.admin.author_edit', ['author'=>$author]);
+        return view('admin.authors.edit', ['author'=>$author]);
     }
 
     public function update(AuthorEditRequest $request, Author $author): RedirectResponse

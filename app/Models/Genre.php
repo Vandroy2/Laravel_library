@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -50,4 +52,29 @@ class Genre extends Model
     {
         return $this->hasMany(Book::class);
     }
+
+    /**
+     * @return HasOne
+     */
+
+    public function image():HasOne
+    {
+        return $this->hasOne(Image::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function selections(): BelongsToMany
+    {
+        return $this->belongsToMany(Selection::class);
+    }
+
+//    public  function bookSelections(): MorphToMany
+//    {
+//        return $this->morphToMany(BookSelection::class, 'bookSelectionable');
+//    }
+
+
 }

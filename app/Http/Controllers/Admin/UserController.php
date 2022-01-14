@@ -11,8 +11,6 @@ use App\Models\Book_Order;
 use App\Models\Image;
 use App\Models\Order;
 use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
-use  Illuminate\Support\Facades\Session;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -46,7 +44,7 @@ class UserController extends Controller
         {
             return redirect()->route('admin.index');
         }
-            else return redirect()->route('admin.login')->with('errors', 'аунтефикация не удалась');
+            else return redirect()->route('admin.login')->with('errors', 'авторизация не удалась');
 
     }
 
@@ -77,7 +75,7 @@ class UserController extends Controller
 
 
 
-        return view('layouts.admin.users', ['users'=>$users]);
+        return view('admin.users.index', ['users'=>$users]);
 
     }
 
@@ -86,7 +84,7 @@ class UserController extends Controller
 
             $users = User::all();
 
-            return view('layouts.admin.user_create', ['user_data'=>$users]);
+            return view('admin.users.edit', ['user_data'=>$users]);
 
 
         }
@@ -119,7 +117,7 @@ class UserController extends Controller
         {
             $images = Image::all();
 
-            return view('layouts.admin.user_edit', ['user'=>$user, 'images'=>$images]);
+            return view('admin.users.edit', ['user'=>$user, 'images'=>$images]);
 
         }
 

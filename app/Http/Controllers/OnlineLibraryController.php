@@ -40,7 +40,7 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>null]);
+        return view('site.onlineLibrary.index', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>null]);
 
     }
 
