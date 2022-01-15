@@ -19,7 +19,7 @@ class PersonalCabinetController extends Controller
         $commentPublished = Comment::query()
             ->where('published', '=', '1')->get();
 
-        return view('layouts.admin.personalCabinet', ['commentsNotPublished'=>$commentsNotPublished, 'commentPublished'=>$commentPublished]);
+        return view('admin.cabinet.index', ['commentsNotPublished'=>$commentsNotPublished, 'commentPublished'=>$commentPublished]);
     }
 
     public function allow(Comment $comment): RedirectResponse
@@ -34,7 +34,7 @@ class PersonalCabinetController extends Controller
 
     public function edit(Comment $comment){
 
-        return view('layouts.comments.comment_edit',compact('comment'));
+        return view('admin.cabinet.comment_edit',compact('comment'));
     }
 
     public function update(Request $request, Comment $comment): RedirectResponse

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LibraryCreateRequest;
+use App\Models\City;
 use App\Models\Library;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,14 +31,16 @@ class LibraryController extends Controller
 
 
 
-        return view('layouts.admin.libraries', compact('libraries'));
+        return view('admin.libraries.index', compact('libraries'));
     }
 
     public function create(){
 
         $libraries = Library::all();
 
-        return view('layouts.admin.library_create', ['libraries'=>$libraries]);
+        $cities = City::all();
+
+        return view('admin.libraries.edit', ['libraries'=>$libraries, 'cities'=>$cities]);
     }
 
     public function store(LibraryCreateRequest $request): RedirectResponse
@@ -54,11 +57,9 @@ class LibraryController extends Controller
 
     public function edit(Library $library)
     {
-        $libraries = Library::all();
-        return view('layouts.admin.library_edit', [
-            'library'=>$library,
-            'libraries'=>$libraries,
-        ]);
+        $cities= City::all();
+
+        return view('admin.libraries.edit', ['library'=>$library, 'cities'=>$cities,]);
 
     }
 

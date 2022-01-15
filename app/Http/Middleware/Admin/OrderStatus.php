@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware\Admin;
 
-use App\Models\Order;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -11,8 +10,8 @@ class OrderStatus
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  Request  $request
+     * @param  Closure  $next
      * @return mixed
      *
      */

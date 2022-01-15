@@ -25,7 +25,7 @@ class CabinetController extends Controller
             ->where('user_id', '=', Auth::user()->id)
             ->get();
 
-        return view('personalCabinetComments', ['commentsNotPublished' => $commentsNotPublished, 'commentPublished' => $commentPublished]);
+        return view('site.personalCabinet.comments', ['commentsNotPublished' => $commentsNotPublished, 'commentPublished' => $commentPublished]);
     }
 
     public function orders()
@@ -44,7 +44,7 @@ class CabinetController extends Controller
 
         $books = Book::query()->find($book_id);
 
-        return view('personalCabinetOrders', [
+        return view('site.personalCabinet.orders', [
             'orders' => $orders,
             'multipleOrder'=>$multipleOrder,
             'books'=>$books,
@@ -62,7 +62,7 @@ class CabinetController extends Controller
     {
         $books = Auth::user()->books->unique();
 
-        return view('favorites_books', compact('books'));
+        return view('site.personalCabinet.favorites_books', compact('books'));
     }
 
 }

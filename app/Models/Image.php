@@ -59,9 +59,22 @@ class Image extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    /**
+     * @return BelongsTo
+     */
+
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class, 'book_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+
+    public function genre(): BelongsTo
+    {
+        return $this->belongsTo(Genre::class, 'genre_id', 'id');
     }
 
 

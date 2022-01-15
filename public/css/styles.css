@@ -4511,6 +4511,7 @@ textarea.form-control-lg {
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
+
 }
 .card > hr {
   margin-right: 0;
@@ -11310,8 +11311,9 @@ header.masthead h1, header.masthead .h1 {
 }
 @media (min-width: 768px) {
   header.masthead {
+      height: 600px;
     padding-top: 12rem;
-    padding-bottom: 12rem;
+
   }
   header.masthead h1, header.masthead .h1 {
     font-size: 3rem;
@@ -11414,7 +11416,7 @@ footer.footer {
 }
 
 .number{
-    margin-top: 30px;
+    margin-top: 15px;
     justify-content: center;
 }
 .btn_book_order_delivery{
@@ -11594,6 +11596,11 @@ footer.footer {
 
 .bookLimitBasket, .bookLimitContainer, .addedBookContainer{
     vertical-align: middle;
+
+}
+
+.bookLimitBasket{
+    text-align: center;
 }
 
 .addedBookContainer{
@@ -11704,9 +11711,6 @@ footer.footer {
     height: 150px;
 }
 
-.card-text{
-    margin-top: 8px;
-}
 .card-body{
     padding-top: 0;
     padding-bottom: 0;
@@ -11789,6 +11793,7 @@ footer.footer {
 }
 .card-text{
     margin-left: 10px;
+    margin-bottom: 20px;
 }
 .card-body{
     background-color: rgba(211, 214, 216, 0.7);
@@ -11854,6 +11859,7 @@ body{
 }
 
 .orderEditSelectText{
+
     margin-bottom: 10px;
 }
 
@@ -11898,9 +11904,12 @@ body{
 
 .genre_text{
     margin-bottom: 15px;
+    color: black;
 }
 
 .filter_text{
+    text-align: left;
+    margin-right: 5px;
     margin-bottom: 10px;
     font-weight: bold;
 }
@@ -11983,3 +11992,131 @@ body{
 .margin_filter{
     margin-right: 15px;
 }
+
+.sumOrder{
+    text-align: right;
+}
+
+.headerTitle{
+    margin-bottom: 350px;
+}
+
+.buttons_filter_container{
+    height: 70px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around; width: 100%;
+    text-align: center;
+    background-image: url(https://upload.wikimedia.org/wikipedia/commons/e/e4/Interior_view_of_Stockholm_Public_Library.jpg)
+    /*background-image: url(https://www.detroitlabs.com/wp-content/uploads/2018/02/alfons-morales-YLSwjSy7stw-unsplash.jpg)*/
+}
+
+.btn_filter, .top_select_text{
+    color: bisque;
+    background-color: rgba(36, 33, 33, 0.8);
+}
+
+.top_select_text
+{
+    height: 30px; font-size: 20px;
+}
+
+.img_list_admin
+{
+    width: 150px;
+    height: 150px;
+    margin-left: 10px;
+
+}
+
+/*.genre_icon{*/
+/*    position: absolute;*/
+/*    width: 25px;*/
+/*    height : 25px;*/
+/*    right: 2px;*/
+/*    top: 2px;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+.genre_block{
+    background-color: #F5F1AD;
+    color: black;
+    position: absolute;
+    width: max-content;
+    height : 25px;
+    right: 2px;
+    top: 2px;
+    border-radius: 4px;
+}
+
+.card_selection
+{
+    bottom: 55px;
+}
+
+p{
+    margin-top: 5px;
+}
+
+.admin_main_text{
+
+    color: black;
+}
+
+.admin_btn{
+    margin-top: 15px;
+}
+
+.admin_container, .admin_create_container, .admin_orders_container, .admin_order_container{
+    padding-top: 50px;
+    height: 100vh;
+    width: 100%;
+    background-image: url(https://www.innovasolutions.com/wp-content/uploads/2020/11/background-hd-12.jpg);
+}
+
+.admin_create_container{
+    background-image: url(https://caxap.site/assets/img/wallpaperWeb/93.jpg);
+}
+
+.admin_orders_container{
+
+    padding-top: 20px;
+    background-image: url(https://ergomebel.ru/upload/iblock/326/3269dfb3c768f5685a652b74810466b6.jpg);
+}
+
+.admin_order_container{
+    padding-top: 20px;
+    background-image: url('/assets/img/Cabinet.jpg');
+}
+
+.width_content{
+    width: max-content;
+}
+
+.orders_title_container{
+    color: black;
+    padding-left: 65px;
+    text-align: left;
+}
+
+.order_link{
+    margin-left: 65px;
+}
+
+.main_admin_filter_container, .admin_selection_container{
+    background-image: url(https://caxap.site/assets/img/wallpaperWeb/11.jpg);
+    height: 100vh;
+    width: 100%;
+
+}
+
+.admin_filter_container{
+    padding-top: 20px;
+
+}
+
+
+
+
+

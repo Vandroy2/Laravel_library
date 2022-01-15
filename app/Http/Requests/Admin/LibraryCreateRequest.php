@@ -25,7 +25,6 @@ class LibraryCreateRequest extends FormRequest
     {
         return [
             'library_name' => ['required','string','min:3','max:255',],
-//            'city_id' => ['required'],
             'city_id' => ['required','exists:cities,id'],
         ];
     }

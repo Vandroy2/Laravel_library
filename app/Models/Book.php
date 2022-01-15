@@ -87,6 +87,7 @@ class Book extends Model
         'author_id',
         'library_id',
         'favorite',
+        'price'
 
     ];
     /**
@@ -177,6 +178,20 @@ class Book extends Model
     public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class, 'book_id', 'id');
+    }
+
+    public function bookOrder(): BelongsTo
+    {
+        return $this->belongsTo(Book_Order::class, 'book_id', 'id');
+    }
+
+    /**
+     * @return BelongsToMany
+     *
+     */
+    public function bookSelections(): BelongsToMany
+    {
+        return $this->belongsToMany(Selection::class);
     }
 }
 

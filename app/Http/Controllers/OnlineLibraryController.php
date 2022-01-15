@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Cart;
 use App\Models\Book;
 use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
@@ -39,7 +40,7 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('onlineLibrary', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks]);
+        return view('site.onlineLibrary.index', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>null]);
 
     }
 

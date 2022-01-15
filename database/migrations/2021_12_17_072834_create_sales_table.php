@@ -15,7 +15,7 @@ class CreateSalesTable extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('book_id')->nullable()->constrained();
+            $table->foreignId('book_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('count');
             $table->timestamps();
         });

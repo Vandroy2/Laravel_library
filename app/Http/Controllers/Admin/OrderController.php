@@ -29,7 +29,7 @@ class OrderController extends Controller
 
         $multipleOrder = Book_Order::all();
 
-        return view('layouts.admin.orders', [
+        return view('admin.orders.index', [
             'orders'=>$orders,
             'multipleOrder'=>$multipleOrder,
 
@@ -73,8 +73,6 @@ class OrderController extends Controller
             }
             $order->save();
         }
-
-
 
         $cartBooksArr = $request->session()->get('cartBooks', []);
 
@@ -132,7 +130,7 @@ class OrderController extends Controller
 
         $books = Book::query()->find($book_id);
 
-        return view('layouts.admin.order', [
+        return view('admin.orders.order', [
             'order'=>$order,
             'multipleOrder'=>$multipleOrder,
             'books'=>$books,
@@ -169,7 +167,7 @@ class OrderController extends Controller
                 'status'=>$status,
             ]);
         }
-        return view('layouts.admin.order_edit', [
+        return view('admin.orders.edit', [
             'order'=>$order,
             'deliveries'=>$deliveries,
             'offices' => $offices,
@@ -189,9 +187,6 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order): RedirectResponse
     {
-
-
-
         //---------------------------------Получение данных из реквеста и сохранение заказа-----------------------------
 
         if ($order->orderBooks->isEmpty()){

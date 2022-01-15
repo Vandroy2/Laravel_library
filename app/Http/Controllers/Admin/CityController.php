@@ -45,14 +45,14 @@ class CityController extends Controller
             ->orderBy('city_name')
             ->paginate(10);
 
-        return view('layouts.admin.cities',['cities'=>$cities]);
+        return view('admin.cities.index',['cities'=>$cities]);
     }
 
     public function create()
     {
         $cities = City::all();
 
-        return view('layouts.admin.city_create', ['cities'=>$cities]);
+        return view('admin.cities.edit', ['cities'=>$cities]);
     }
 
     public  function store(CityCreateRequest $request): RedirectResponse
@@ -69,7 +69,7 @@ class CityController extends Controller
 
     public function  edit(City $city)
     {
-        return view('layouts.admin.city_edit', ['city'=>$city]);
+        return view('admin.cities.edit', ['city'=>$city]);
     }
 
     public function update(CityEditRequest $request, City $city): RedirectResponse

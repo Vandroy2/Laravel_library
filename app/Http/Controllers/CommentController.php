@@ -19,7 +19,7 @@ class CommentController extends Controller
 
         ->where('published', '=', 1)->get();
 
-        return view('index', compact('comments'));
+        return view('site.index', compact('comments'));
     }
 
 
@@ -49,7 +49,7 @@ class CommentController extends Controller
 
         $this->authorize('edit',[self::class, $comment]);
 
-        return view('layouts.comments.comment_edit', [
+        return view('admin.cabinet.comment_edit', [
             'comment'=>$comment,
         ]);
 
