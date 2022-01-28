@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\BookHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookCreateRequest;
 use App\Models\Author;
@@ -23,7 +24,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use app\Helpers\Cart;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class BookController extends Controller
@@ -77,10 +78,11 @@ class BookController extends Controller
 
     public function store(BookCreateRequest $request): RedirectResponse
     {
-
         $book = new Book();
 
-        $book->fill($request->all());
+        $book->fill($request->except('file'));
+
+        BookHelper::storeFile($request,$book);
 
         $book->save();
 
@@ -123,7 +125,13 @@ class BookController extends Controller
 
     public function update(BookCreateRequest $request, Book $book, Image $image): RedirectResponse
     {
-        $book->fill($request->all());
+        $book->fill($request->except('file'));
+
+        Storage::delete($book->file);
+
+        $book->file = null;
+
+        BookHelper::storeFile($request,$book);
 
         $book->save();
 

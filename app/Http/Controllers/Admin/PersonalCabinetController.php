@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -52,6 +53,19 @@ class PersonalCabinetController extends Controller
 
         return redirect()->route('admin.personalCabinet')->with('success', 'отзыв удален');
 
+    }
+
+    public function premium(Request $request)
+    {
+        $id = $request->get('user_id');
+
+        $user = User::query()->findOrFail($id);
+
+        $user->premium = 1;
+
+        $user->save();
+
+        return redirect(route('main'))->with('success', 'Премиум подписка успешно оформлена');
     }
 }
 

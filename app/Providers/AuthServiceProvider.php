@@ -72,6 +72,42 @@ class AuthServiceProvider extends ServiceProvider
 //
 //
 //
+        Gate::define('premium', function (User $user){
+            foreach ($user->subscribes as $subscribe)
+            {
+                return  $subscribe->subscribe_type == 'Premium';
+            }
+            return false;
+        });
+
+        Gate::define('genres', function (User $user){
+            foreach ($user->subscribes as $subscribe)
+            {
+                return $subscribe->subscribe_type == 'Genre';
+            }
+            return false;
+        });
+
+        Gate::define('authors', function (User $user){
+            foreach ($user->subscribes as $subscribe)
+            {
+                return $subscribe->subscribe_type == 'Authors';
+            }
+            return false;
+        });
+
+        Gate::define('new', function (User $user){
+            foreach ($user->subscribes as $subscribe)
+            {
+                return $subscribe->subscribe_type == 'New';
+            }
+            return false;
+        });
+
+
+
+
+
         Gate::define('auth', function (User $user){
            return
                $user->type =='admin' ||

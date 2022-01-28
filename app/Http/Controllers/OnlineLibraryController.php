@@ -1,20 +1,27 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
+use App\DTO\SubscribeDto;
 use App\Helpers\Cart;
+use App\Http\Requests\Filters\BookFilter;
 use App\Models\Book;
 use App\Models\Comment;
+use App\Services\Actions\BookActionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+class OnlineLibraryController extends Controller {
+    /**
+     * @var BookActionService
+     */
+    protected $service;
 
+    public function __construct(BookActionService $service) {
+        $this->service = $service;
+    }
 
-class OnlineLibraryController extends Controller
-{
     public function view(Request $request)
     {
 
@@ -26,11 +33,12 @@ class OnlineLibraryController extends Controller
 
         $search_book = $request->input('search_book');
 
+        $subscribeBooks = $this->service->fetchByFilter(BookFilter::createByRequest($request));
+
         $books = Book::query()
             ->select('books.*')
             ->with(['author', 'images'])
-
-            ->when(!empty($search_book), function($query) use($search_book){
+            ->when(!empty($search_book), function ($query) use ($search_book) {
                 return $query
                     ->Join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('libraries', 'books.library_id', '=', 'libraries.id')
@@ -40,7 +48,16 @@ class OnlineLibraryController extends Controller
                     ->orwhere('libraries.library_name', 'like', "%$search_book%");
             })->paginate(18);
 
-        return view('site.onlineLibrary.index', ['comments'=>$comments, 'books'=>$books, 'cartBooks'=>$cartBooks, 'sumOrder'=>Cart::getOrderSum($request), 'top'=>null]);
+
+        return view('site.onlineLibrary.index',
+            [
+                'comments' => $comments,
+                'books' => $books,
+                'cartBooks' => $cartBooks,
+                'sumOrder' => Cart::getOrderSum($request),
+                'top' => null
+            ]
+        );
 
     }
 
@@ -48,7 +65,7 @@ class OnlineLibraryController extends Controller
     {
         Auth::user()->books()->toggle($book);
 
-        if (Auth::user()->books->contains($book)){
+        if (Auth::user()->books->contains($book)) {
 
             return response()->json([
                 'added' => true,

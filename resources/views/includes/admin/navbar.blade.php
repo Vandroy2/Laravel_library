@@ -168,6 +168,37 @@
         </ul>
 
     </div>
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="mr-auto"></div>
+        <ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item active">
+
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Subscribes
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdown">
+
+
+
+                    <h6 class="dropdown-header">Select</h6>
+
+                    <a class="dropdown-item" href="{{route('admin.subscribes')}}">Subscribes</a>
+                    <a class="dropdown-item" href="{{route('admin.subscribe.create')}}">Subscribe create</a>
+
+
+                </div>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="mr-auto"></div>
         <ul class="navbar-nav my-2 my-lg-0">

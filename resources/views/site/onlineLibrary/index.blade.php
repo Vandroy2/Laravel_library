@@ -113,14 +113,14 @@
                 @if(!$top)
         <div class="container"  style="height: 18rem; width: 11.5rem;margin-top: 50px; margin-left: 20px ">
             @elseif($top)
-                <div class="container"  style="height: 18rem; width: 19%;margin-top: 50px; margin-left: 20px ">
+                <div class="container"  style="height: 20rem; width: 19%;margin-top: 50px; margin-left: 20px ">
             @endif
             <div style="width: max-content; height: 20rem; display: flex; position: relative;">
-                <div style="display: flex; flex-direction: column;">
+                <div class = "test" style="display: flex; flex-direction: column;">
                     @if(Auth::check())
                     <a href="{{route('admin.bookOrder', $book)}}">
                         @endif
-                    <div class="card" style="width: 11.1rem; height: 16rem;border-radius: 10px;"  >
+                    <div class="card" >
                         <div id="carouselExampleControls{{$book->id}}" class="carousel slide" data-ride="carousel" data-order-book-id = "{{$book->id}}" >
                             <div class="carousel-inner" style="width: 11rem; height: 9rem;border-radius: 10px">
                                 @foreach($book->images as $image)
@@ -140,10 +140,63 @@
                         </div>
                         <div class="card-body">
                             <h6 class="card-title">{{$book->book_name}}</h6>
-                            <p class="card-text">{{$book->author->fullname}}</p>
-                            <p class="card-text" id = "bookLimit{{$book->id}}" style="position: absolute; left:5px ; bottom: 0; z-index: 1000;">Осталось книг:{{$book->books_limit}}</p>
+                            <p class="card-text card-text-personal">{{$book->author->fullname}}</p>
+                            <p class="card-text card-text-personal" id = "bookLimit{{$book->id}}">Осталось книг:{{$book->books_limit}}</p>
+                            @can('premium')
+                                @if($book->type == 'pdf')
+                                    <a href="{{route('pdfFile', $book)}}" class = "btn btn-secondary btn_pdf_file">PDF file</a>
+                                @elseif($book->type == 'audio')
+                                    <button class="link_pdf link_pdf_file">
+
+                                        Audio file
+                                    </button>
+                                    @endif
+                            @else
+                                @if(Auth::user())
+                                    <a href="{{route('subscribes')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
+                                @else
+                                    <a href="{{route('toSubscribe')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
+                                @endif
+                            @endcan
+
+                            @can('authors')
+{{--                                @foreach(Auth::user()->subscribes as $subscribe)--}}
+{{--                                    @foreach($subscribe->)--}}
+                                @if($book->type == 'pdf')
+                                    <a href="{{route('pdfFile', $book)}}" class = "btn btn-secondary btn_pdf_file">PDF file</a>
+                                @elseif($book->type == 'audio')
+                                    <button class="link_pdf link_pdf_file">
+
+                                        Audio file
+                                    </button>
+                                @endif
+                            @else
+                                @if(Auth::user())
+                                    <a href="{{route('subscribes')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
+                                @else
+                                    <a href="{{route('toSubscribe')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
+                                @endif
+                            @endcan
+
+
+
+
+
                         </div>
                     </div>
+
+                        @if($book->file)
+
+                            <img src="http://www.veryicon.com/icon/48/System/Must%20Have/Remove.png" alt="Remove" class="button_pdfFile_close button_pdfFile_close_library hidden_block" title="Удалить" width="30" height="30" />
+                            @if($book->type == 'pdf')
+                                <iframe src="{{asset('/storage/'. $book->file)}}" width="750" height="1000" class = 'pdfFile pdfFile_library hidden_block' id = {{$book->id}}></iframe>
+                            @elseif($book->type == 'audio')
+                                <audio controls class = 'pdfFile audio_library hidden_block' style="width: 175px; height:40px">
+                                    <source src="{{asset('/storage/'. $book->file)}}" type="audio/mpeg">
+                                </audio>
+                            @endif
+                        @endif
+
                         @if(Auth::check())
                     </a>
                     @endif
@@ -169,9 +222,9 @@
                     <button type="submit" class="border-0 bg-transparent btn-ens-action btn-ens-style " data-rel="4a9f99dc105">
                         @auth()
                         @if(\Illuminate\Support\Facades\Auth::user()->books->contains($book))
-                                <img src="/assets/img/star.png" alt="Remove" class="clear_buton" id="favImgId{{$book->id}}" title="Добавить в избранное" width="25" height="25">
+                                <img src="/assets/img/star.png" alt="Remove" id="favImgId{{$book->id}}" title="Добавить в избранное" width="25" height="25">
                             @else
-                                <img src="http://s1.iconbird.com/ico/2013/6/363/w256h2561372346250Favorite256.png" alt="Remove" class="clear_buton" id="favImgId{{$book->id}}" title="Удалить из избранного" width="25" height="25"/>
+                                <img src="http://s1.iconbird.com/ico/2013/6/363/w256h2561372346250Favorite256.png" alt="Remove"  id="favImgId{{$book->id}}" title="Удалить из избранного" width="25" height="25"/>
                             @endif
                         @endauth
 
@@ -193,6 +246,38 @@
     @include('includes.main.functions')
 
 @endsection
+
+{{--<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>--}}
+
+{{--<script>--}}
+
+{{--    $(document).ready(function() {--}}
+
+{{--        $('.link_pdf').on('click', function (e){--}}
+
+{{--            e.preventDefault()--}}
+
+{{--            let parentDiv = e.currentTarget.closest('.test');--}}
+
+{{--            let pdfFile = parentDiv.querySelector('.pdfFile')--}}
+
+{{--            let button_pdfFile_close = parentDiv.querySelector('.button_pdfFile_close')--}}
+
+{{--            pdfFile.classList.remove('hidden_block')--}}
+
+{{--            button_pdfFile_close.classList.remove('hidden_block')--}}
+
+{{--            $(button_pdfFile_close).on('click', function (){--}}
+
+{{--                pdfFile.classList.add('hidden_block')--}}
+
+{{--                button_pdfFile_close.classList.add('hidden_block')--}}
+
+{{--            })--}}
+{{--        })--}}
+{{--    });--}}
+
+{{--</script>--}}
 
 
 

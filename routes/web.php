@@ -1,12 +1,14 @@
 <?php
 
 
+
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\OnlineLibraryController;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,6 +45,14 @@ Route::prefix('olineLibrary')->group(function (){
     Route::match(['get', 'post'], '/favorite/{book}', [OnlineLibraryController::class, 'addToFavorite'])->name('onLineLibraryAddToFavorite');
 
     Route::match(['get', 'post'], '/addToBasket', [OnlineLibraryController::class, 'addToBasket'])->name('onlineLibraryAddToBasket');
+
+    Route::get('/toSubscribe', function (){
+
+        $comments = Comment::query()->where('published', '=', 1)->get();
+
+        return view('site.index', compact('comments'))->with('errors', 'для оформления подписки нужно пройти авторизацию');
+
+    })->name('toSubscribe');
 });
 
 Route::prefix('offices')->group(function (){
@@ -62,7 +72,9 @@ Route::middleware('auth')->group(function (){
 
     Route::prefix('cabinet')->group(function (){
 
-        Route::get('/personal', function (){ return view('site.personalCabinet.index');})->name('personalCabinet');
+//        Route::get('/personal', function (){ return view('site.personalCabinet.index');})->name('personalCabinet');
+
+        Route::get('/personal', [CabinetController::class, 'statistic'])->name('personalCabinet');
 
         Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
 
@@ -71,6 +83,16 @@ Route::middleware('auth')->group(function (){
         Route::get('/favoriteBooks', [CabinetController::class, 'favoriteBooks'])->name('onLineLibraryFavoritesBooks');
 
         Route::match(['get', 'post'], '/favoritePersonal/{book}', [CabinetController::class, 'addToFavoritePersonal'])->name('onLineLibraryAddToFavoritePersonal');
+
+        Route::get('/purchasedBooks', [CabinetController::class, 'purchasedBooks'])->name('purchasedBooks');
+
+        Route::post('/subscribeSale', [CabinetController::class, 'subscribeSale'])->name('subscribeSale');
+
+        Route::get('/pdf/{book}', [CabinetController::class, 'pdfFile'])->name('pdfFile');
+
+        Route::get('/subscribes', [CabinetController::class, 'subscribes'])->name('subscribes');
+
+        Route::get('/payment/{subscribe}', [CabinetController::class,'payment'])->name('payment');
 
     });
 
@@ -84,8 +106,6 @@ Route::prefix('comments')->group(function (){
     Route::post('/store', [commentController::class, 'store'])->name('commentStore');
 
 });
-
-
 
 });
 

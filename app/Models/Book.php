@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+
+use App\Models\Scope\BookScope;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+
 
 
 /**
@@ -29,6 +32,8 @@ use Illuminate\Support\Collection;
  * @property integer $favorite
  * @property int|null $genre_id
  * @property string $price
+ * @property string $type
+ * @property string $file
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
@@ -37,7 +42,10 @@ use Illuminate\Support\Collection;
  * @property-read Collection|User[] $usersInBasket
  * @property-read Collection|User[] $users
  * @property-read Collection|Image[] $images
- * @property-read Collection|Order $orders
+ * @property-read Collection|Order[] $orders
+ * @property-read Sale|null $sale
+ * @property-read Collection|Selection[] $selections
+ * @property-read Collection|User $purchasedUsers
  * @property-read Genre|null $genre
  * @property-read string $from_date
  * @property-read int|null $images_count
@@ -67,6 +75,9 @@ class Book extends Model
 {
     use HasFactory;
 
+    use BookScope;
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -87,7 +98,10 @@ class Book extends Model
         'author_id',
         'library_id',
         'favorite',
-        'price'
+        'price',
+        'type',
+        'file',
+
 
     ];
     /**
@@ -100,6 +114,13 @@ class Book extends Model
      */
 
     public $inCart;
+
+//    public static function booksSubscribeAuthors(array $getAuthorsId)
+//    {
+//        return self::query()->whereIn('au');
+//    }
+
+
 
     /**
      * @return BelongsTo
@@ -193,6 +214,19 @@ class Book extends Model
     {
         return $this->belongsToMany(Selection::class);
     }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function purchasedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'purchasedbooks', 'book_id', 'user_id');
+    }
+
+
+
+
 }
 
 

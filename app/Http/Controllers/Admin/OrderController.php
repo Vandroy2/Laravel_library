@@ -313,6 +313,17 @@ class OrderController extends Controller
                     ->where('order_id', '=', $order->id)
                     ->where('book_id', '=', $book->id)->first();
 
+                //--------------------------------Регистрация книг, которые купил пользователь--------------------------
+
+                $user = User::query()->find($order->user_id);
+
+                if (!$user->purchasedBooks->contains($book))
+                {
+                    $user->purchasedBooks()->attach($book);
+                }
+
+                //------------------------------------------------------------------------------------------------------
+
                 /* @var Book $book */
 
                 $sale = Sale::query()->where('book_id','=', $book->id)->first();

@@ -7,11 +7,10 @@ use App\Http\Controllers\Admin\LibraryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PersonalCabinetController;
 use App\Http\Controllers\Admin\SelectionController;
+use App\Http\Controllers\Admin\SubscribeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\BookSelectionController;
 use App\Http\Controllers\GenreController;
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 //================================================Order books===========================================================
@@ -55,6 +54,8 @@ Route::prefix('books')->group(function (){
     Route::match(['get', 'post'],'/cities/show', [CityController::class, 'show'])->name('citiesShow');
 
     Route::match(['get','post'], '/create', [OrderController::class, 'create'])->name('orderCreate');
+
+    Route::post('/premium', [PersonalCabinetController::class, 'premium'])->name('premium');
 
 
 
@@ -190,6 +191,8 @@ Route::middleware([
 
     Route::get('/delete/{comment}', [PersonalCabinetController::class, 'delete'])->middleware('can:delete,comment')
         ->name('personalCabinetDelete');
+
+
     });
 
     //=================================================Images===========================================================
@@ -247,6 +250,23 @@ Route::middleware([
 
         Route::match(['get', 'post'],'/destroy/{selection}', [SelectionController::class, 'destroy'])->name('selection.destroy');
 
+
+
+    });
+
+    Route::prefix('subscribes')->group(function (){
+
+        Route::get('/', [SubscribeController::class, 'index'])->name('subscribes');
+
+        Route::get('/create', [SubscribeController::class, 'create'])->name('subscribe.create');
+
+        Route::post('/store', [SubscribeController::class, 'store'])->name('subscribe.store');
+
+        Route::get('/edit/{subscribe}', [SubscribeController::class, 'edit'])->name('subscribe.edit');
+
+        Route::post('/update/{subscribe}', [SubscribeController::class, 'update'])->name('subscribe.update');
+
+        Route::get('/destroy{subscribe}', [SubscribeController::class, 'destroy'])->name('subscribe.destroy');
 
 
     });

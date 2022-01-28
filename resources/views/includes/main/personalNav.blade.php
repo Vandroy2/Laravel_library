@@ -20,13 +20,15 @@
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdown">
 
                     <h6 class="dropdown-header">Select</h6>
-                    <a class="btn btn-light"  href="/">Main page</a>
-                    <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
-                    <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
-                    <a class="btn btn-light"  href="{{route('personalCabinetOrders')}}">Orders</a>
-                    <a class="btn btn-light"  href="{{route('onLineLibraryFavoritesBooks')}}">Favorites Books</a>
-                    <a class="btn btn-light"  href="{{route('personalCabinetComments')}}">Comments</a>
-                    <a class="btn btn-light"  href="{{route('logout')}}">Logout</a>
+                    <a class="dropdown-item"  href="/">Main page</a>
+                    <a class="dropdown-item personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
+                    <a class="dropdown-item"  href="{{route('onlineLibrary')}}">Library</a>
+                    <a class="dropdown-item"  href="{{route('personalCabinetOrders')}}">Orders</a>
+                    <a class="dropdown-item"  href="{{route('onLineLibraryFavoritesBooks')}}">Favorites Books</a>
+                    <a class="dropdown-item"  href="{{route('purchasedBooks')}}">Purchased Books</a>
+                    <a class="dropdown-item"  href="{{route('personalCabinetComments')}}">Comments</a>
+                    <a class="dropdown-item"  href="{{route('subscribes')}}">Subscribes</a>
+                    <a class="dropdown-item"  href="{{route('logout')}}">Logout</a>
 
 
                 </div>

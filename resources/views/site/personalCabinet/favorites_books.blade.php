@@ -1,8 +1,16 @@
 @extends('layouts.site.personalCabinet')
 
 @section('content')
-<section style="display: flex; flex-wrap:wrap ;text-align: left; height: 100vh;background-image: url(https://images.adsttc.com/media/images/5f17/67a5/b357/65a5/ed00/0076/large_jpg/Luuk_Kramer_study_library_19260-101.jpg?1595369364)">
+
+    <div class = "purchasedBooks_container">
+
+    <h2 class = "text-center">Избранное</h2>
+
+<section style="display: flex; flex-wrap:wrap ;text-align: left; height: 100vh;">
     @foreach($books as $book)
+        @if($book->limit)
+        <a href="{{route('admin.bookOrder', $book)}}">
+            @endif
         <div class="container row align-items-start" style="height: 18rem; width:calc( ( 100% - 40px ) / 8 ); margin-top: 30px;">
             <div style="width: max-content; height: 20rem; display: flex; position: relative">
                 <div style="display: flex; flex-direction: column;">
@@ -45,9 +53,12 @@
                 </div>
             </div>
         </div>
+            @if($book->limit)
+        </a>
+        @endif
     @endforeach
 </section>
-
+    </div>
 @endsection
 
 

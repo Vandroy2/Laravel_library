@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav_library">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav_library" style="position: relative">
 
 
     <div style="display: flex; flex-direction: column; width: 25%; margin-left: 50px">
@@ -11,12 +11,19 @@
         </form>
     </div>
 
+@if(Auth::user())
+    @can('premium')
+    @else
+    <a href="{{route('subscribes')}}" class = 'btn btn-secondary btn_premium btn_nav_premium'>Премиум подписка</a>
+    @endif
+    @endif
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: space-between">
         <div class="mr-auto"></div>
         <ul class="navbar-nav my-2 my-lg-0">
             <li class="nav-item active">
                 @if(\Illuminate\Support\Facades\Auth::check())
-                    <a class="btn btn-light" style="font-family: 'DejaVu Serif'; padding-top: 8px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
+                    <a class="dropdown-item" style="padding-top: 8px; margin-top: 5px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
                 @endif
 
             </li>
@@ -56,28 +63,28 @@
 
                             <h6 class="dropdown-header">Select</h6>
 
-                            <a class="btn btn-light"  href="/">Main Page</a>
+                            <a class="dropdown-item"  href="/">Main Page</a>
 
-                            <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
+                            <a class="dropdown-item"  href="{{route('onlineLibrary')}}">Library</a>
 
-                            <a class="btn btn-light"  href="{{route('admin.bookSelections')}}">Selections</a>
+                            <a class="dropdown-item"  href="{{route('admin.bookSelections')}}">Selections</a>
 
                             @if(\Illuminate\Support\Facades\Auth::check())
 
-                                <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
+                                <a class="dropdown-item personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
 
 
                             @endif
 
                             @if(!\Illuminate\Support\Facades\Auth::check())
 
-                                <a class="btn btn-light"  href="{{route('reg')}}">Registration</a>
+                                <a class="dropdown-item"  href="{{route('reg')}}">Registration</a>
 
                             @endif
 
                             @if(\Illuminate\Support\Facades\Auth::check())
 
-                                <a class="btn btn-light"  href="{{route('logout')}}">Logout</a>
+                                <a class="dropdown-item"  href="{{route('logout')}}">Logout</a>
                             @endif
 
                         </div>

@@ -432,4 +432,31 @@
             }
         })
     })
+
+
+    $(document).ready(function() {
+
+        $('.link_pdf').on('click', function (e){
+
+            e.preventDefault()
+
+            let parentDiv = e.currentTarget.closest('.test');
+
+            let pdfFile = parentDiv.querySelector('.pdfFile')
+
+            let button_pdfFile_close = parentDiv.querySelector('.button_pdfFile_close')
+
+            pdfFile.classList.remove('hidden_block')
+
+            button_pdfFile_close.classList.remove('hidden_block')
+
+            $(button_pdfFile_close).on('click', function (){
+
+                pdfFile.classList.add('hidden_block')
+
+                button_pdfFile_close.classList.add('hidden_block')
+
+            })
+        })
+    });
 </script>

@@ -29,7 +29,7 @@
 
 
                 <div class="card-body">
-                    <div class="flex">
+                    <div class="flex card-body-content">
                         <p class="card-title">Название книги: </p>
                         <p class="card-title card-title-name">{{$bookOrder->book_name}}</p>
                     </div>
@@ -44,7 +44,7 @@
                             <button type="button" class="numberBookOrder decMultipleOrderNumber" style="border: none;  background-color: transparent"  data-book-order-id="{{$bookOrder->id}}">
                                 <img src="https://emojitool.ru/img/apple/ios-14.2/minus-2905.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
                             </button>
-                            <p class = "bookNumber" id="bookNumber{{$bookOrder->id}}" data-book-number="{{$bookOrder->books_number}}">{{$bookOrder->books_number}}</p>
+                            <p class = "bookNumber bookNumberMultiple" id="bookNumber{{$bookOrder->id}}" data-book-number="{{$bookOrder->books_number}}">{{$bookOrder->books_number}}</p>
                             <button type="button" class="numberBookOrder incMultipleOrderNumber" style="border: none;background-color: transparent" data-book-order-id="{{$bookOrder->id}}">
                                 <img src="https://emojitool.ru/img/apple/ios-14.5/plus-2964.png" style="width: 15px; height: 15px;margin-left: 5px; margin-right: 5px" alt="Minus" >
                             </button>

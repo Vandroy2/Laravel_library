@@ -29,6 +29,9 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string $remember_token
  * @property Carbon $birthday
  * @property integer $banned
+ * @property integer $cart_number
+ * @property integer $balance
+
  * @property Carbon|null $email_verified_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -85,6 +88,9 @@ class User extends Authenticatable
         'email',
         'birthday',
         'banned',
+        'cart_number',
+        'balance',
+        'subscribe_id',
 
     ];
 
@@ -107,6 +113,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'type' => 'string',
+        'name' => 'string',
+        'surname' => 'string',
+        'email' => 'string',
+        'birthday' => 'integer',
+        'banned' => 'integer',
+        'cart_number' => 'integer',
+        'balance' => 'integer'
+
     ];
     /**
      * @var mixed
@@ -139,20 +154,52 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class,'user_id', 'id');
     }
 
+    /**
+     * @return BelongsToMany
+     */
+
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)->withTimestamps();
     }
+
+    /**
+     * @return BelongsToMany
+     */
 
     public function booksInBasket(): BelongsToMany
     {
         return $this->belongsToMany(Book::class, 'baskets', 'user_id', 'book_id');
     }
 
+    /**
+     * @return HasMany
+     */
+
     public function images(): HasMany
     {
         return $this->hasMany(Image::class, 'user_id', 'id');
     }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function purchasedBooks(): BelongsToMany
+    {
+        return $this->belongsToMany(Book::class, 'purchasedbooks', 'user_id', 'book_id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function subscribes(): BelongsToMany
+    {
+        return $this->belongsToMany(Subscribe::class);
+    }
+
+
 
 
 }

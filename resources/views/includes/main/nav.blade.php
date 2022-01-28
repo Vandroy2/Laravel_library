@@ -16,7 +16,7 @@
         <ul class="navbar-nav my-2 my-lg-0">
             <li class="nav-item active">
                 @if(\Illuminate\Support\Facades\Auth::check())
-                    <a class="btn btn-light" style="padding-top: 8px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
+                    <a class="dropdown-item" style="padding-top: 8px" disabled>Hello {{\Illuminate\Support\Facades\Auth::user()->name}}</a>
                 @endif
 
             </li>
@@ -29,24 +29,24 @@
 
                     <h6 class="dropdown-header">Select</h6>
 
-                    <a class="btn btn-light"  href="/">Main Page</a>
+                    <a class="dropdown-item"  href="/">Main Page</a>
 
                     @if(\Illuminate\Support\Facades\Auth::check())
 
-                        <a class="btn btn-light personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
+                        <a class="dropdown-item personalCabinet"  href="{{route('personalCabinet')}}">Personal Cabinet</a>
                     @endif
-                        <a class="btn btn-light"  href="{{route('onlineLibrary')}}">Library</a>
+                        <a class="dropdown-item"  href="{{route('onlineLibrary')}}">Library</a>
 
 
                     @if(!\Illuminate\Support\Facades\Auth::check())
 
-                        <a class="btn btn-light"  href="{{route('reg')}}">Registration</a>
+                        <a class="dropdown-item"  href="{{route('reg')}}">Registration</a>
 
                     @endif
 
                     @if(\Illuminate\Support\Facades\Auth::check())
 
-                        <a class="btn btn-light"  href="{{route('logout')}}">Logout</a>
+                        <a class="dropdown-item"  href="{{route('logout')}}">Logout</a>
                     @endif
 
                 </div>
