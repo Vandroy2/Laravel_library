@@ -186,8 +186,8 @@
 
                     <h6 class="dropdown-header">Select</h6>
 
-                    <a class="dropdown-item" href="{{route('admin.subscribes')}}">Subscribes</a>
-                    <a class="dropdown-item" href="{{route('admin.subscribe.create')}}">Subscribe create</a>
+                    <a class="dropdown-item" href="{{route('admin.listOfSubscribes')}}">Subscribes</a>
+                    <a class="dropdown-item" href="{{route('admin.listOfSubscribe.create')}}">Subscribe create</a>
 
 
                 </div>

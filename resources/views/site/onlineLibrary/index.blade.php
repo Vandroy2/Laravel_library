@@ -106,8 +106,6 @@
                 </div>
             </div>
 
-
-
         @foreach($books as $book)
             @if($book->books_limit > 0)
                 @if(!$top)
@@ -142,46 +140,29 @@
                             <h6 class="card-title">{{$book->book_name}}</h6>
                             <p class="card-text card-text-personal">{{$book->author->fullname}}</p>
                             <p class="card-text card-text-personal" id = "bookLimit{{$book->id}}">Осталось книг:{{$book->books_limit}}</p>
-                            @can('premium')
-                                @if($book->type == 'pdf')
+
+                            @if($book->subscribed())
+
+                                        @if($book->type == 'pdf')
+
                                     <a href="{{route('pdfFile', $book)}}" class = "btn btn-secondary btn_pdf_file">PDF file</a>
                                 @elseif($book->type == 'audio')
                                     <button class="link_pdf link_pdf_file">
 
                                         Audio file
                                     </button>
-                                    @endif
+
+                                        @endif
                             @else
+
                                 @if(Auth::user())
                                     <a href="{{route('subscribes')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
                                 @else
-                                    <a href="{{route('toSubscribe')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
+                                    <a href="{{route('toSubscribe')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Авторизация</button></a>
                                 @endif
-                            @endcan
-
-                            @can('authors')
-{{--                                @foreach(Auth::user()->subscribes as $subscribe)--}}
-{{--                                    @foreach($subscribe->)--}}
-                                @if($book->type == 'pdf')
-                                    <a href="{{route('pdfFile', $book)}}" class = "btn btn-secondary btn_pdf_file">PDF file</a>
-                                @elseif($book->type == 'audio')
-                                    <button class="link_pdf link_pdf_file">
-
-                                        Audio file
-                                    </button>
-                                @endif
-                            @else
-                                @if(Auth::user())
-                                    <a href="{{route('subscribes')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
-                                @else
-                                    <a href="{{route('toSubscribe')}}"><button class = 'btn btn-secondary btn_premium btn_to_subscribe link_pdf_library'>Подписка</button></a>
-                                @endif
-                            @endcan
 
 
-
-
-
+                                        @endif
                         </div>
                     </div>
 
@@ -247,37 +228,6 @@
 
 @endsection
 
-{{--<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>--}}
-
-{{--<script>--}}
-
-{{--    $(document).ready(function() {--}}
-
-{{--        $('.link_pdf').on('click', function (e){--}}
-
-{{--            e.preventDefault()--}}
-
-{{--            let parentDiv = e.currentTarget.closest('.test');--}}
-
-{{--            let pdfFile = parentDiv.querySelector('.pdfFile')--}}
-
-{{--            let button_pdfFile_close = parentDiv.querySelector('.button_pdfFile_close')--}}
-
-{{--            pdfFile.classList.remove('hidden_block')--}}
-
-{{--            button_pdfFile_close.classList.remove('hidden_block')--}}
-
-{{--            $(button_pdfFile_close).on('click', function (){--}}
-
-{{--                pdfFile.classList.add('hidden_block')--}}
-
-{{--                button_pdfFile_close.classList.add('hidden_block')--}}
-
-{{--            })--}}
-{{--        })--}}
-{{--    });--}}
-
-{{--</script>--}}
 
 
 

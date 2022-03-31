@@ -2,130 +2,98 @@
 
 namespace App\DTO;
 
-use App\Helpers\ArrayHelper;
+
+
+use App\Models\ListOfSubscribe;
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Model;
+
 
 class SubscribeDto implements Arrayable
 {
-    /**
-     * @var string
-     */
-    protected $subscribeType;
-
-    /**
-     * @var integer
-     */
-    protected $subscribePrice;
 
     /**
      * @var integer
      */
 
-    protected $monthQuantity;
-    /**
-     * @var array
-     */
-
-    protected $authorsId;
+    protected $listSubscribe_id;
 
     /**
-     * @var array
+     * @param $listSubscribe_id
      */
 
-    protected $genresId;
-
-
-    /**
-     * @param $subscribeType
-     * @param $subscribePrice
-     * @param $monthQuantity
-     * @param $authorsId
-     * @param $genresId
-     */
-
-    public function __construct($subscribeType, $subscribePrice, $monthQuantity, $authorsId, $genresId)
+    public function __construct($listSubscribe_id)
     {
-        $this->subscribeType= $subscribeType;
-
-        $this->subscribePrice= $subscribePrice;
-
-        $this->monthQuantity = $monthQuantity;
-
-        $this->authorsId = $authorsId;
-
-        $this->genresId = $genresId;
+        $this->listSubscribe_id = $listSubscribe_id;
     }
 
     /**
-     * @return string
+     * @return Model
      */
 
-    public function getSubscribeType(): string
+    public function getListOfSubscribe(): Model
     {
-        return $this->subscribeType;
+        return ListOfSubscribe::query()->where('id', '=', $this->listSubscribe_id)->firstOrFail();
+    }
+    /**
+     * @return Carbon
+     */
+
+    public function getEndDate(): Carbon
+    {
+        $listSubscribe = $this->getListOfSubscribe();
+
+        /** @var ListOfSubscribe $listSubscribe */
+
+        if ($listSubscribe->listSubscribeMonthQuantity == 6)
+        {
+            return Carbon::now()->addMonths(6);
+        }
+        if ($listSubscribe->listSubscribeMonthQuantity == 12)
+        {
+            return Carbon::now()->addYear();
+        }
+
+        return Carbon::now()->addMonth();
     }
 
     /**
-     * @return int
+     * @param $id
+     * @return static
      */
 
-    public function getSubscribePrice(): int
+    public static function createById($id): self
     {
-        return $this->subscribePrice;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMonthQuantity(): int
-    {
-        return $this->monthQuantity;
+        return new self($id);
     }
 
     /**
      * @return array
      */
-
-    public function getAuthorsId(): array
-    {
-        return $this->authorsId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGenresId(): array
-    {
-        return $this->genresId;
-    }
-
-
-    /**
-     * @param array $attributes
-     * @return $this
-     */
-
-    public function createFromArray(array $attributes):self
-    {
-        return new self(
-            (string)ArrayHelper::getNotEmptyValue($attributes, 'subscribe_type'),
-            (integer)ArrayHelper::getNotEmptyValue($attributes, 'subscribe_price'),
-            (integer)ArrayHelper::getNotEmptyValue($attributes, 'monthQuantity'),
-            Arr::wrap(ArrayHelper::getNotEmptyValue($attributes, 'authors_id[]')),
-            Arr::wrap(ArrayHelper::getNotEmptyValue($attributes, 'genres_id[]')),
-
-        );
-    }
 
     public function toArray(): array
     {
-       return [
-           'subscribe_type' => $this->subscribeType,
+        $listSubscribe = $this->getListOfSubscribe();
 
-           'subscribe_price' => $this->subscribePrice,
+        /** @var ListOfSubscribe $listSubscribe */
 
-           'monthQuantity' => $this->monthQuantity,
-       ];
-    }
+        return
+            [
+                'subscribe_alias' => $listSubscribe->alias,
+
+                'subscribe_type' => $listSubscribe->listSubscribeType,
+
+                'subscribe_price' => $listSubscribe->listSubscribePrice,
+
+                'monthQuantity' => $listSubscribe->listSubscribeMonthQuantity,
+
+                'dateStart' => Carbon::today(),
+
+                'dateEnd' => $this->getEndDate(),
+
+                'canceled' => 0,
+            ];
+        }
+
 }

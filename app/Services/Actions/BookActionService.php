@@ -2,49 +2,40 @@
 
 namespace App\Services\Actions;
 
-use App\DTO\SubscribeDto;
-use App\Http\Requests\Filters\BookFilter;
-use App\Models\Book;
-use App\Models\Scope\BookScope;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 
-class BookActionService {
-    /**
-     * @param BookFilter $filter
-     * @return Collection
-     */
-    public function fetchByFilter(BookFilter $filter): Collection {
-        /* @var BookScope|Builder $query */
-        $query = Book::query();
 
-        if($filter->hasAuthors())
-            $query->subscribeAuthors($filter->getAuthorsIDs());
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
-        if($filter->hasGenres())
-            $query->subscribeGenres($filter->getGenreIDs());
 
-        return $query->get();
-    }
+class BookActionService
+{
 
-    public function fetchBooksSubscribeAuthors(SubscribeDto $dto)
+    public static function fetchSubscribeBooks($book): bool
     {
+        if (Auth::user())
+        {
+            $user = User::query()->where('id', '=', Auth::user()->id)->firstOrFail();
 
+            $booksArr = UserActionService::fetchSubscribedBooks($user);
 
-        return Book::query()->booksSubscribeAuthors((array)$dto->getAuthorsId())->get();
+            foreach ($booksArr as $subscribeBooks)
+            {
+                foreach ($subscribeBooks as $subscribeBook)
+                {
+                    if ($subscribeBook->id == $book->id)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
-    public function fetchBooksSubscribeGenres(SubscribeDto $dto)
-    {
-        $bookFilterItem = new BookFilter($dto->getGenresId());
 
-        return Book::query()->booksSubscribeGenres($bookFilterItem->getParam());
-    }
 
-    public function fetchSubscribeGenres($param = null)
-    {
-        $bookFilterItem = new BookFilter($param);
 
-        return Book::query()->booksSubscribeNew($bookFilterItem->getDate());
-    }
+
 }

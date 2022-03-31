@@ -4,12 +4,12 @@ namespace App\Http\Requests;
 
 
 use App\DTO\PaymentDto;
-use App\DTO\SubscribeDto;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class SubscribeRequest extends FormRequest
 {
+
 
 
     /**
@@ -30,12 +30,13 @@ class SubscribeRequest extends FormRequest
     public function rules(): array
     {
 
+
         if (Auth::user()->cart_number)
             return [
                 "user_id" => ['required', 'exists:users,id'],
-                "subscribe_id" => ['required', 'exists:subscribes,id'],
-                "subscribe_price" => ['required', 'integer'],
-                "balance" => ['required', 'integer', 'gt:subscribe_price'],
+                "listSubscribe_id" => ['required', 'exists:listOfSubscribes,id'],
+                "listSubscribePrice" => ['required', 'integer'],
+                "balance" => ['required', 'integer', 'gt:listSubscribePrice'],
                 'authors_id' => [ "requiredIf:subscribe_type,Authors", 'array', 'size:3',],
                 'authors_id.*' => ['exists:authors,id'],
                 'genres_id' => ["requiredIf:subscribe_type,Genre", 'array', 'size:2',],
@@ -53,9 +54,9 @@ class SubscribeRequest extends FormRequest
             'year'=>['date_format: "Y"', 'required'],
             'card_ccv'=>['required'],
             "user_id" => ['required', 'exists:users,id'],
-            "subscribe_id" => ['required', 'exists:subscribes,id'],
-            "subscribe_price" => ['required', 'integer'],
-            "balance" => ['required', 'integer', 'gt:subscribe_price'],
+            "listSubscribe_id" => ['required', 'exists:listOfSubscribes,id'],
+            "listSubscribePrice" => ['required', 'integer'],
+            "balance" => ['required', 'integer', 'gt:listSubscribePrice'],
             'authors_id' => [ "requiredIf:subscribe_type,Authors", 'array', 'size:3',],
             'authors_id.*' => ['exists:authors,id'],
             'genres_id' => ["requiredIf:subscribe_type,Genre", 'array', 'size:2',],
@@ -83,10 +84,10 @@ class SubscribeRequest extends FormRequest
             'card_ccv.required'=> 'Введите значение ccv карты',
             "user_id.required" => 'Введите id пользователя',
             'user_id.exists' => 'Такого id не существует',
-            "subscribe_id.required" => 'Введите id подписки',
-            'subscribe_id.exists' => 'Такого id не существует',
-            'subscribe_price.required' => 'Введите цену подписки',
-            "subscribe_price.integer" => 'Значение цены должно быть числом',
+            "listSubscribe_id.required" => 'Введите id подписки',
+            'listSubscribe_id.exists' => 'Такого id не существует',
+            'listSubscribePrice.required' => 'Введите цену подписки',
+            "listSubscribePrice.integer" => 'Значение цены должно быть числом',
             "balance.required" => "Введите баланс",
             "balance.integer" => "Поле баланса должно быть числом",
             "balance.gt" => "Недостаточно средств для оформления заказа",
@@ -99,6 +100,9 @@ class SubscribeRequest extends FormRequest
     public function createPaymentDto(): PaymentDto{
         return PaymentDto::createFromArray($this->all());
     }
+
+
+
 
 
 }

@@ -26,18 +26,18 @@
                 </tr>
                 </thead>
                 <tbody >
-                @foreach($subscribes as $subscribe)
+                @foreach($listOfSubscribes as $listOfSubscribe)
 
                     <tr>
 
-                        <td>{{$subscribe->id}}</td>
-                        <td>{{$subscribe->subscribe_type}}</td>
-                        <td>{{$subscribe->subscribe_price}}</td>
-                        <td>{{$subscribe->duration}}</td>
+                        <td>{{$listOfSubscribe->id}}</td>
+                        <td>{{$listOfSubscribe->listOfSubscribeType}}</td>
+                        <td>{{$listOfSubscribe->listOfSubscribePrice}}</td>
+                        <td>{{$listOfSubscribe->duration}}</td>
 
                         <td>
-                            <a href="{{route('admin.subscribe.edit', $subscribe)}}"><button class="btn btn-primary">Edit</button></a>
-                            <a href="{{route('admin.subscribe.destroy', $subscribe)}}"><button class="btn btn-danger">Delete</button></a>
+                            <a href="{{route('admin.listOfSubscribe.edit', $listOfSubscribe)}}"><button class="btn btn-primary">Edit</button></a>
+                            <a href="{{route('admin.listOfSubscribe.destroy', $listOfSubscribe)}}"><button class="btn btn-danger">Delete</button></a>
 
                         </td>
 

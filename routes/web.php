@@ -22,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/test', 'test')->name('test');
+
+
 
 Route::get('/', function () {return view('login'); })->name('login');
 
@@ -50,7 +51,7 @@ Route::prefix('olineLibrary')->group(function (){
 
         $comments = Comment::query()->where('published', '=', 1)->get();
 
-        return view('site.index', compact('comments'))->with('errors', 'для оформления подписки нужно пройти авторизацию');
+        return view('site.index', compact('comments'))->with('error', 'для оформления подписки нужно пройти авторизацию');
 
     })->name('toSubscribe');
 });
@@ -72,8 +73,6 @@ Route::middleware('auth')->group(function (){
 
     Route::prefix('cabinet')->group(function (){
 
-//        Route::get('/personal', function (){ return view('site.personalCabinet.index');})->name('personalCabinet');
-
         Route::get('/personal', [CabinetController::class, 'statistic'])->name('personalCabinet');
 
         Route::get('/personalComments', [CabinetController::class, 'view'])->name('personalCabinetComments');
@@ -92,9 +91,13 @@ Route::middleware('auth')->group(function (){
 
         Route::get('/subscribes', [CabinetController::class, 'subscribes'])->name('subscribes');
 
-        Route::get('/payment/{subscribe}', [CabinetController::class,'payment'])->name('payment');
+        Route::get('/payment/{listOfSubscribe}', [CabinetController::class,'payment'])->name('payment');
+
+        Route::match(['GET', 'POST'],'/ajax', [CabinetController::class, 'markNotifications'])->name('markNotifications');
 
     });
+
+
 
 
 //    =================================================================================================================

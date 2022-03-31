@@ -37,7 +37,7 @@ class PaymentDto implements Arrayable
      *  @var integer
      */
 
-    protected $subscribeId;
+    protected $listSubscribe;
 
     /**
      * @param $price
@@ -46,7 +46,7 @@ class PaymentDto implements Arrayable
      * @param $cartNumber3
      * @param $cartNumber4
      * @param $userId
-     * @param $subscribeId
+     * @param $listSubscribe
      */
     public function __construct(
         $cartNumber1,
@@ -55,7 +55,7 @@ class PaymentDto implements Arrayable
         $cartNumber4,
         $price,
         $userId,
-        $subscribeId
+        $listSubscribe
     )
     {
         $this->cartNumber1 = $cartNumber1;
@@ -64,7 +64,7 @@ class PaymentDto implements Arrayable
         $this->cartNumber4 = $cartNumber4;
         $this->price = $price;
         $this->userId = $userId;
-        $this->subscribeId = $subscribeId;
+        $this->listSubscribe = $listSubscribe;
 
 
     }
@@ -97,15 +97,6 @@ class PaymentDto implements Arrayable
     }
 
     /**
-     * @return int
-     */
-
-    public function getSubscribeId(): int
-    {
-        return $this->subscribeId;
-    }
-
-    /**
      * @param array $attributes
      * @return static
      */
@@ -116,9 +107,9 @@ class PaymentDto implements Arrayable
             (integer)ArrayHelper::getNotEmptyValue($attributes, 'cartNumber2'),
             (integer)ArrayHelper::getNotEmptyValue($attributes, 'cartNumber3'),
             (integer)ArrayHelper::getNotEmptyValue($attributes, 'cartNumber4'),
-            (integer)ArrayHelper::getNotEmptyValue($attributes, 'subscribe_price'),
+            (integer)ArrayHelper::getNotEmptyValue($attributes, 'listSubscribePrice'),
             (integer)ArrayHelper::getNotEmptyValue($attributes, 'user_id'),
-            (integer)ArrayHelper::getNotEmptyValue($attributes, 'subscribe_id'),
+            (integer)ArrayHelper::getNotEmptyValue($attributes, 'listSubscribe_id'),
         );
     }
 

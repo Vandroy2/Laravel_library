@@ -12,10 +12,10 @@
             <h3 class = "admin_main_text">Создание подписки</h3>
 
             <form  method = "Post"
-                   @isset($subscribe)
-                   action="{{route('admin.subscribe.update', $subscribe)}}"
+                   @isset($listOfSubscribe)
+                   action="{{route('admin.listOfSubscribe.update', $listOfSubscribe)}}"
                    @else
-                   action="{{route('admin.subscribe.store')}}"
+                   action="{{route('admin.listOfSubscribe.store')}}"
                 @endisset>
 
                 @csrf
@@ -25,14 +25,14 @@
                         Выберите тип подписки
                     </div>
 
-                    <select class="admin genre" name="subscribe_type" style="width: 200px;height: 38px;"
-                            @isset($subscribe)
+                    <select class="admin genre" name="listOfSubscribe_type" style="width: 200px;height: 38px;"
+                            @isset($listOfSubscribe)
                             @else
                             required
                         @endisset
                     >
-                        @isset($subscribe)
-                            <option value="{{$subscribe->subscribe_type}}"><label >{{$subscribe->subscribe_type}}</label></option>
+                        @isset($listOfSubscribe)
+                            <option value="{{$listOfSubscribe->listOfSubscribeType}}"><label >{{$listOfSubscribe->listOfSubscribeType}}</label></option>
                         @else
                             <option value=""><label >Тип подписки</label></option>
                         @endisset
@@ -48,11 +48,11 @@
                 </div>
                 <div class="form-group">
                     <label for="name"></label>
-                    <input type="number" name="subscribe_price"  placeholder="Введите цену " class="form-group"
-                           @isset($subscribe)
-                           value = "{{old('subscribe_price')? : $subscribe->subscribe_price}}"
+                    <input type="number" name="listOfSubscribe_price"  placeholder="Введите цену " class="form-group"
+                           @isset($listOfSubscribe)
+                           value = "{{old('listOfSubscribePrice')? : $listOfSubscribe->listOfSubscribePrice}}"
                            @else
-                           value = "{{old('subscribe_price')}}"
+                           value = "{{old('listOfSubscribePrice')}}"
                         @endisset>
                 </div>
 
@@ -63,13 +63,13 @@
                     </div>
 
                     <select class="admin genre" name="monthQuantity" style="width: 200px;height: 38px;"
-                            @isset($subscribe)
+                            @isset($listOfSubscribe)
                             @else
                             required
                         @endisset
                     >
-                        @isset($subscribe)
-                            <option value="{{$subscribe->monthQuantity}}"><label >{{$subscribe->duration}}</label></option>
+                        @isset($listOfSubscribe)
+                            <option value="{{$listOfSubscribe->listSubscribeMonthQuantity}}"><label >{{$listOfSubscribe->duration}}</label></option>
                         @else
                             <option value=""><label >Продолжительность </label></option>
                         @endisset
@@ -84,8 +84,15 @@
 
                 </div>
 
+                <input type="hidden" name="alias"
+                       @isset($listOfSubscribe)
+                       value="{{$listOfSubscribe->listOfSubscribeType.'_'.$listOfSubscribe->listSubscribeMonthQuantity}}"
+                       @else
+                           value ="New_Subscribe"
+                >
+                @endif
                 <button type="submit" class="btn btn-success admin_btn">
-                    @isset($subscribe)
+                    @isset($listOfSubscribe)
                     Редактировать подписку
                     @else
                     Создать подписку

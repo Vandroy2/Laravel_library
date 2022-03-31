@@ -4,6 +4,8 @@ namespace App\Models;
 
 
 use App\Models\Scope\BookScope;
+use App\Services\Actions\BookActionService;
+use App\Services\Actions\UserActionService;
 use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -224,6 +227,14 @@ class Book extends Model
         return $this->belongsToMany(User::class, 'purchasedbooks', 'book_id', 'user_id');
     }
 
+    /**
+     * @return bool
+     */
+
+    public function subscribed(): bool
+    {
+        return BookActionService::fetchSubscribeBooks($this);
+    }
 
 
 

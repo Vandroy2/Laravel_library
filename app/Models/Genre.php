@@ -71,10 +71,14 @@ class Genre extends Model
         return $this->belongsToMany(Selection::class);
     }
 
-//    public  function bookSelections(): MorphToMany
-//    {
-//        return $this->morphToMany(BookSelection::class, 'bookSelectionable');
-//    }
+    /**
+     * @return BelongsToMany
+     */
+
+    public function subscribes(): BelongsToMany
+    {
+        return $this->belongsToMany(Subscribe::class);
+    }
 
 
 }

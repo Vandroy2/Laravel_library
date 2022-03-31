@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Subscribe;
+use App\Models\ListOfSubscribe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 
-class SubscribeController extends Controller
+class ListOfSubscribeController extends Controller
 {
     /**
      * @return View
@@ -17,19 +17,19 @@ class SubscribeController extends Controller
 
     public function index(): View
     {
-        $subscribes = Subscribe::all();
+        $subscribes = ListOfSubscribe::all();
 
         return view('admin.subscribes.index', compact('subscribes'));
     }
 
     /**
-     * @param Subscribe $subscribe
+     * @param ListOfSubscribe $listOfSubscribe
      * @return View
      */
 
-    public function edit(Subscribe $subscribe): View
+    public function edit(ListOfSubscribe $listOfSubscribe): View
     {
-        return view('admin.subscribes.edit', compact('subscribe'));
+        return view('admin.subscribes.edit', compact('listOfSubscribe'));
     }
 
     /**
@@ -49,38 +49,38 @@ class SubscribeController extends Controller
     public function store(Request $request): View
     {
 
-        $subscribe  = new Subscribe();
+        $listOfSubscribe  = new ListOfSubscribe();
 
-        $subscribe->fill($request->all());
+        $listOfSubscribe->fill($request->all());
 
-        $subscribe->save();
+        $listOfSubscribe->save();
 
         return view('admin.index')->with('success', 'Подписка успешно создана');
     }
 
     /**
      * @param Request $request
-     * @param Subscribe $subscribe
+     * @param ListOfSubscribe $listOfSubscribe
      * @return RedirectResponse
      */
 
-    public function update(Request $request, Subscribe $subscribe): RedirectResponse
+    public function update(Request $request, ListOfSubscribe $listOfSubscribe): RedirectResponse
     {
-        $subscribe->fill($request->all());
+        $listOfSubscribe->fill($request->all());
 
-        $subscribe->save();
+        $listOfSubscribe->save();
 
         return redirect()->route('admin.subscribes')->with('success', 'Подборка успешно обновлена');
     }
 
     /**
-     * @param Subscribe $subscribe
+     * @param ListOfSubscribe $listOfSubscribe
      * @return RedirectResponse
      */
 
-    public function destroy(Subscribe $subscribe): RedirectResponse
+    public function destroy(ListOfSubscribe $listOfSubscribe): RedirectResponse
     {
-        $subscribe->delete();
+        $listOfSubscribe->delete();
 
         return redirect()->route('admin.subscribes')->with('success', 'Подборка успешно удалена');
     }

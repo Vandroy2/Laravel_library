@@ -4,8 +4,14 @@ namespace App\Services\Actions;
 
 use App\DTO\PaymentDto;
 use App\DTO\UserDTO;
+use App\Http\Requests\Filters\BookFilter;
+use App\Models\Book;
 use App\Models\User;
+
+use App\Services\SubscribeService;
 use App\Services\UserService;
+
+
 
 class UserActionService
 {
@@ -28,21 +34,106 @@ class UserActionService
         return $this->saveUser($user, $dto);
     }
 
-    public function updatePaymentUser(PaymentDto $paymentDTO): User
+    /**
+     * @param PaymentDto $paymentDto
+     * @param $id
+     * @return User
+     */
+
+    public function updatePaymentUser(PaymentDto $paymentDto, $id): User
     {
 
-        $user = $this->fetchPayingUser($paymentDTO->getId());
+        $user = $this->fetchPayingUser($paymentDto->getId());
 
         $serviceItem = new  UserService($user);
         $serviceItem
-            ->changeAttributes($paymentDTO)
-            ->payment($paymentDTO->getPrice(), $paymentDTO->getSubscribeId())
+            ->changeAttributes($paymentDto)
+            ->payment($paymentDto->getPrice(), $id)
             ->commitChanges();
-
 
         return $serviceItem->getUser();
     }
 
+    /**
+     * @param BookFilter $filter
+     * @param SubscribeActionService $service
+     * @param $subscribe
+     * @return SubscribeActionService
+     */
+
+    public function attachSubscribeItems(BookFilter $filter, SubscribeActionService $service, $subscribe): SubscribeActionService
+    {
+        return  $service->fetchSubscribeItems($filter, $subscribe);
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+
+    public static function fetchSubscribedBooks(User $user): array
+    {
+
+        if (!$user->subscribes->isEmpty())
+        {
+            $books = [];
+
+            foreach ($user->subscribes as $subscribe)
+            {
+                if ($subscribe->subscribe_type == 'Premium')
+                {
+                    $books[] = Book::all();
+                }
+            }
+
+            foreach ($user->subscribes as $subscribe)
+            {
+                if ($subscribe->subscribe_type == 'Authors')
+                {
+                    foreach ($subscribe->authors as $author)
+                    {
+                        $book = Book::query()->subscribeAuthors($author->id)->get();
+
+                        $books[] = $book;
+
+
+                    }
+                }
+            }
+
+            foreach ($user->subscribes as $subscribe)
+            {
+                if ($subscribe->subscribe_type == 'Genre')
+                {
+                    foreach ($subscribe->genres as $genre)
+                    {
+                        $book = Book::query()->subscribeGenres($genre->id)->get();
+
+                        $books[] = $book;
+                    }
+                }
+            }
+
+            foreach ($user->subscribes as $subscribe)
+            {
+                if ($subscribe->subscribe_type == 'New')
+                {
+                    $book = Book::query()->subscribeNew()->get();
+
+                        $books[] = $book;
+                }
+            }
+
+            return $books;
+
+        }
+
+        else{
+
+            return [];
+        }
+
+    }
 
 
     /**

@@ -14,15 +14,15 @@
 
             <section class="payment_text">
 
-                @if($subscribe->subscribe_type == 'Premium')
-            <h4 class="text-center">Стоимость премиум подписки составляет {{$subscribe->subscribe_price}} грн в месяц</h4>
+                @if($listOfSubscribe->listSubscribeType == 'Premium')
+            <h4 class="text-center">Стоимость премиум подписки составляет {{$listOfSubscribe->listSubscribePrice}} грн в месяц</h4>
             <h6 class="text-center">После оплаты все книги представленные в библиотеке станут доступны для чтения и прослушивания</h6>
             @endif
 
 
 
-                @if($subscribe->subscribe_type == 'Authors')
-                    <h4 class="text-center">Стоимость подписки на трех выбранных авторов составляет {{$subscribe->subscribe_price}} грн в месяц</h4>
+                @if($listOfSubscribe->listSubscribeType == 'Authors')
+                    <h4 class="text-center">Стоимость подписки на трех выбранных авторов составляет {{$listOfSubscribe->listSubscribePrice}} грн в месяц</h4>
                     <h6 class="text-center">После оплаты все книги выбранных авторов станут доступны для чтения и прослушивания</h6>
 
                         <div class="form-group">
@@ -38,12 +38,12 @@
                             </select>
 
                         </div>
-                    <input type="hidden" name="subscribe_type" value="{{$subscribe->subscribe_type}}">
+                    <input type="hidden" name="listSubscribe_type" value="{{$listOfSubscribe->listSubscribeType}}">
 
                 @endif
 
-                    @if($subscribe->subscribe_type == 'Genre')
-                        <h4 class="text-center">Стоимость подписки на два жанра составляет {{$subscribe->subscribe_price}} грн в месяц</h4>
+                    @if($listOfSubscribe->listSubscribeType == 'Genre')
+                        <h4 class="text-center">Стоимость подписки на два жанра составляет {{$listOfSubscribe->listSubscribePrice}} грн в месяц</h4>
                         <h6 class="text-center">После оплаты все книги выбранных жанров станут доступны для чтения и прослушивания</h6>
 
                         <div class="form-group">
@@ -54,20 +54,18 @@
 
                             <select class="admin genre payment_select" name="genres_id[]" required multiple>
 
-                                <option><label >Жанры</label></option>
-
                                 @foreach($genres as $genre)
                                     <option value="{{$genre->id}}">{{$genre->genre_name}}</option>
                                 @endforeach
                             </select>
 
                         </div>
-                        <input type="hidden" name="genres" value="{{$subscribe->subscribe_type}}">
+                        <input type="hidden" name="genres" value="{{$listOfSubscribe->listSubscribeType}}">
 
                     @endif
 
-                    @if($subscribe->subscribe_type == 'New')
-                        <h4 class="text-center">Стоимость подписки на ранний доступ к новинкам составляет {{$subscribe->subscribe_price}} грн в месяц</h4>
+                    @if($listOfSubscribe->listSubscribeType == 'New')
+                        <h4 class="text-center">Стоимость подписки на ранний доступ к новинкам составляет {{$listOfSubscribe->listSubscribePrice}} грн в месяц</h4>
                         <h6 class="text-center">После оплаты будет предоставлен ранний доступ к аудио и PDF файлам новинок, представленных в библиотеке</h6>
                     @endif
             </section>
@@ -195,15 +193,13 @@
                     </fieldset>
                     @endif
 
-                    <h5 style="margin-top: 100px" >Сумма к оплате: {{$subscribe->subscribe_price}}грн.</h5>
+                    <h5 style="margin-top: 100px" >Сумма к оплате: {{$listOfSubscribe->listSubscribePrice}}грн.</h5>
 
                     <button class="btn"><i class="fa fa-lock"></i> Оплатить подписку</button>
                     <input type="hidden" name="user_id" value="{{Auth::user()->id}}">
-                    <input type="hidden" name="subscribe_id" value="{{$subscribe->id}}">
-                    <input type="hidden" name="subscribe_price" value="{{$subscribe->subscribe_price}}">
+                    <input type="hidden" name="listSubscribe_id" value="{{$listOfSubscribe->id}}">
+                    <input type="hidden" name="listSubscribePrice" value="{{$listOfSubscribe->listSubscribePrice}}">
                     <input type="hidden" name="balance" value="{{Auth::user()->balance}}">
-
-
 
                 </div>
 

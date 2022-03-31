@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\LibraryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PersonalCabinetController;
 use App\Http\Controllers\Admin\SelectionController;
-use App\Http\Controllers\Admin\SubscribeController;
+use App\Http\Controllers\Admin\ListOfSubscribeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\GenreController;
@@ -254,19 +254,19 @@ Route::middleware([
 
     });
 
-    Route::prefix('subscribes')->group(function (){
+    Route::prefix('listOfSubscribes')->group(function (){
 
-        Route::get('/', [SubscribeController::class, 'index'])->name('subscribes');
+        Route::get('/', [ListOfSubscribeController::class, 'index'])->name('listOfSubscribes');
 
-        Route::get('/create', [SubscribeController::class, 'create'])->name('subscribe.create');
+        Route::get('/create', [ListOfSubscribeController::class, 'create'])->name('listOfSubscribe.create');
 
-        Route::post('/store', [SubscribeController::class, 'store'])->name('subscribe.store');
+        Route::post('/store', [ListOfSubscribeController::class, 'store'])->name('listOfSubscribe.store');
 
-        Route::get('/edit/{subscribe}', [SubscribeController::class, 'edit'])->name('subscribe.edit');
+        Route::get('/edit/{listOfSubscribe}', [ListOfSubscribeController::class, 'edit'])->name('listOfSubscribe.edit');
 
-        Route::post('/update/{subscribe}', [SubscribeController::class, 'update'])->name('subscribe.update');
+        Route::post('/update/{listOfSubscribe}', [ListOfSubscribeController::class, 'update'])->name('listOfSubscribe.update');
 
-        Route::get('/destroy{subscribe}', [SubscribeController::class, 'destroy'])->name('subscribe.destroy');
+        Route::get('/destroy{listOfSubscribe}', [ListOfSubscribeController::class, 'destroy'])->name('listOfSubscribe.destroy');
 
 
     });

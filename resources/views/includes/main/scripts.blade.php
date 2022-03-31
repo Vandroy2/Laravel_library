@@ -172,11 +172,47 @@
 
         })
     })
+
+
+{{-------------------------------------------------Personal cabinet---------------------------------------------------}}
+
+
+
+
+    function sendMarkRequest(id=null) {
+    return $.ajax
+    (
+    "{{route('markNotifications')}}",
+    {
+    headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+    method:"POST",
+    data: { 'id':id}
+
+    }
+    );
+    }
+
+    $(function (){
+    $('.mark-as-read').click
+    (
+    function ()
+    {let request = sendMarkRequest($(this).data('id'));
+    request.done
+    (() => {
+    $(this).parents('div.alert').remove();
+    });
+    });
+    $('#mark-all').click(function (){
+
+    let request = sendMarkRequest();
+
+    request.done(() => {
+    $('div.alert').remove();
+    $('#mark-all').remove();
+    })
+    })
+    });
+
+
+
 </script>
-
-{{-------------------------------------------------OnlineLibrary------------------------------------------------------}}
-
-
-
-
-

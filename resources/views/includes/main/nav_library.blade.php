@@ -12,10 +12,9 @@
     </div>
 
 @if(Auth::user())
-    @can('premium')
-    @else
-    <a href="{{route('subscribes')}}" class = 'btn btn-secondary btn_premium btn_nav_premium'>Премиум подписка</a>
-    @endif
+
+    <a href="{{route('subscribes')}}" class = 'btn btn-secondary btn_premium btn_nav_premium'>Подписки</a>
+
     @endif
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: space-between">

@@ -11,16 +11,20 @@ class UserService
     /**
      * @var User
      */
+
     private $user;
+
     /**
      * UserService constructor
      *
      * @param User $user
      */
+
     public function __construct(User $user)
     {
         $this->user = $user;
     }
+
     /**
      * @return User
      */
@@ -29,13 +33,10 @@ class UserService
         return $this->user;
     }
 
-
-
     /**
      * @param UserDTO|PaymentDto $dto
      * @return $this
      */
-
 
     public function changeAttributes($dto):self
     {
@@ -49,9 +50,9 @@ class UserService
      * @param int $id
      * @return $this
      */
+
     public function payment(int $price, int $id): UserService
     {
-
         $this->user->balance -= $price;
 
         if (!$this->user->subscribes->contains($id))
@@ -65,6 +66,7 @@ class UserService
     /**
      * @return $this
      */
+
     public function commitChanges():self
     {
         $this->user->save();

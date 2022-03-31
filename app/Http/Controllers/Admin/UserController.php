@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\LoginAdminEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Requests\Admin\UserCreateRequest;
@@ -42,6 +43,14 @@ class UserController extends Controller
 
         if ($auth)
         {
+
+            $user = Auth::user();
+
+            if ($user->type == 'admin')
+            {
+                event(new LoginAdminEvent($user));
+            }
+
             return redirect()->route('admin.index');
         }
             else return redirect()->route('admin.login')->with('errors', 'авторизация не удалась');
@@ -51,6 +60,7 @@ class UserController extends Controller
 
     public function index()
     {
+
         return view('admin.index');
     }
 

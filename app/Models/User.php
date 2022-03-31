@@ -48,6 +48,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property-read int|null $notifications_count
  * @property-read Collection|PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
+ * @property-read Collection|ListOfSubscribe[] $listOfSubscribes
  *
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
@@ -70,6 +71,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class User extends Authenticatable
 {
+
+    protected $table = 'users';
+
     use HasApiTokens, HasFactory, Notifiable;
 
     const SUPER_ADMIN = 'super_admin';
@@ -197,6 +201,15 @@ class User extends Authenticatable
     public function subscribes(): BelongsToMany
     {
         return $this->belongsToMany(Subscribe::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+
+    public function listOfSubscribes(): BelongsToMany
+    {
+        return $this->belongsToMany(ListOfSubscribe::class, 'listOfSubscribe_user', 'user_id', 'listOfSubscribe_id');
     }
 
 

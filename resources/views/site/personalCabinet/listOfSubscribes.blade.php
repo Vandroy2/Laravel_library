@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var ListOfSubscribe $listOfSubscribe
+ */
+
+use App\Models\ListOfSubscribe;
+
+?>
+
 @extends('layouts.site.personalCabinet')
 
 @section('content')
@@ -25,11 +34,11 @@
             <div class="secondary_subscribe_container">
 
 
-                @foreach($subscribes as $subscribe)
-                    @if($subscribe->subscribe_type == 'Premium')
+                @foreach($listOfSubscribes as $listOfSubscribe)
+                    @if($listOfSubscribe->listSubscribeType == 'Premium')
                         <div class = "flex-column subscribe_premium_container">
                             <div class="duration_container duration">
-                                <h4 class = "price">{{$subscribe->duration}}</h4>
+                                <h4 class = "price">{{$listOfSubscribe->duration}}</h4>
                             </div>
                             <div class="premium_logo_container">
                                 <img src="/assets/img/premium.png" class="premium_logo" alt="Premium">
@@ -43,10 +52,13 @@
                                 <img src="/assets/img/check.png" class="check_logo" alt="logo">
                                 <p>Доступ ко всем книгам в PDF формате</p>
                             </div>
-                            <a href="{{route('payment', $subscribe)}}" class="link_price"><div class="duration_container price_container">
-                                <h4 class="price">Оплатить {{$subscribe->subscribe_price}}грн</h4>
+                            @if($listOfSubscribe->checkAffiliation())
+                                <h4 class="subscribed">Подписка оформлена</h4>
+                            @else
+                            <a href="{{route('payment', $listOfSubscribe)}}" class="link_price"><div class="duration_container price_container">
+                                <h4 class="price">Оплатить {{$listOfSubscribe->listSubscribePrice}}грн</h4>
                                 </div></a>
-
+                            @endif
                         </div>
                     @endIf
                     @endforeach
@@ -64,11 +76,11 @@
                 <div class="secondary_subscribe_container">
 
 
-                    @foreach($subscribes as $subscribe)
-                        @if($subscribe->subscribe_type == 'Authors')
+                    @foreach($listOfSubscribes as $listOfSubscribe)
+                        @if($listOfSubscribe->listSubscribeType == 'Authors')
                             <div class = "flex-column subscribe_premium_container subscribe_author_container">
                                 <div class="duration_container duration duration_author">
-                                    <h4 class = "price">{{$subscribe->duration}}</h4>
+                                    <h4 class = "price">{{$listOfSubscribe->duration}}</h4>
                                 </div>
                                 <div class="premium_logo_container author_logo_container">
                                     <img src="/assets/img/author.png" class="premium_logo" alt="Premium">
@@ -82,10 +94,14 @@
                                     <img src="/assets/img/check.png" class="check_logo" alt="logo">
                                     <p>Доступ ко всем книгам в PDF формате трех любимых авторов</p>
                                 </div>
-                                <a href="{{route('payment', $subscribe)}}" class="link_price"><div class="duration_container price_container">
-                                        <h4 class="price">Оплатить {{$subscribe->subscribe_price}}грн</h4>
-                                    </div></a>
 
+                                @if($listOfSubscribe->checkAffiliation())
+                                    <h4 class="subscribed">Подписка оформлена</h4>
+                                @else
+                                <a href="{{route('payment', $listOfSubscribe)}}" class="link_price"><div class="duration_container price_container">
+                                        <h4 class="price">Оплатить {{$listOfSubscribe->listSubscribePrice}}грн</h4>
+                                    </div></a>
+                                @endif
                             </div>
                         @endIf
                     @endforeach
@@ -100,11 +116,11 @@
                 <div class="secondary_subscribe_container">
 
 
-                    @foreach($subscribes as $subscribe)
-                        @if($subscribe->subscribe_type == 'Genre')
+                    @foreach($listOfSubscribes as $listOfSubscribe)
+                        @if($listOfSubscribe->listSubscribeType == 'Genre')
                             <div class = "flex-column subscribe_premium_container subscribe_genre_container">
                                 <div class="duration_container duration duration_genre">
-                                    <h4 class = "price">{{$subscribe->duration}}</h4>
+                                    <h4 class = "price">{{$listOfSubscribe->duration}}</h4>
                                 </div>
                                 <div class="premium_logo_container genre_logo_container">
                                     <img src="/assets/img/genre.png" class="premium_logo" alt="Premium">
@@ -118,10 +134,13 @@
                                     <img src="/assets/img/check.png" class="check_logo" alt="logo">
                                     <p>Доступ ко всем книгам в PDF формате трех любимых жанров</p>
                                 </div>
-                                <a href="{{route('payment', $subscribe)}}" class="link_price"><div class="duration_container price_container">
-                                        <h4 class="price">Оплатить {{$subscribe->subscribe_price}}грн</h4>
+                                @if($listOfSubscribe->checkAffiliation())
+                                    <h4 class="subscribed">Подписка оформлена</h4>
+                                @else
+                                <a href="{{route('payment', $listOfSubscribe)}}" class="link_price"><div class="duration_container price_container">
+                                        <h4 class="price">Оплатить {{$listOfSubscribe->listSubscribePrice}}грн</h4>
                                     </div></a>
-
+                                @endif
                             </div>
                         @endIf
                     @endforeach
@@ -136,11 +155,11 @@
                 <div class="secondary_subscribe_container">
 
 
-                    @foreach($subscribes as $subscribe)
-                        @if($subscribe->subscribe_type == 'New')
+                    @foreach($listOfSubscribes as $listOfSubscribe)
+                        @if($listOfSubscribe->listSubscribeType == 'New')
                             <div class = "flex-column subscribe_premium_container subscribe_new_container">
                                 <div class="duration_container duration duration_new">
-                                    <h4 class = "price">{{$subscribe->duration}}</h4>
+                                    <h4 class = "price">{{$listOfSubscribe->duration}}</h4>
                                 </div>
                                 <div class="premium_logo_container new_logo_container">
                                     <img src="/assets/img/new.png" class="premium_logo " alt="Premium">
@@ -154,9 +173,13 @@
                                     <img src="/assets/img/check.png" class="check_logo" alt="logo">
                                     <p>Ранний доступ ко всем новинкам в PDF формате</p>
                                 </div>
-                                <a href="{{route('payment', $subscribe)}}" class="link_price"><div class="duration_container price_container">
-                                        <h4 class="price">Оплатить {{$subscribe->subscribe_price}}грн</h4>
+                                @if($listOfSubscribe->checkAffiliation())
+                                    <h4 class="subscribed">Подписка оформлена</h4>
+                                @else
+                                <a href="{{route('payment', $listOfSubscribe)}}" class="link_price"><div class="duration_container price_container">
+                                        <h4 class="price">Оплатить {{$listOfSubscribe->listSubscribePrice}}грн</h4>
                                     </div></a>
+                                @endif
 
                             </div>
                         @endIf

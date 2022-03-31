@@ -8,6 +8,24 @@
 
         <div class="secondary_container">
 
+            @forelse($notifications as $notification)
+                <div class = "alert alert-danger" role = "alert">
+                    Your subscribe "{{$notification->data['subscribe_type']}}" duration {{$notification->data['monthQuantity']}} month will ends after 2 days.
+                    Please check your balance to continue subscribing.
+                    <a href="#" class="float-right mark-as-read" data-id="{{$notification->id}}">
+                        Mark as read
+                    </a>
+                </div>
+
+                @if($loop->last)
+                    <a href="#" id="mark-all">
+                        Mark all as read
+                    </a>
+                @endif
+            @empty
+                There are no new notifications
+            @endforelse
+
             <div class = "flex justify-content-around">
 
                 <div class = w-50>
@@ -33,7 +51,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <script>
-
         am5.ready(function() {
 
             let chartGenres = function (elemId, arr) {
@@ -66,7 +83,7 @@
 
             chartGenres("chartAuthors", arrAuthors);
         });
-
     </script>
 
+    @include('includes.main.scripts')
 @endsection
